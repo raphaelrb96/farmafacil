@@ -92,4 +92,9 @@ public class AdmActivity extends AppCompatActivity implements View.OnClickListen
 
     public void verCupons(View view) {
     }
+
+    public void verClientes(View view) {
+        Intent intent = new Intent(this, ClientesActivity.class);
+        startActivity(intent);
+    }
 }

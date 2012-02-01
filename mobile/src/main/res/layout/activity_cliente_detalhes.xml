@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ClienteDetalhesActivity">
+    <!--toolbar-->
+    <LinearLayout
+        android:background="@color/colorPrimaryLight"
+        android:elevation="8dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_marginRight="4dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/bt_voltar_cliente"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center|start"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/ic_arrow_back_black_24dp"
+                android:backgroundTint="@color/colorSecondaryDark"
+                android:clickable="true" />
+            <androidx.cardview.widget.CardView
+                android:layout_margin="6dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                android:layout_gravity="center|start"
+                app:cardCornerRadius="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:background="@drawable/ic_account_circle_black_24dp"
+                    android:backgroundTint="@color/colorSecondaryLight"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/img_perfil_cliente"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
+            </androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/tv_toolbar_nome_cliente"
+                android:textSize="22sp"
+                android:textColor="@color/colorSecondaryDark"
+                android:layout_gravity="center"
+                android:gravity="center|start"
+                android:layout_marginLeft="3dp"
+                android:text="Usuario"
+                android:lines="1"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <!--card mensagem-->
+        <LinearLayout
+            android:layout_margin="10dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputLayout
+                app:hintEnabled="true"
+                app:boxCornerRadiusBottomEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusTopStart="5dp"
+                style="@style/MeuEditText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Mensagem">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:imeOptions="actionNext"
+                    android:lines="1"
+                    android:id="@+id/et_mensagem_cliente"
+                    android:textCursorDrawable="@drawable/curso_text_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <View
+                android:id="@+id/bt_enviar_mensagem_cliente"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center|start"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/ic_send_black_30dp"
+                android:backgroundTint="@color/colorSecondaryDark"
+                android:clickable="true" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!--barra de atalhos-->
+            <LinearLayout
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:background="@color/back_rv"
+                android:layout_gravity="center|top"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="120dp">
+
+                <LinearLayout
+                    android:id="@+id/ll_bt_mensagem_tela_cliente"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:clickable="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_chat_50dp"
+                        map:backgroundTint="@color/colorPrimary"
+                        map:fabSize="normal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:text="Mensagens" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_bt_cupom_tela_cliente"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:clickable="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_local_offer_black_24dp"
+                        map:backgroundTint="@color/colorPrimary"
+                        map:fabSize="normal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:text="Cupons" />
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:id="@+id/ll_bt_produtos_tela_cliente"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:clickable="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_variedades_50dp"
+                        map:backgroundTint="@color/colorPrimary"
+                        map:fabSize="normal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:text="Produtos" />
+                </LinearLayout>
+            </LinearLayout>
+            <!--detalhes do cliente-->
+            <LinearLayout
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18sp"
+                    android:text="Ultimo Login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:maxLines="1"
+                    android:textStyle="bold"
+                    android:id="@+id/tv_ultimo_login_cliente"
+                    android:textSize="22sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:textColor="@color/colorSecondaryLight"/>
+                <TextView
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18sp"
+                    android:text="Primeiro Login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:maxLines="1"
+                    android:textStyle="bold"
+                    android:id="@+id/tv_primeiro_login_cliente"
+                    android:textSize="22sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:textColor="@color/colorSecondaryLight"/>
+                <TextView
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18sp"
+                    android:text="Provedor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:maxLines="1"
+                    android:textStyle="bold"
+                    android:id="@+id/tv_provedor_login_cliente"
+                    android:textSize="22sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:textColor="@color/colorSecondaryLight"/>
+                <TextView
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18sp"
+                    android:text="Email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:minHeight="40dp"
+                    android:maxLines="2"
+                    android:textStyle="bold"
+                    android:id="@+id/tv_email_cliente"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorSecondaryLight"/>
+            </LinearLayout>
+            <!--carrinho analytics-->
+            <LinearLayout
+                android:id="@+id/container_carrinho_analyics_cliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Carrinho analytics"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+                    <View
+                        android:layout_gravity="bottom"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/colorPrimaryDark"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="2dp"/>
+                </LinearLayout>
+
+
+                <Switch
+                    android:id="@+id/switch_carrinho_analyics_cliente"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="26dp"
+                    android:checked="true"
+                    android:text="Mais adicionados"
+                    android:textColor="@color/colorSecondaryLight"
+                    android:textOff="Recentemente adicionados"
+                    android:textOn="Mais adicionados"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_produtos_cart_add_analyics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="8dp" />
+            </LinearLayout>
+            <!--palavras chaves-->
+            <LinearLayout
+                android:id="@+id/container_termos_pesquisa_cliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Termos de Pesquisa"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+                    <View
+                        android:layout_gravity="bottom"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/colorPrimaryDark"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="2dp"/>
+                </LinearLayout>
+
+
+                <Switch
+                    android:id="@+id/switch_termos_pesquisa_cliente"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="26dp"
+                    android:checked="true"
+                    android:text="Mais pesquisadas"
+                    android:visibility="gone"
+                    android:textColor="@color/colorSecondaryLight"
+                    android:textOff="Recentemente pesquisadas"
+                    android:textOn="Mais pesquisadas"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_termo_pesquisa_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="8dp"
+                    android:nestedScrollingEnabled="false" />
+            </LinearLayout>
+            <!--pb-->
+            <ProgressBar
+                android:id="@+id/pb_cliente_detalhe"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

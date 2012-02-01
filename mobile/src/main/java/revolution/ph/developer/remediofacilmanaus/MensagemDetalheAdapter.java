@@ -31,7 +31,7 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public MensagemDetalheAdapter(Context context, ArrayList<MensagemObject> mensagens, String uidUser) {
         this.context = context;
         this.mensagens = mensagens;
-        this.uidUser = uidUser;
+        this.uidUser = uidUser;//id do usuario atual
         semiCarregadas = new ArrayList<>();
         timeAtual = System.currentTimeMillis();
         if (context != null) {
@@ -44,11 +44,12 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         if (i == 0) {
             if (i <= semiCarregadas.size()-1) {
-                String uid = semiCarregadas.get(i).getUidUser();
+                String uid = semiCarregadas.get(i).getUidUser(); //id usuario que mandou msg
+
                 if (uidUser.equals(uid)) {
-                    return 3;//enviada
+                    return 3;//primeira enviada
                 } else {
-                    return 4;
+                    return 4;//primeira recebida
                 }
             } else {
                 String uid2 = mensagens.get(i).getUidUser();
@@ -63,9 +64,9 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             if (i <= semiCarregadas.size()-1) {
                 String uid3 = semiCarregadas.get(i).getUidUser();
                 if (uidUser.equals(uid3)) {
-                    return 1;
+                    return 1;//enviada
                 } else {
-                    return 2;
+                    return 2;//recebida
                 }
             } else {
                 int position = i - semiCarregadas.size();

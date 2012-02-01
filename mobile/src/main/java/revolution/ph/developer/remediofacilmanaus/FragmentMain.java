@@ -189,8 +189,8 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         analitycsFacebook = new AnalitycsFacebook(getActivity());
         analitycsGoogle = new AnalitycsGoogle(getActivity());
 
-        telaInicialLoadding();
-        auth.addAuthStateListener(mAuthStateListener);
+//        telaInicialLoadding();
+//        auth.addAuthStateListener(mAuthStateListener);
 
         return view;
     }
@@ -538,24 +538,24 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     @Override
     public void onResume() {
         super.onResume();
-//        telaInicialLoadding();
-//        auth.addAuthStateListener(mAuthStateListener);
+        telaInicialLoadding();
+        auth.addAuthStateListener(mAuthStateListener);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        if (this.mAuthStateListener != null) {
-//            auth.removeAuthStateListener(this.mAuthStateListener);
-//        }
+        if (this.mAuthStateListener != null) {
+            auth.removeAuthStateListener(this.mAuthStateListener);
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (this.mAuthStateListener != null) {
-            auth.removeAuthStateListener(this.mAuthStateListener);
-        }
+//        if (this.mAuthStateListener != null) {
+//            auth.removeAuthStateListener(this.mAuthStateListener);
+//        }
     }
 
     private void showDialog(int tipo, String msg) {
@@ -765,7 +765,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     private void myQuery(Query meuQuery, final boolean isPesquisa, final String sPesquisa, final int tipo) {
         prodObjs.clear();
 
-        meuQuery.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        meuQuery.whereEqualTo("disponivel", true).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 int sizeDoc = queryDocumentSnapshots.size();

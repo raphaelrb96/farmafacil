@@ -60,6 +60,10 @@ public class Usuario {
         return uid;
     }
 
+    public long getPrimeiroLogin() {
+        return primeiroLogin;
+    }
+
     public long getUltimoLogin() {
         return ultimoLogin;
     }
