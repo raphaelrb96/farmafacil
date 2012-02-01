@@ -4,6 +4,9 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,17 +17,32 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.robinhood.ticker.TickerUtils;
 import com.robinhood.ticker.TickerView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import revolution.ph.developer.remediofacil.analitycs.AnalitycsFacebook;
+import revolution.ph.developer.remediofacil.analitycs.AnalitycsGoogle;
 import revolution.ph.developer.remediofacil.objects.CompraFinalParcelable;
+import revolution.ph.developer.remediofacil.objects.CompraFinalizada;
+
+import static revolution.ph.developer.remediofacil.CarrinhoActivity.produtoss;
+import static revolution.ph.developer.remediofacil.FragmentMain.pathFotoUser;
+import static revolution.ph.developer.remediofacil.FragmentMain.user;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -38,11 +56,18 @@ public class ConfirmarCompraActivityFragment extends Fragment {
     private String rua;
     private TextView tv_nome_rua_conf_compra, mudarEndereco;
 
+    private ProgressBar pb;
+
+    private AnalitycsFacebook analitycsFacebook;
+    private AnalitycsGoogle analitycsGoogle;
+
     private TextInputEditText etTroco, etCelular;
 
     private CheckBox cbFacil, cbRapida;
 
     private LinearLayout toolbar;
+
+    private FirebaseFirestore firestore;
 
     private CheckBox cbDinheiro, cbDebito, cbCredito, cbAlimentacao, cbSemTroco;
 
@@ -51,7 +76,7 @@ public class ConfirmarCompraActivityFragment extends Fragment {
     private ExtendedFloatingActionButton efabFinalizarCompra;
 
     private String detalhePagamento = "";
-    private int tipoDePagamento = 0, tipoEntrega = 0;
+    private int tipoDePagamento = 0, tipoEntrega = 1;
 
     private String[] cDebito = {
             "ELO",
@@ -75,6 +100,9 @@ public class ConfirmarCompraActivityFragment extends Fragment {
             "TICKET",
             "SODEXO"
     };
+    private CompraFinalParcelable cfp = null;
+    private String telefoneMain = "";
+    private Toast mToast;
 
 
     public ConfirmarCompraActivityFragment() {
@@ -111,7 +139,11 @@ public class ConfirmarCompraActivityFragment extends Fragment {
 
         toolbar = (LinearLayout) view.findViewById(R.id.toolbar_conf_compra);
 
-        efabFinalizarCompra = view.findViewById(R.id.efab_confirmar_compra);
+        pb = (ProgressBar) view.findViewById(R.id.pb_confirmar_compra);
+
+        efabFinalizarCompra = (ExtendedFloatingActionButton) view.findViewById(R.id.efab_confirmar_compra);
+
+        firestore = FirebaseFirestore.getInstance();
 
         FrameLayout contentLayout = coordinatorLayout.findViewById(R.id.content_layout_conf_compra);
         sheetBehavior = BottomSheetBehavior.from(contentLayout);
@@ -127,7 +159,10 @@ public class ConfirmarCompraActivityFragment extends Fragment {
             }
         });
 
-        CompraFinalParcelable cfp = getActivity().getIntent().getParcelableExtra("cfp");
+        analitycsFacebook = new AnalitycsFacebook(getActivity());
+        analitycsGoogle = new AnalitycsGoogle(getActivity());
+
+        cfp = getActivity().getIntent().getParcelableExtra("cfp");
         soma = cfp.getSomaProdutos();
         taxafacil = cfp.getTaxaEntrega();
         rua = cfp.getRua();
@@ -192,6 +227,7 @@ public class ConfirmarCompraActivityFragment extends Fragment {
                     tvAlimentacao.setText("");
                     tvCredito.setText("");
                     tvDebito.setText("");
+                    tipoDePagamento = 4;
                 } else {
                     cbSemTroco.setChecked(false);
                     etTroco.setText("");
@@ -214,6 +250,7 @@ public class ConfirmarCompraActivityFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (cbAlimentacao.isChecked()) {
+                    tipoDePagamento = 3;
                     showDialog(3);
                 } else {
                     tvAlimentacao.setText("");
@@ -226,6 +263,7 @@ public class ConfirmarCompraActivityFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (cbCredito.isChecked()) {
+                    tipoDePagamento = 2;
                     showDialog(2);
                 } else {
                     tvDebito.setText("");
@@ -238,6 +276,7 @@ public class ConfirmarCompraActivityFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (cbDebito.isChecked()) {
+                    tipoDePagamento = 1;
                     showDialog(1);
                 } else {
                     tvDebito.setText("");
@@ -246,22 +285,110 @@ public class ConfirmarCompraActivityFragment extends Fragment {
             }
         });
 
+        etCelular.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                telefoneMain = s.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        etTroco.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                detalhePagamento = etTroco.getText().toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         cbSemTroco.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    detalhePagamento = "Dinheiro está trocado";
                     etTroco.clearFocus();
                     esconderTeclado(etTroco);
                 } else {
+                    detalhePagamento = "";
                     etTroco.requestFocus();
                 }
+            }
+        });
+
+        efabFinalizarCompra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final CompraFinalizada cf = getDadosCompra();
+                if (cf == null) {
+                    return;
+                }
+                telefoneMain = etCelular.getText().toString();
+                efabFinalizarCompra.setVisibility(View.GONE);
+                pb.setVisibility(View.VISIBLE);
+                firestore.collection("statusDrogaria").document("chave").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot == null) {
+                            efabFinalizarCompra.setVisibility(View.VISIBLE);
+                            pb.setVisibility(View.GONE);
+                            return;
+                        }
+                        boolean aberto = documentSnapshot.getBoolean("aberto");
+
+                        if (aberto) {
+                            showDialogCompra(1, "Total: " + String.valueOf(total) + ",00\nEndereço: " + cfp.getRua() + "\nTefelone: " + telefoneMain, cf);
+                        } else {
+                            showDialogCompra(2, "Total: " + String.valueOf(total) + ",00\nEndereço: " + cfp.getRua() + "\nTefelone: " + telefoneMain, cf);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        efabFinalizarCompra.setVisibility(View.VISIBLE);
+                        pb.setVisibility(View.GONE);
+                        showDialogCompra(3, "", null);
+                    }
+                });
             }
         });
 
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (cfp != null) {
+            String tipoEntrega = "Entrega Facil";
+            if (cbRapida.isChecked()) {
+                tipoEntrega = "Entrega Rapida";
+            }
+            int itens = cfp.getItens();
+            analitycsFacebook.logUserVisitaCheckoutEvent(user.getDisplayName(), user.getUid(), pathFotoUser, soma, tipoEntrega, taxa, total, etCelular.getText().toString(), rua, itens);
+            analitycsGoogle.logUserVisitaCheckoutEvent(user.getDisplayName(), user.getUid(), pathFotoUser, soma, tipoEntrega, taxa, total, etCelular.getText().toString(), rua);
+        }
+    }
+
     private void alterarFrete(int x) {
+        tipoEntrega = x;
         if (x == 1) {
 
             //facil
@@ -375,6 +502,118 @@ public class ConfirmarCompraActivityFragment extends Fragment {
         }
     }
 
+    private CompraFinalizada getDadosCompra() {
+        if (tipoDePagamento == 0) {
+            if (mToast != null) {
+                mToast.cancel();
+            }
+            mToast = Toast.makeText(getActivity(), "Insira uma forma de pagamento", Toast.LENGTH_LONG);
+            mToast.show();
+            return null;
+        }
+
+        if (detalhePagamento.equals("")) {
+            if (mToast != null) {
+                mToast.cancel();
+            }
+            if (tipoDePagamento == 4) {
+                mToast = Toast.makeText(getActivity(), "Insira quanto vai precisar de troco", Toast.LENGTH_LONG);
+            } else {
+                mToast = Toast.makeText(getActivity(), "Insira o cartao que será feito o pagamento", Toast.LENGTH_LONG);
+            }
+
+            mToast.show();
+            return null;
+        }
+
+        if (telefoneMain.equals("")) {
+            if (mToast != null) {
+                mToast.cancel();
+            }
+            mToast = Toast.makeText(getActivity(), "Insira um telefone pra contato", Toast.LENGTH_LONG);
+            mToast.show();
+            return null;
+        }
+        CompraFinalizada compraFinalizada = new CompraFinalizada(cfp.getRua(), "", detalhePagamento, tipoDePagamento, System.currentTimeMillis(), cfp.getLat(), produtoss, cfp.getLng(), telefoneMain, tipoEntrega, cfp.getUidUserCompra(), cfp.getUserNome(), cfp.getPathPhoto(), total, taxa, soma, 1);
+        return compraFinalizada;
+    }
+
+    private void showDialogCompra(int tipo, String msg, final CompraFinalizada compraFinalizada) {
+        switch (tipo) {
+            case 1:
+                //R.style.AppCompatAlertDialog
+                AlertDialog.Builder dialogAnonimus = new AlertDialog.Builder(getActivity())
+                        .setTitle("Confirmar Compra")
+                        .setMessage(msg)
+                        .setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                concluirPedidoDeCompra(compraFinalizada);
+                            }
+                        });
+                AlertDialog alertDialogAnonimus = dialogAnonimus.create();
+                alertDialogAnonimus.show();
+                alertDialogAnonimus.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getActivity().getResources().getColor(R.color.colorSecondaryDark));
+                break;
+            case 2:
+                AlertDialog.Builder dialogOffline = new AlertDialog.Builder(getActivity())
+                        .setTitle("Confirmar Compra")
+                        .setMessage("Encerramos nossas entregas por hoje, se confirmar a compra você vai receber seu pedido amanhã pela manhã.\nConfirma compra assim mesmo ?\n\n" + msg)
+                        .setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                concluirPedidoDeCompra(compraFinalizada);
+                            }
+                        });
+                AlertDialog alertDialogOff = dialogOffline.create();
+                alertDialogOff.show();
+                alertDialogOff.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getActivity().getResources().getColor(R.color.colorSecondaryDark));
+                break;
+            case 3:
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity())
+                        .setTitle("Erro")
+                        .setMessage("Não foi possivel concluir sua compra agora. Tente novamente mais tarde")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alertDialog = dialog.create();
+                alertDialog.show();
+                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getActivity().getResources().getColor(R.color.colorSecondaryDark));
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void concluirPedidoDeCompra(CompraFinalizada compraFinalizada) {
+
+        Toast.makeText(getActivity(), "Conclusao do pedido com sucesso", Toast.LENGTH_LONG).show();
+        return;
+
+        //LOGICA PARA FINALIZACAO DA COMPRA
+
+//        WriteBatch batch = firestore.batch();
+//        DocumentReference compras = firestore.collection("Compras").document();
+//        DocumentReference minhasCompras = firestore.collection("MinhasCompras").document("Usuario").collection(compraFinalizada.getUidUserCompra()).document(compras.getId());
+//
+//        batch.set(compras, compraFinalizada);
+//        batch.set(minhasCompras, compraFinalizada);
+//
+//        batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                //todo enviar para interface de conclusao de compra e depois de la, enviar o usuario para minhas compras
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(Exception e) {
+//                showDialogCompra(3, "", null);
+//            }
+//        });
+    }
 
     private void esconderTeclado(TextInputEditText et) {
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))

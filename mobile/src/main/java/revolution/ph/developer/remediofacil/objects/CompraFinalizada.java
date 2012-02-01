@@ -14,17 +14,90 @@ public class CompraFinalizada {
     double lat;
     ArrayList<CarComprasActivy> listaDeProdutos;
     double lng;
-    String numrCasa;
     String phoneUser;
-    int prioridade;
+    int tipoDeEntrega;
     String uidUserCompra;
     String userNome;
+    String pathFotoUser;
     float valorTotal;
+    float frete;
+    float compraValor;
+    int statusCompra;
 
-    public CompraFinalizada() {
+//    public CompraFinalizada() {
+//
+//    }
+
+    public String getAdress() {
+        return adress;
     }
 
-    public CompraFinalizada(String adress, String complemento, String detalhePag, int formaDePagar, long hora, double lat, ArrayList<CarComprasActivy> listaDeProdutos, double lng, String numrCasa, String phoneUser, int prioridade, String uidUserCompra, String userNome, float valorTotal) {
+    public String getComplemento() {
+        return complemento;
+    }
+
+    public String getDetalhePag() {
+        return detalhePag;
+    }
+
+    public int getFormaDePagar() {
+        return formaDePagar;
+    }
+
+    public long getHora() {
+        return hora;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public ArrayList<CarComprasActivy> getListaDeProdutos() {
+        return listaDeProdutos;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public String getPhoneUser() {
+        return phoneUser;
+    }
+
+    public int getTipoDeEntrega() {
+        return tipoDeEntrega;
+
+    }
+
+    public String getUidUserCompra() {
+        return uidUserCompra;
+    }
+
+    public String getUserNome() {
+        return userNome;
+    }
+
+    public String getPathFotoUser() {
+        return pathFotoUser;
+    }
+
+    public float getValorTotal() {
+        return valorTotal;
+    }
+
+    public float getFrete() {
+        return frete;
+    }
+
+    public float getCompraValor() {
+        return compraValor;
+    }
+
+    public int getStatusCompra() {
+        return statusCompra;
+    }
+
+    public CompraFinalizada(String adress, String complemento, String detalhePag, int formaDePagar, long hora, double lat, ArrayList<CarComprasActivy> listaDeProdutos, double lng, String phoneUser, int tipoDeEntrega, String uidUserCompra, String userNome, String pathFotoUser, float valorTotal, float frete, float compraValor, int statusCompra) {
         this.adress = adress;
         this.complemento = complemento;
         this.detalhePag = detalhePag;
@@ -33,68 +106,15 @@ public class CompraFinalizada {
         this.lat = lat;
         this.listaDeProdutos = listaDeProdutos;
         this.lng = lng;
-        this.numrCasa = numrCasa;
         this.phoneUser = phoneUser;
-        this.prioridade = prioridade;
+        this.tipoDeEntrega = tipoDeEntrega;
         this.uidUserCompra = uidUserCompra;
         this.userNome = userNome;
+        this.pathFotoUser = pathFotoUser;
         this.valorTotal = valorTotal;
-    }
-
-    public String getUserNome() {
-        return this.userNome;
-    }
-
-    public String getDetalhePag() {
-        return this.detalhePag;
-    }
-
-    public String getAdress() {
-        return this.adress;
-    }
-
-    public String getComplemento() {
-        return this.complemento;
-    }
-
-    public double getLat() {
-        return this.lat;
-    }
-
-    public String getUidUserCompra() {
-        return this.uidUserCompra;
-    }
-
-    public double getLng() {
-        return this.lng;
-    }
-
-    public long getHora() {
-        return this.hora;
-    }
-
-    public int getPrioridade() {
-        return this.prioridade;
-    }
-
-    public ArrayList<CarComprasActivy> getListaDeProdutos() {
-        return this.listaDeProdutos;
-    }
-
-    public float getValorTotal() {
-        return this.valorTotal;
-    }
-
-    public String getNumrCasa() {
-        return this.numrCasa;
-    }
-
-    public int getFormaDePagar() {
-        return this.formaDePagar;
-    }
-
-    public String getPhoneUser() {
-        return this.phoneUser;
+        this.frete = frete;
+        this.compraValor = compraValor;
+        this.statusCompra = statusCompra;
     }
 }
 

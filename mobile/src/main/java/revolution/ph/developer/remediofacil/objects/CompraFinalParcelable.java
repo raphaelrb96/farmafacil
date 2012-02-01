@@ -12,24 +12,25 @@ public class CompraFinalParcelable implements Parcelable {
     String rua;
     double lat;
     double lng;
-    ArrayList<CarComprasActivy> listaDeProdutos;
     String uidUserCompra;
     String userNome;
     String pathPhoto;
     int taxaEntrega;
     int somaProdutos;
+    int itens;
 
-    public CompraFinalParcelable(String rua, double lat, double lng, ArrayList<CarComprasActivy> listaDeProdutos, String uidUserCompra, String userNome, String pathPhoto, int taxaEntrega, int somaProdutos) {
+    public CompraFinalParcelable(String rua, double lat, double lng, int itens, String uidUserCompra, String userNome, String pathPhoto, int taxaEntrega, int somaProdutos) {
         this.rua = rua;
         this.lat = lat;
+        this.itens = itens;
         this.lng = lng;
-        this.listaDeProdutos = listaDeProdutos;
         this.uidUserCompra = uidUserCompra;
         this.userNome = userNome;
         this.pathPhoto = pathPhoto;
         this.taxaEntrega = taxaEntrega;
         this.somaProdutos = somaProdutos;
     }
+
 
     protected CompraFinalParcelable(Parcel in) {
         rua = in.readString();
@@ -40,6 +41,7 @@ public class CompraFinalParcelable implements Parcelable {
         pathPhoto = in.readString();
         taxaEntrega = in.readInt();
         somaProdutos = in.readInt();
+        itens = in.readInt();
     }
 
     public static final Creator<CompraFinalParcelable> CREATOR = new Creator<CompraFinalParcelable>() {
@@ -66,8 +68,8 @@ public class CompraFinalParcelable implements Parcelable {
         return lng;
     }
 
-    public ArrayList<CarComprasActivy> getListaDeProdutos() {
-        return listaDeProdutos;
+    public int getItens() {
+        return itens;
     }
 
     public String getUidUserCompra() {
@@ -106,5 +108,6 @@ public class CompraFinalParcelable implements Parcelable {
         dest.writeString(pathPhoto);
         dest.writeInt(taxaEntrega);
         dest.writeInt(somaProdutos);
+        dest.writeInt(itens);
     }
 }

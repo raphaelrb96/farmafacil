@@ -8,15 +8,91 @@
     tools:context=".InventarioActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        app:elevation="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_inventario"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"/>
+            android:layout_height="112dp">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_gravity="end"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp">
+                    <View
+                        android:backgroundTint="@color/colorPrimary"
+                        android:background="@drawable/ic_arrow_back_black_24dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_gravity="center|start"
+                        android:clickable="true"
+                        android:id="@+id/bt_voltar_inventario"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"/>
+                    <TextView
+                        android:textSize="16sp"
+                        android:layout_gravity="center"
+                        android:gravity="center|end"
+                        android:textColor="@color/colorPrimary"
+                        android:text="Automatico"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+                    <CheckBox
+                        android:id="@+id/cb_inventtario"
+                        android:layout_gravity="center"
+                        android:theme="@style/MeuCbBranco"
+                        android:buttonTint="@color/colorPrimary"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:id="@+id/top_bar"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:focusable="false"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:id="@+id/et_pesquisar_inventario"
+                        android:lines="1"
+                        android:hint="Pesquisar Produto..."
+                        android:textColorHint="#ecebeb"
+                        android:textColor="#fff"
+                        android:background="@drawable/background_et_pesquisar"
+                        android:layout_marginRight="12dp"
+                        android:layout_gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="40dp"/>
+                    <ImageButton
+                        android:id="@+id/bt_pesquisar_inventario"
+                        android:background="@drawable/background_botao_pesquisar"
+                        android:src="@drawable/ic_search_branco_24dp"
+                        android:layout_gravity="end|center"
+                        android:layout_marginRight="16dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginTop="112dp"
         android:visibility="gone"
         android:id="@+id/rv_inventario"
         android:layout_width="match_parent"
@@ -24,7 +100,7 @@
 
     <ProgressBar
         android:id="@+id/pb_inventario"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="146dp"
         android:layout_gravity="center|top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

@@ -69,7 +69,7 @@ public class AdapterProdutos extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder.getItemViewType() == 2) {
-            ProdObj obj = produtos.get(position);
+            ProdObj obj = produtos.get(position - 1);
             ProdutoPrincipalViewHolder vh = (ProdutoPrincipalViewHolder) holder;
             vh.setImagem(obj.imgCapa);
             vh.setPreco(String.valueOf((int) obj.prodValor) + ",00");
@@ -85,7 +85,7 @@ public class AdapterProdutos extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemCount() {
-        return produtos.size();
+        return produtos.size() + 1;
     }
 
     public class AbrirChatViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -124,8 +124,9 @@ public class AdapterProdutos extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         @Override
         public void onClick(View v) {
+            int prodPosition = getAdapterPosition() - 1;
             if (v.getId() == R.id.fab_produto_item) {
-                clickProdutoCliente.onclick(getAdapterPosition(), fab.getBackgroundTintList(), v, produtos.get(getAdapterPosition()));
+                clickProdutoCliente.onclick(prodPosition, fab.getBackgroundTintList(), v, produtos.get(prodPosition));
             }
         }
 

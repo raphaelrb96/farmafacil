@@ -89,7 +89,7 @@
             android:name=".MensagemActivity"
             android:label="@string/title_activity_mensagem"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/MeuTemaDark" />
         <activity
             android:name=".MensagemDetalheActivity"
             android:screenOrientation="portrait"

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:padding="10dp"
+    android:background="@drawable/ic_person_pin_black_40dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/custom_marker_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical"
+        android:background="#FF000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <androidx.cardview.widget.CardView
+            app:cardBackgroundColor="@android:color/transparent"
+            android:layout_gravity="center"
+            app:cardCornerRadius="22dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:background="@drawable/ic_account_circle_black_24dp"
+                android:backgroundTint="#fff"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:id="@+id/img_perfil_mapa"
+                android:layout_width="44dp"
+                android:layout_height="44dp" />
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:textSize="10sp"
+            android:textColor="@color/colorPrimary"
+            android:text="Nome"
+            android:id="@+id/nome_marker_user"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+</FrameLayout>

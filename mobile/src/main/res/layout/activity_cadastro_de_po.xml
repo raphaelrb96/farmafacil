@@ -179,9 +179,11 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
                 <FrameLayout
+                    android:visibility="gone"
                     android:layout_width="6dp"
                     android:layout_height="wrap_content"/>
                 <com.google.android.material.textfield.TextInputLayout
+                    android:visibility="gone"
                     android:id="@+id/text_input_cadastro_de_produto_preco_compra"
                     app:errorEnabled="true"
                     app:hintEnabled="true"
@@ -211,7 +213,7 @@
                 android:textStyle="bold"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="22sp"
-                android:text="Tags:"
+                android:text="Palavras chaves:"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <LinearLayout
@@ -231,7 +233,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:hint="Tags para pesquisas">
+                    android:hint="Palavras chaves para pesquisas">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_cadastro_de_produto_tags"
@@ -317,9 +319,125 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="12dp"
                 android:text="Em promoção"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_marginBottom="12dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Switch
+                    android:id="@+id/switch_disponibilidade_cadastro_de_produto"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tv_switch_disponibilidade_cadastro_de_produto"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/container_fornecedor"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="12dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_gravity="start|bottom"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="22sp"
+                        android:text="Fornecedores:"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+                    <Button
+                        android:textSize="12sp"
+                        android:id="@+id/bt_add_fornecedor"
+                        android:gravity="center"
+                        android:layout_gravity="end"
+                        android:text="Adicionar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/text_input_cadastro_de_produto_fornecedores"
+                        app:errorEnabled="true"
+                        app:hintEnabled="true"
+                        app:boxCornerRadiusBottomEnd="5dp"
+                        app:boxCornerRadiusBottomStart="5dp"
+                        app:boxCornerRadiusTopEnd="5dp"
+                        app:boxCornerRadiusTopStart="5dp"
+                        style="@style/MeuEditText"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:hint="Fornecedor">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_cadastro_de_produto_fornecedores"
+                            android:lines="1"
+                            android:textCursorDrawable="@drawable/curso_text_input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <FrameLayout
+                        android:layout_width="16dp"
+                        android:layout_height="wrap_content"/>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/text_input_cadastro_de_produto_fornecedores_precos"
+                        app:errorEnabled="true"
+                        app:hintEnabled="true"
+                        app:boxCornerRadiusBottomEnd="5dp"
+                        app:boxCornerRadiusBottomStart="5dp"
+                        app:boxCornerRadiusTopEnd="5dp"
+                        app:boxCornerRadiusTopStart="5dp"
+                        style="@style/MeuEditText"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:hint="Preço">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_cadastro_de_produto_fornecedores_precos"
+                            android:lines="1"
+                            android:textCursorDrawable="@drawable/curso_text_input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/fornecedores_e_precos"
+                    android:textSize="22sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
 
             <FrameLayout
                 android:layout_gravity="center"
@@ -360,6 +478,18 @@
                 android:textColor="#fff"
                 app:backgroundTint="@color/colorSecondary"
                 android:text="Salvar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/bt_cadastro_de_produto_excluir"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                app:icon="@drawable/ic_delete_primary_secudary_25dp"
+                app:iconTint="#fff"
+                android:textColor="#fff"
+                app:backgroundTint="@color/colorSecondary"
+                android:text="Excluir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

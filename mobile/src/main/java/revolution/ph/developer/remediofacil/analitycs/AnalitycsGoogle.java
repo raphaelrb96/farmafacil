@@ -118,6 +118,13 @@ public class AnalitycsGoogle {
         params.putDouble("Total", total);
         params.putString("Celular", celular);
         params.putString("Endereco", endereco);
+
+        Bundle bundle = new Bundle();
+        bundle.putDouble(FirebaseAnalytics.Param.VALUE, total);
+        bundle.putString(FirebaseAnalytics.Param.CURRENCY, "BRL");
+
+        logger.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, bundle);
+
         logger.logEvent("UserVisitaCheckout", params);
     }
 

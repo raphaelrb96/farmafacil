@@ -1,6 +1,9 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const app = admin.initializeApp();
+const app = admin.initializeApp({
+   credential: admin.credential.applicationDefault(),
+   databaseURL: "https://remediorapido-203dd.firebaseio.com"
+});
 
 const db = admin.firestore();
 const settings = {/* your settings... */ timestampsInSnapshots: true};
@@ -17,6 +20,7 @@ const collectionProdutosAnalytics = db.collection('ProdutosAnalytics');
 const collectionCarrinhoAnalytics = db.collection('CarrinhoAnalytics');
 const searchTermosAnalytics = db.collection('termosDePesquisa');
 const searchUserAnalytics = db.collection('termosDePesquisaUser');
+const enderecosClientes = db.collection('Enderecos').doc('Clientes');
 
 
 //ACIONADORES ANALYTICS
@@ -43,6 +47,20 @@ exports.novaPesquisa = functions.analytics.event('PesquisaProduto').onLog(e => {
 	
 });
 
+exports.viewCheckout = functions.analytics.event('UserVisitaCheckout').onLog(e => {
+	let event = e.params;
+	const idUser = event.IdUser;
+});
+
+exports.viewCart = functions.analytics.event('UserVisitaCarrinho').onLog(e => {
+	let event = e.params;
+	const idUser = event.IdUser;
+	const nomeUsuario = event.NomeUser;
+
+	userVizualizaCarrinho(idUser);
+	return 0;
+});
+
 exports.produtoAdicionadoAoCart = functions.analytics.event('AdicionarAoCarrinho').onLog(e => {
 	let event = e.params;
 	return produtoAdicionado(event.IdProduto);
@@ -55,19 +73,70 @@ exports.usuarioAdicionaProdutoAoCart = functions.analytics.event('UsuarioAdicion
 
 //ACIONADORES FIRESTORE
 
-exports.atualizarTimestampMensagem = functions.firestore.document('mensagens/ativas/{uidUser}/{idDocument}').onCreate((snap, context) => {
-    const newDoc = snap.data();
-    return snap.ref.update({
-        timeStamp : Date.now()
-    });
+exports.checkNovoEndereco = functions.firestore.document('Enderecos/Clientes/{uidUser}/{idDocument}').onCreate((snap, context) => {
+	const uidUser = context.params.uidUser;
+	const idDocument = context.params.idDocument;
+	const newDoc = snap.data();
+
+	const enderecoRef = enderecosClientes.collection(uidUser);
+
+	enderecoRef.get().then(snapshot => {
+
+		//let batch = db.batch();
+
+		let time = Date.now();
+
+		let objeto = {
+			numSelected: 1,
+			timeUltimoSelected: time
+		};
+
+		if (snapshot.size > 0) {
+
+
+			snapshot.forEach((doc, i) => {
+
+				let item = doc.data();
+
+				if ((item.latitude === newDoc.latitude && item.longitude === newDoc.longitude) || item.enderecoCompleto === newDoc.enderecoCompleto || item.adress === newDoc.adress) {
+
+					objeto.numSelected = item.numSelected + 1;
+					return enderecoRef.doc(item.idEndereco).update(objeto);
+
+				} 
+
+			});
+
+			return adicionarNovoEndereco(newDoc, enderecoRef.doc());
+
+		} else {
+			return adicionarNovoEndereco(newDoc, enderecoRef.doc());
+		}
+
+	});
+
 });
 
-exports.atualizarTimestampCentralMensagem = functions.firestore.document('centralMensagens/{uidUser}').onWrite((change, context) => {
-    const newDoc = change.after.data();
-    return snap.ref.update({
+exports.atualizarTimestampMensagem = functions.firestore.document('mensagens/ativas/{uidUser}/{idDocument}').onCreate((snap, context) => {
+    const newDoc = snap.data();
+    let batch = db.batch();
+    batch.update(snap.ref, {
+        timeStamp: Date.now()
+    });
+    let finalRef = db.collection('centralMensagens').doc(context.params.uidUser);
+    batch.update(finalRef, {
         timeNovaMensagem : Date.now()
     });
+    return batch.commit();
 });
+
+//exports.atualizarTimestampCentralMensagens = functions.firestore.document('centralMensagens/{uidUser}').onWrite((change, context) => {
+//    const newDoc = change.after.data();
+//    if (newDoc.timeNovaMensagem === change.before.data().timeNovaMensagem) return null;
+//    return change.after.ref.set({
+//        timeNovaMensagem : Date.now()
+//    },{merge:true});
+//});
 
 exports.atualizarTimestampNovoUsuario = functions.firestore.document('Usuario/{uid}').onCreate((snap, context) => {
     const newDoc = snap.data();
@@ -92,11 +161,9 @@ exports.enviarNotificacaoMensagem = functions.firestore.document('mensagens/ativ
     }
 
     if(uidUser !== userId) {
-    	let notifUser = enviarNotificacaoUsuario(acaoMensagem, body, 'Nova Mensagem');
-        return notifUser;
+    	return enviarNotificacaoUsuario(acaoMensagem, body, 'Nova Mensagem', uidUser);
     } else {
-        let notificacao = enviarNotificacaoAdmin(acaoMensagem, body, 'Nova Mensagem');
-    	return notificacao;
+        return enviarNotificacaoAdmin(acaoMensagem, body, 'Nova Mensagem');
     }
 });
 
@@ -104,8 +171,7 @@ exports.novaCompraRealizada = functions.firestore.document('centralComprasPenden
 	const newValue = change.after.data();
 	const valorTT = String(newValue.valorTotal).charAt(1);
 	let body = newValue.userNome + ' efetuou um compra de R$ ' + valorTT + ',00';
-    let notificacao = enviarNotificacaoAdmin(acaoCompra, 'Nova Compra', body);
-    return notificacao;
+    return enviarNotificacaoAdmin(acaoCompra, 'Nova Compra', body);
 });
 
 exports.atualizarTimestampCompraRealizada = functions.firestore.document('centralComprasPendentes/{idDoc}').onCreate((snap, context) => {
@@ -118,6 +184,56 @@ exports.atualizarTimestampCompraRealizada = functions.firestore.document('centra
 
 //FUNCOES
 
+let adicionarNovoEndereco = (objEndereco, ref) => {
+	return ref.set(objEndereco);
+};
+
+let userVisitaCheckout = id => {
+	const reff = collectionUsuarioAnalytics.doc(id);
+	const time = Date.now();
+
+	let obj = {
+		numeroDeViewsCheckout: 1,
+		ultimoCheckOut: time
+	};
+
+	reff.get().then(doc => {
+		if (doc.exists) {
+			let dados = doc.data();
+			obj.numeroDeViewsCheckout = dados.numeroDeViewsCheckout + 1;
+			return reff.update(obj);
+		} else {
+			return reff.set(obj);
+		}
+	}).catch(error => {
+		console.log(error);
+		return 0;
+	});
+
+};
+
+let userVizualizaCarrinho = id => {
+	const reff = collectionUsuarioAnalytics.doc(id);
+	const time = Date.now();
+	let obj = {
+		ultimaViewCart: time,
+		numeroDeViewsCarrinho: 1
+	};
+
+	reff.get().then(doc => {
+		if (doc.exists) {
+			let dados = doc.data();
+			obj.numeroDeViewsCarrinho = dados.numeroDeViewsCarrinho + 1;
+			return reff.update(obj);
+		} else {
+			return reff.set(obj);
+		}
+	}).catch(error => {
+		console.log(error);
+		return 0;
+	});
+};
+
 let userAdicionaAoCarrinho = (id, uid, nomeProd) => {
 
 	let time = Date.now();
@@ -129,6 +245,7 @@ let userAdicionaAoCarrinho = (id, uid, nomeProd) => {
 	};
 
 	const refProdCarrinhoAnalyics = collectionCarrinhoAnalytics.doc(uid).collection('produtos').doc(id);
+
 	refProdCarrinhoAnalyics.get().then(doc => {
 		if (doc.exists) {
 			itemCart.numeroAddCart = doc.data().numeroAddCart + 1;
@@ -140,7 +257,7 @@ let userAdicionaAoCarrinho = (id, uid, nomeProd) => {
 		console.log(error);
 		return 0;
 	})
-}
+};
 
 
 let produtoAdicionado = (id) => {
@@ -155,6 +272,7 @@ let produtoAdicionado = (id) => {
 	};
 
 	const refProdAnalyticsAtual = collectionProdutosAnalytics.doc(id);
+	
 	refProdAnalyticsAtual.get().then(doc => {
 		if (doc.exists) {
 			obj.numeroAddCart = doc.data().numeroAddCart + 1;
@@ -214,7 +332,7 @@ let analizarTermoDePesquisa = (termo, uid, user) => {
 };
 
 
-let enviarNotificacaoUsuario = (action, menssagem, titulo) => {
+let enviarNotificacaoUsuario = (action, menssagem, titulo, uidUser) => {
 	collectionUsuario.doc(uidUser).get()
                 .then(doc => {
                     if(!doc.exists) {
@@ -222,13 +340,11 @@ let enviarNotificacaoUsuario = (action, menssagem, titulo) => {
                         return null;
                     } else {
                         const tokenUser = doc.data().tokenFcm;
-                        return tokenUser;
+                        if (tokenUser === null) {
+                            return 0;
+                        }
+                        return notificacaoIndividual(action, menssagem, titulo, token);
                     }
-                }).then(tokenUser => {
-                	if (tokenUser === null) {
-                		return 0;
-                	}
-                    return notificacaoIndividual(action, menssagem, titulo, token);
                 }).catch((error) => {
                     console.log('Erro Token usuario', error);
                     return 0;
@@ -236,20 +352,25 @@ let enviarNotificacaoUsuario = (action, menssagem, titulo) => {
 }
 
 let enviarNotificacaoAdmin = (action, menssagem, titulo) => {
-	let array = [];
+
 	db.collection('Adm').get().then(snapshot => {
-		snapshot.forEach((doc, i) => {
-			array[i] = doc.data().tokenFcm;
+
+		let array = new Array();
+
+		snapshot.forEach(doc => {
+		    if(!array.includes(doc.data().tokenFcm)) {
+		    	array.push(doc.data().tokenFcm);
+		    }
+
 		});
 
-		return array;
-	}).then(array => {
 		if (array.length === 0) {
 			console.log('Nenhum Admin cadastrado');
 			return 0;
 		}
 		
 		return notificacaoEmGrupo(action, menssagem, titulo, array);
+
 
 	}).catch(error => {
 		console.log('Erro Token Admin', error);
@@ -259,19 +380,16 @@ let enviarNotificacaoAdmin = (action, menssagem, titulo) => {
 
 let notificacaoIndividual = (action, menssagem, titulo, token) => {
 	const menssagemNotficacao = {
-            android: {
-                ttl: 3600 * 1000,
-                priority: 'normal',
-                notification: {
-                    title: titulo,
-                    body: menssagem,
-                    clickAction: action
-                }
-            },
-            token: token
-        };
 
-    return admin.messaging().send(menssagemNotficacao).then(string => {
+                    data: {
+                        title: titulo,
+                        body: menssagem,
+                        clickAction: action
+                    }
+
+    };
+
+    return admin.messaging().sendToDevice(token, menssagemNotficacao).then(string => {
     	console.log(response.successCount + 'Notificacão enviada com sucesso');
     }).catch(error => {
     	console.log(error);
@@ -279,21 +397,17 @@ let notificacaoIndividual = (action, menssagem, titulo, token) => {
 };
 
 let notificacaoEmGrupo = (action, menssagem, titulo, array) => {
-	const menssagemNotficacao = {
-            android: {
-                ttl: 3600 * 1000,
-                priority: 'normal',
-                notification: {
-                    title: titulo,
-                    body: menssagem,
-                    clickAction: action
-                }
-            },
-            tokens: array
-        };
+	let menssagemNotficacao = {
+                    data: {
+                        title: titulo,
+                        body: menssagem,
+                        clickAction: action
+                    }
+    };
 
-    return admin.messaging().sendMulticast(menssagemNotficacao).then(response => {
+    return admin.messaging().sendToDevice(array, menssagemNotficacao).then(response => {
     	console.log(response.successCount + ' notificacoes foram enviadas simutaneamente');
+    	return 0;
     }).catch(error => {
     	console.log(error);
     });

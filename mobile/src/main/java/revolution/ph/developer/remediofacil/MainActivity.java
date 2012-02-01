@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -46,6 +48,7 @@ import javax.annotation.Nullable;
 public class MainActivity extends AppCompatActivity {
 
     public static ArrayList<String> ids = new ArrayList();
+    public static String MEU_CANAL = "FarmaFacil";
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
         Window win = activity.getWindow();
@@ -82,7 +85,20 @@ public class MainActivity extends AppCompatActivity {
 
         //fab = (FloatingActionButton) findViewById(R.id.fab_main);
 
+        criarCanal();
 
+    }
+
+    private void criarCanal () {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationManager manager1 = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel channel = new NotificationChannel(MEU_CANAL, "FarmaFacil Notificações", NotificationManager.IMPORTANCE_HIGH);
+            channel.enableLights(true);
+            channel.setLightColor(Color.RED);
+            channel.enableVibration(true);
+            channel.setDescription("Notificações do App FarmaFacil");
+            manager1.createNotificationChannel(channel);
+        }
     }
 
     private void abrirMensagem() {

@@ -66,28 +66,41 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
                 <LinearLayout
+                    android:layout_marginTop="14dp"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center_vertical"
                         android:id="@+id/preco_consumidor_produto_inventario"
                         android:textStyle="bold"
                         android:textSize="18sp"
                         android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:textColor="@color/colorSecondaryLight"
+                        android:textColor="@color/colorSecondary"
                         android:layout_height="wrap_content" />
                     <TextView
+                        android:visibility="gone"
                         android:textColor="@color/colorSecondaryLight"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center_vertical"
+                        android:layout_gravity="bottom"
+                        android:gravity="bottom"
                         android:id="@+id/preco_compra_produto_inventario"
-                        android:textStyle="bold|italic"
+                        android:textStyle="bold"
                         android:textSize="14sp"
                         android:layout_weight="1"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <Switch
+                        android:id="@+id/switch_disponibilidade"
+                        android:visibility="gone"
+                        android:layout_gravity="end"
+                        android:text="Disponivel"
+                        android:checked="true"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:textOn="Disponivel"
+                        android:textOff="Indisponivel"
+                        android:layout_marginBottom="3dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
             </LinearLayout>

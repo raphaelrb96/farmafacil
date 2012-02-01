@@ -105,7 +105,7 @@ public class AnalitycsFacebook {
     }
 
 
-    public void logUserVisitaCheckoutEvent (String nomeUser, String idUser, String imagemUser, double somaDosProdutos, String tipoEntrega, double valorFrete, double total, String celular, String endereco) {
+    public void logUserVisitaCheckoutEvent (String nomeUser, String idUser, String imagemUser, double somaDosProdutos, String tipoEntrega, double valorFrete, double total, String celular, String endereco, int itens) {
         Bundle params = new Bundle();
         params.putString("NomeUser", nomeUser);
         params.putString("IdUser", idUser);
@@ -116,7 +116,19 @@ public class AnalitycsFacebook {
         params.putDouble("Total", total);
         params.putString("Celular", celular);
         params.putString("Endereco", endereco);
+        logInitiateCheckoutEvent(nomeUser, idUser, "usuario", itens, false, "BRL", total);
         logger.logEvent("UserVisitaCheckout", params);
+    }
+
+    public void logInitiateCheckoutEvent (String contentData, String contentId, String contentType, int numItems, boolean paymentInfoAvailable, String currency, double totalPrice) {
+        Bundle params = new Bundle();
+        params.putString(AppEventsConstants.EVENT_PARAM_CONTENT, contentData);
+        params.putString(AppEventsConstants.EVENT_PARAM_CONTENT_ID, contentId);
+        params.putString(AppEventsConstants.EVENT_PARAM_CONTENT_TYPE, contentType);
+        params.putInt(AppEventsConstants.EVENT_PARAM_NUM_ITEMS, numItems);
+        params.putInt(AppEventsConstants.EVENT_PARAM_PAYMENT_INFO_AVAILABLE, paymentInfoAvailable ? 1 : 0);
+        params.putString(AppEventsConstants.EVENT_PARAM_CURRENCY, currency);
+        logger.logEvent(AppEventsConstants.EVENT_NAME_INITIATED_CHECKOUT, totalPrice, params);
     }
 
     public void logUserCompraSolicitadaEvent (String nomeUser, String idUser, String imagemUser, double somaDosProdutos, String tipoEntrega, double valorFrete, double total, String celular, String endereco, String formaPagamento) {

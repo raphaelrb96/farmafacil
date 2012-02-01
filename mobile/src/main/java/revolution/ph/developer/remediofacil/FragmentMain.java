@@ -74,6 +74,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -132,7 +133,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
 
     private int tipoReferencia = 4;
     private Query query;
-    private boolean ADMINISTRADOR = false;
+    public static final boolean ADMINISTRADOR = true;
 
     @Nullable
     @Override
@@ -482,7 +483,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 user = FirebaseAuth.getInstance().getCurrentUser();
-                ADMINISTRADOR = true;
+                //ADMINISTRADOR = true;
                 //abrirMensagem();
                 // ...
             } else {
@@ -675,7 +676,9 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
 
     private void loginAdmin() {
         List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.PhoneBuilder().build());
+                new AuthUI.IdpConfig.PhoneBuilder().build(),
+                new AuthUI.IdpConfig.FacebookBuilder().build(),
+                new AuthUI.IdpConfig.GoogleBuilder().build());
 
         startActivityForResult(
                 AuthUI.getInstance()
@@ -706,7 +709,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                 });
     }
 
-    private void myQuery(Query meuQuery, final boolean isPesquisa, final String sPesquisa) {
+    private void myQuery(Query meuQuery, final boolean isPesquisa, final String sPesquisa, final int tipo) {
         prodObjs.clear();
 
         meuQuery.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -715,17 +718,36 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                 int sizeDoc = queryDocumentSnapshots.size();
                 if (!queryDocumentSnapshots.isEmpty()) {
 
-                    final ArrayList<ProdObj> list = new ArrayList<>();
+                    ArrayList<ProdObj> list = new ArrayList<>();
 
                     for (int i = 0; i < queryDocumentSnapshots.size(); i++) {
                         ProdObj prod = queryDocumentSnapshots.getDocuments().get(i).toObject(ProdObj.class);
-                        list.add(prod);
+                        prodObjs.add(prod);
                     }
+
 
                     if (isPesquisa) {
                         analitycsFacebook.logPesquisaProdutoEvent(sPesquisa, user.getDisplayName(), user.getUid(), true, sizeDoc + " resultado(s)");
                         analitycsGoogle.logPesquisaProdutoEvent(sPesquisa, user.getDisplayName(), user.getUid(), true);
                     }
+
+
+                    if (tipo == 4) {
+                        for (int y = 0; y < prodObjs.size(); y++) {
+                            if (prodObjs.get(y).isPromocional()) {
+                                list.add(prodObjs.get(y));
+                            }
+                        }
+                    } else if(tipo == -1) {
+
+                    } else {
+                        for (int y = 0; y < prodObjs.size(); y++) {
+                            if (prodObjs.get(y).getCategoria() == tipo) {
+                                list.add(prodObjs.get(y));
+                            }
+                        }
+                    }
+
                     mAdapter = new AdapterProdutos(FragmentMain.this, getActivity(), list);
                     StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                     mListMercadorias.setLayoutManager(layoutManager);
@@ -755,11 +777,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     private void obterListaDeProdutos(int tipo) {
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         telaInicialLoadding();
-        if (tipo != 4) {
-            myQuery(firestore.collection("produtos").whereEqualTo("categoria", tipo), false, "");
-        } else {
-            myQuery(firestore.collection("produtos").whereEqualTo("promocional", true), false, "");
-        }
+        myQuery(firestore.collection("produtos"), false, "", tipo);
 
     }
 
@@ -772,7 +790,32 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         String busca = "tag." + s.toLowerCase();
         telaInicialLoadding();
         esconderTeclado();
-        myQuery(firestore.collection("produtos").whereEqualTo(busca, true), true, s);
+
+        ArrayList<ProdObj> resultadoPesquisa = new ArrayList<>();
+
+        for (int x = 0; x < prodObjs.size(); x++) {
+            Log.d("Teste123", String.valueOf(x));
+            String nomeProd = prodObjs.get(x).getProdName().toLowerCase();
+            boolean palavraIdentica = nomeProd.equals(s.toLowerCase());
+            boolean palavraParecida = nomeProd.contains(s.toLowerCase());
+            boolean palavraChaveExiste = prodObjs.get(x).getTag().containsKey(s.toLowerCase());
+            if (palavraChaveExiste || palavraIdentica || palavraParecida) {
+                resultadoPesquisa.add(prodObjs.get(x));
+                Log.d("Teste123", String.valueOf(x) + " adicionada a liste");
+                Log.d("Teste123", resultadoPesquisa.toString());
+            }
+        }
+
+        if (resultadoPesquisa.size() < 1) {
+            myQuery(firestore.collection("produtos").whereEqualTo(busca, true), true, s, -1);
+        } else {
+            mAdapter = new AdapterProdutos(FragmentMain.this, getActivity(), resultadoPesquisa);
+            StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            mListMercadorias.setLayoutManager(layoutManager);
+            mListMercadorias.setAdapter(mAdapter);
+            telaInicialSucesso();
+            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
     }
 
     private void getListCart () {

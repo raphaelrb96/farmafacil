@@ -1,5 +1,6 @@
 package revolution.ph.developer.remediofacil;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -8,27 +9,43 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import revolution.ph.developer.remediofacil.analitycs.AnalitycsFacebook;
+import revolution.ph.developer.remediofacil.analitycs.AnalitycsGoogle;
 import revolution.ph.developer.remediofacil.objects.CompraFinalParcelable;
+import revolution.ph.developer.remediofacil.objects.Endereco;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -37,13 +54,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
@@ -62,14 +87,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -89,7 +117,7 @@ import static revolution.ph.developer.remediofacil.FragmentMain.pathFotoUser;
 import static revolution.ph.developer.remediofacil.FragmentMain.user;
 import static revolution.ph.developer.remediofacil.MainActivity.ids;
 
-public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, AdapterCart.AnalizarClickPayFinal {
+public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, AdapterCart.AnalizarClickPayFinal, GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener {
 
     private static final int REQUEST_CHECK_SETTINGS = 109;
     private GoogleMap mMap = null;
@@ -143,6 +171,17 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
     private FloatingActionButton fab;
     private FrameLayout containerHelp;
+    private AnalitycsFacebook analitycsFacebook;
+    private AnalitycsGoogle analitycsGoogle;
+    private DocumentReference usuarioRef;
+    private CollectionReference enderecosColecao;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private LocationCallback locationCallback;
+
+    private boolean ATRASAR = false;
+    private int numero = 15;
+    private ExtendedFloatingActionButton efabCurrentPlace;
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
         Window win = activity.getWindow();
@@ -155,6 +194,13 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         win.setAttributes(winPar);
     }
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mMap.clear();
+        mMap = null;
+    }
 
     @Override
     protected void onStart() {
@@ -190,6 +236,9 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                 adapter.swapDados(produtoss);
             }
         });
+
+        analitycsFacebook.logUserVisitaCarrinhoEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
+        analitycsGoogle.logUserVisitaCarrinhoEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
     }
 
     @Override
@@ -219,6 +268,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         rv = (RecyclerView) findViewById(R.id.rv_cart);
         containerHelp = (FrameLayout) findViewById(R.id.container_help);
         fab = (FloatingActionButton) findViewById(R.id.fab_carrinho);
+        efabCurrentPlace = (ExtendedFloatingActionButton) findViewById(R.id.efab_current_place);
         tv_nome_rua_cart = (TextView) findViewById(R.id.tv_nome_rua_cart);
         tv_exemplo_help = (TextView) findViewById(R.id.tv_exemplo_help);
         btAjuda = (TextView) findViewById(R.id.bt_mudar_endereco);
@@ -234,6 +284,10 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout_cart);
         firestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
+        analitycsFacebook = new AnalitycsFacebook(this);
+        analitycsGoogle = new AnalitycsGoogle(this);
+        usuarioRef = firestore.collection("Usuario").document(user.getUid());
+        enderecosColecao = firestore.collection("Enderecos").document("Clientes").collection(user.getUid());
         cart = firestore.collection("carComprasActivy").document("usuario").collection(auth.getCurrentUser().getUid());
 
         content_layout_cart = (LinearLayout) findViewById(R.id.content_layout_cart);
@@ -254,8 +308,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         mDefaultLocation = new LatLng(-3.10719, -60.0261);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         // Initialize the AutocompleteSupportFragment.
         autocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -268,6 +321,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                 tv_nome_rua_cart.setText(place.getAddress());
                 proximidadeSelected = false;
                 if (mMap != null) {
+                    mMap.clear();
                     autoCompleteLocation = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
                     mDefaultLocation = autoCompleteLocation;
                     float factor = getResources().getDisplayMetrics().density;
@@ -275,8 +329,10 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                     int top = (int) (80 * factor);
                     mMap.setPadding(0, top, 0, h);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(autoCompleteLocation, 18));
-                    mMap.addMarker(new MarkerOptions()
-                            .position(autoCompleteLocation));
+                    marcar();
+                    analitycsFacebook.logUserPesquisouEnderecoEvent(user.getDisplayName(), user.getUid(), pathFotoUser, place.getAddress().toString());
+                    analitycsGoogle.logUserPesquisouEnderecoEvent(user.getDisplayName(), user.getUid(), pathFotoUser, place.getAddress().toString());
+                    //definirNovoEndereco(exibirEnderecoAtual(), autoCompleteLocation);
                 }
             }
 
@@ -304,6 +360,17 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             }
         });
 
+        efabCurrentPlace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (gpsLigado()) {
+                    autoCompleteLocation = null;
+                    proximidadeSelected = false;
+                    getDeviceLocation();
+                }
+            }
+        });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -311,7 +378,14 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                 Intent intent = new Intent(CarrinhoActivity.this, ConfirmarCompraActivity.class);
                 if (precoEntrega != 0 && somo != 0 && ruaMain != null) {
 
-                    CompraFinalParcelable cfp = new CompraFinalParcelable(ruaMain, mDefaultLocation.latitude, mDefaultLocation.longitude, produtoss, user.getUid(), user.getDisplayName(), pathFotoUser, precoEntrega, somo);
+                    int itens = 0;
+
+                    for (int i = 0; i < produtoss.size(); i++) {
+                        int quant = produtoss.get(i).getQuantidade();
+                        itens = itens + quant;
+                    }
+
+                    CompraFinalParcelable cfp = new CompraFinalParcelable(ruaMain, mDefaultLocation.latitude, mDefaultLocation.longitude, itens , user.getUid(), user.getDisplayName(), pathFotoUser, precoEntrega, somo);
                     intent.putExtra("cfp", cfp);
                     startActivity(intent);
                 }
@@ -332,15 +406,78 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             }
         });
 
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+            }
+
+            @Override
+            public void onLocationAvailability(LocationAvailability locationAvailability) {
+                super.onLocationAvailability(locationAvailability);
+            }
+        };
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (!gpsLigado()) {
-            ligarGps();
-        } else {
-            mapFragment.getMapAsync(this);
+
+        if (mMap != null) {
+            mMap.clear();
+        }
+
+        mapFragment.getMapAsync(this);
+
+
+//        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//        locationListener = new LocationListener() {
+//            @Override
+//            public void onLocationChanged(Location location) {
+//                //Log.d("GPS_TESTE", "onLocationChanged");
+//                //chamado varias vezes por segund
+//
+//            }
+//
+//            @Override
+//            public void onStatusChanged(String provider, int status, Bundle extras) {
+//                //Log.d("GPS_TESTE", "onStatusChanged");
+//
+//            }
+//
+//            @Override
+//            public void onProviderEnabled(String provider) {
+//                Log.d("GPS_TESTE", "onProviderEnabled");
+//                if (mMap == null) {
+//                    mapFragment.getMapAsync(CarrinhoActivity.this);
+//                }
+//            }
+//
+//            @Override
+//            public void onProviderDisabled(String provider) {
+//                Log.d("GPS_TESTE", "onProviderDisabled");
+//                ligarGps();
+//            }
+//        };
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+//            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//        } else {
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+//        }
+    }
+
+
+    private void definirNovoEndereco(Address addressFilho, LatLng latLng) {
+        mDefaultLocation = latLng;
+
+        if (addressFilho != null) {
+            Address address = addressFilho;
+            DocumentReference docRef = enderecosColecao.document();
+            exibirEnderecoAtual();
+            Endereco endereco = new Endereco(address.getAddressLine(0), address.getThoroughfare(), latLng.latitude, latLng.longitude, 0, address.toString(), docRef.getId(), System.currentTimeMillis());
+            docRef.set(endereco);
         }
     }
 
@@ -353,15 +490,19 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                 .addLocationRequest(LocationRequest.create().setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY));
         Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
 
+        Log.d("GPS_TESTE", "task");
+
         task.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
             @Override
             public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                mapFragment.getMapAsync(CarrinhoActivity.this);
+                Log.d("GPS_TESTE", "sucess");
+                //mapFragment.getMapAsync(this);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(Exception e) {
                 int statusCode = ((ApiException) e).getStatusCode();
+                Log.d("GPS_TESTE", "falha");
                 switch (statusCode) {
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         try {
@@ -390,10 +531,13 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                 switch (resultCode) {
 
                     case Activity.RESULT_OK:
-                        mapFragment.getMapAsync(CarrinhoActivity.this);
+//                        mapFragment.onResume();
+                        Log.d("GPS_TESTE", "result ok");
+                        ATRASAR = true;
+                        updateLocationUI();
                         break;
                     case Activity.RESULT_CANCELED:
-
+                        finish();
                         break;
                 }
 
@@ -421,6 +565,8 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+        Log.d("GPS_TESTE", "onMapReady");
+
         //pb.setVisibility(View.GONE);
 
         if (mMap != null) {
@@ -428,20 +574,32 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         }
 
         mMap = googleMap;
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        //mMap.setOnMarkerClickListener(CarrinhoActivity.this);
+        mMap.setOnMarkerDragListener(CarrinhoActivity.this);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 13));
+        float factor = getResources().getDisplayMetrics().density;
+        int h = (int) (450 * factor);
+        int top = (int) (100 * factor);
+
+        mMap.setPadding(0, top, 0, h);
+        mMap.setInfoWindowAdapter(this);
 
 //        Add a marker in Sydney and move the camera
 //        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
-        // Turn on the My Location layer and the related control on the map.
+
+        if (!gpsLigado()) {
+            ligarGps();
+            return;
+        }
+
         updateLocationUI();
 
-        // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
-        mMap.setInfoWindowAdapter(this);
+
     }
 
     private void updateLocationUI() {
@@ -450,12 +608,8 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         }
         try {
             if (mLocationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 getDeviceLocation();
             } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mLastKnownLocation = null;
                 getLocationPermission(this);
             }
@@ -470,7 +624,12 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
          * cases when a location is not available.
          */
 
+        pb.setVisibility(View.VISIBLE);
+
+        Log.d("GPS_TESTE", "GetdeviceLocation");
+
         if (autoCompleteLocation != null) {
+            pb.setVisibility(View.GONE);
             exibirEnderecoAtual();
             float factor = getResources().getDisplayMetrics().density;
             int h = (int) (450 * factor);
@@ -480,13 +639,12 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
             mMap.setPadding(0, top, 0, h);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(autoCompleteLocation, 18));
-            mMap.addMarker(new MarkerOptions()
-                    .position(autoCompleteLocation));
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            marcar();
             return;
         }
 
         if (proximidadeSelected) {
+            pb.setVisibility(View.GONE);
             exibirEnderecoAtual();
             float factor = getResources().getDisplayMetrics().density;
             int h = (int) (450 * factor);
@@ -494,53 +652,47 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
             mMap.setPadding(0, top, 0, h);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 18));
-            mMap.addMarker(new MarkerOptions()
-                    .position(mDefaultLocation));
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            marcar();
             return;
         }
 
 
         try {
             if (mLocationPermissionGranted) {
-                Task locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(CarrinhoActivity.this, new OnCompleteListener() {
+                mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(CarrinhoActivity.this);
+                mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(CarrinhoActivity.this, new OnSuccessListener<Location>() {
                     @Override
-                    public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-
-                            pb.setVisibility(View.GONE);
-
-                            mLastKnownLocation = (Location) task.getResult();
-                            if (mLastKnownLocation == null) {
-                                //getDeviceLocation();
-                                return;
+                    public void onSuccess(Location location) {
+                        if (location == null) {
+                            Log.d("GPS_TESTE", "GetdeviceLocation ultimo local null");
+                            if (ATRASAR) {
+                                numero =15;
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        getDeviceLocation();
+                                    }
+                                }, 15000);
+                            } else {
+                                getDeviceLocation();
                             }
-                            mDefaultLocation = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                            exibirEnderecoAtual();
-                            float factor = getResources().getDisplayMetrics().density;
-                            int h = (int) (450 * factor);
-                            int top = (int) (80 * factor);
 
-                            mMap.setPadding(0, top, 0, h);
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 18));
-                            mMap.addMarker(new MarkerOptions()
-                                    .position(mDefaultLocation));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-                        } else {
-
-                            //getDeviceLocation();
-
-//                            float factor = getResources().getDisplayMetrics().density;
-//                            int h = (int) (450 * factor);
-//                            int top = (int) (80 * factor);
-//                            mMap.setPadding(0, top, 0, h);
-//                            Log.d("TesteMap", "Current location is null. Using defaults.");
-//                            Log.e("TesteMap", "Exception: %s", task.getException());
-//                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 19));
-//                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                            return;
                         }
+                        pb.setVisibility(View.GONE);
+                        ATRASAR =false;
+
+                        mLastKnownLocation = location;
+
+                        mDefaultLocation = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                        exibirEnderecoAtual();
+                        float factor = getResources().getDisplayMetrics().density;
+                        int h = (int) (450 * factor);
+                        int top = (int) (80 * factor);
+
+                        mMap.setPadding(0, top, 0, h);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 18));
+                        marcar();
                     }
                 });
             }
@@ -551,8 +703,63 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         }
     }
 
+    public static Bitmap createCustomMarker(Context context, Bitmap resource, String _name) {
 
-    private void exibirEnderecoAtual() {
+        View marker = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_marker_user, null);
+
+        ImageView markerImage = (ImageView) marker.findViewById(R.id.img_perfil_mapa);
+        markerImage.setImageBitmap(resource);
+        TextView txt_name = (TextView) marker.findViewById(R.id.nome_marker_user);
+        txt_name.setText(_name);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        marker.setLayoutParams(new ViewGroup.LayoutParams(52, ViewGroup.LayoutParams.WRAP_CONTENT));
+        marker.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
+        marker.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
+        marker.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(marker.getMeasuredWidth(), marker.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        marker.draw(canvas);
+
+        return bitmap;
+    }
+
+    private void marcar() {
+
+        if (mMap == null) {
+            return;
+        }
+
+        mMap.clear();
+        float factor = getResources().getDisplayMetrics().density;
+        int h = (int) (450 * factor);
+        int top = (int) (100 * factor);
+        mMap.setPadding(0, top, 0, h);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 18));
+        mMap.addMarker(new MarkerOptions()
+                .title(user.getDisplayName())
+                .position(mDefaultLocation)
+                .draggable(true)
+                .snippet("Precione e arraste")
+        );
+    }
+
+    private String formatarAddress(String endereco) {
+        String novaRua = "";
+        for (int i = 0; i < endereco.length(); i++) {
+            char cha = endereco.charAt(i);
+            String s = String.valueOf(cha);
+            if (!s.equals("-")) {
+                novaRua = novaRua + s;
+            } else {
+                return novaRua;
+            }
+        }
+        return novaRua;
+    }
+
+    private Address exibirEnderecoAtual() {
 
         if (autoCompleteLocation != null) {
             mDefaultLocation = autoCompleteLocation;
@@ -562,35 +769,43 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(mDefaultLocation.latitude, mDefaultLocation.longitude, 1);
+            if (addresses != null) {
+                String rua = addresses.get(0).getThoroughfare();
+                String endereco = addresses.get(0).getAddressLine(0);
+                String novaRua = formatarAddress(endereco);
+                ruaMain = novaRua;
+                autocompleteFragment.setText(novaRua);
+                tv_nome_rua_cart.setText(novaRua);
+                tv_exemplo_help.setText(rua + ", 10");
+                precoEntrega = calcularEntregaRapida(mDefaultLocation.latitude, mDefaultLocation.longitude);
+                String valorDaEntrega = String.valueOf(precoEntrega) + ",00";
+                String valorDasCompras = String.valueOf(somo) + ",00";
+                int tt = precoEntrega + somo;
+                String total = String.valueOf(tt) + ",00";
+                totalTV.setText(total);
+                ttcomprasTV.setText(valorDasCompras);
+                taxaEntregaTV.setText(valorDaEntrega);
+
+                return addresses.get(0);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
             //exibirEnderecoAtual();
         }
 
-        if (addresses != null) {
-            String rua = addresses.get(0).getThoroughfare();
-            ruaMain = rua;
-            autocompleteFragment.setText(rua + ",");
-            tv_nome_rua_cart.setText(rua);
-            tv_exemplo_help.setText(rua + ", 10");
-            precoEntrega = calcularEntregaRapida(mDefaultLocation.latitude, mDefaultLocation.longitude);
-            String valorDaEntrega = String.valueOf(precoEntrega) + ",00";
-            String valorDasCompras = String.valueOf(somo) + ",00";
-            int tt = precoEntrega + somo;
-            String total = String.valueOf(tt) + ",00";
-            totalTV.setText(total);
-            ttcomprasTV.setText(valorDasCompras);
-            taxaEntregaTV.setText(valorDaEntrega);
-        }
+        return null;
 
     }
 
     private void showCurrentPlace() {
+
         if (mMap == null) {
             return;
         }
 
         if (mLocationPermissionGranted) {
+            pb.setVisibility(View.VISIBLE);
             // Get the likely places - that is, the businesses and other points of interest that
             // are the best match for the device's current location.
             @SuppressWarnings("MissingPermission") final
@@ -619,7 +834,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
                                 for (PlaceLikelihood placeLikelihood : likelyPlaces) {
                                     // Build a list of likely places to show the user.
-                                    mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getAddress();
+                                    mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
                                     mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace()
                                             .getAddress();
                                     mLikelyPlaceAttributions[i] = (String) placeLikelihood.getPlace()
@@ -637,6 +852,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
                                 // Show a dialog offering the user the list of likely places, and add a
                                 // marker at the selected place.
+                                pb.setVisibility(View.GONE);
                                 openPlacesDialog();
 
                             } else {
@@ -649,10 +865,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             Log.i("TesteMap", "The user did not grant location permission.");
 
             // Add a default marker, because the user hasn't selected a place.
-            mMap.addMarker(new MarkerOptions()
-                    .title("Manaus")
-                    .position(mDefaultLocation)
-            );
+            marcar();
 
             // Prompt the user for permission.
             getLocationPermission(this);
@@ -682,9 +895,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
                 // Add a marker for the selected place, with an info window
                 // showing information about that place.
-                mMap.addMarker(new MarkerOptions()
-                        .position(mDefaultLocation)
-                        .snippet(markerSnippet));
+                marcar();
 
                 // Position the map's camera at the location of the marker.
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation,
@@ -693,6 +904,9 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                 proximidadeSelected = true;
 
                 exibirEnderecoAtual();
+
+                //definirNovoEndereco(exibirEnderecoAtual(), mDefaultLocation);
+
             }
         };
 
@@ -818,5 +1032,48 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
     public void verProximidades(View view) {
         showCurrentPlace();
+        //todo 01-- implementar um dialogo para o usuario apenas escrever o endereço, caso não consiga
+        //todo 01-- cadastrar pelo gps, e isso deixara a taxa mais alta
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        showCurrentPlace();
+        return true;
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        mDefaultLocation = marker.getPosition();
+        marcar();
+        exibirEnderecoAtual();
+    }
+
+    private Bitmap iconeUsuario(Bitmap scaleBitmapImage) {
+        int targetWidth = 110;
+        int targetHeight = 110;
+        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(targetBitmap);
+
+        Path path = new Path();
+        path.addCircle(((float) targetWidth - 1) / 2, ((float) targetHeight - 1) / 2, (Math.min(((float) targetWidth), (float) targetHeight)) / 2, Path.Direction.CCW);
+
+        canvas.clipPath(path);
+        Bitmap sourceBitmap = scaleBitmapImage;
+
+        canvas.drawBitmap(sourceBitmap, new Rect(0, 0, sourceBitmap.getWidth(), sourceBitmap.getHeight()), new Rect(0, 0, targetWidth, targetHeight), new Paint(Paint.FILTER_BITMAP_FLAG));
+
+        return targetBitmap;
     }
 }

@@ -7,7 +7,7 @@ public class Endereco {
     private double latitude;
     private double longitude;
     private long numSelected;
-    private String idPlaceMaps;
+    private String enderecoCompleto;
     private String idEndereco;
     private long timeUltimoSelected;
 
@@ -15,13 +15,13 @@ public class Endereco {
 
     }
 
-    public Endereco(String adress, String complemento, double latitude, double longitude, long numSelected, String idPlaceMaps, String idEndereco, long timeUltimoSelected) {
+    public Endereco(String adress, String complemento, double latitude, double longitude, long numSelected, String enderecoCompleto, String idEndereco, long timeUltimoSelected) {
         this.adress = adress;
         this.complemento = complemento;
         this.latitude = latitude;
         this.longitude = longitude;
         this.numSelected = numSelected;
-        this.idPlaceMaps = idPlaceMaps;
+        this.enderecoCompleto = enderecoCompleto;
         this.idEndereco = idEndereco;
         this.timeUltimoSelected = timeUltimoSelected;
     }
@@ -46,8 +46,8 @@ public class Endereco {
         return numSelected;
     }
 
-    public String getIdPlaceMaps() {
-        return idPlaceMaps;
+    public String getEnderecoCompleto() {
+        return enderecoCompleto;
     }
 
     public String getIdEndereco() {
