@@ -106,7 +106,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             @Override
             public void onSuccess(QuerySnapshot querySnapshot) {
                 for (int i = 0; i < querySnapshot.getDocuments().size(); i++) {
-                    String id = ((DocumentSnapshot) querySnapshot.getDocuments().get(i)).getId();
+                    String id = querySnapshot.getDocuments().get(i).getId();
                     if (!ids.contains(id)) {
                         ids.add(id);
                     }
@@ -160,22 +160,23 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         CarComprasActivy carComprasActivy = new CarComprasActivy(str, prodObj.getProdName(), prodObj.getLaboratorio(), prodObj.getImgCapa(), prodObj.getProdValor(), 1, ((float) 1) * prodObj.getProdValor());
         DocumentReference reference = carrinhoDoUsuario.document(str);
         if (colorStateList == ColorStateList.valueOf(getActivity().getResources().getColor(R.color.fab1))) {
-            reference.set(carComprasActivy);
-            if (!ids.contains(str)) {
-                ids.add(str);
-            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 view.findViewById(R.id.fab_produto_item).setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
             }
+            if (!ids.contains(str)) {
+                ids.add(str);
+            }
+            reference.set(carComprasActivy);
             return;
         }
-        reference.delete();
-        if (ids.contains(str)) {
-            ids.remove(str);
-        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             view.findViewById(R.id.fab_produto_item).setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.fab1)));
         }
+        if (ids.contains(str)) {
+            ids.remove(str);
+        }
+        reference.delete();
     }
 
     @Override

@@ -1,96 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinator_layout_cart"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!--Fundo-->
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout_cart"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".CarrinhoActivity" />
+        <!--Fundo-->
         <FrameLayout
-            android:alpha="0.1"
-            android:background="#000"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        <androidx.cardview.widget.CardView
-            android:alpha="0.7"
-            map:cardCornerRadius="8dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="56dp">
+            android:layout_height="match_parent">
             <fragment
-                android:id="@+id/autocomplete_fragment"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                />
-        </androidx.cardview.widget.CardView>
-
-    </FrameLayout>
-    <!--Frente-->
-    <LinearLayout
-        android:background="@drawable/ic_list_header_background"
-        android:paddingTop="20dp"
-        android:orientation="vertical"
-        android:id="@+id/content_layout_cart"
-        android:layout_width="match_parent"
-        android:layout_height="450dp"
-        android:elevation="10dp"
-        app:behavior_peekHeight="130dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-        <!--Conteudo-->
-        <LinearLayout
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="12dp"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="80dp">
+                android:layout_height="match_parent"
+                tools:context=".CarrinhoActivity" />
             <FrameLayout
+                android:alpha="0.1"
+                android:background="#000"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <androidx.cardview.widget.CardView
+                android:alpha="0.7"
+                map:cardCornerRadius="8dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="56dp">
+                <fragment
+                    android:id="@+id/autocomplete_fragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                    />
+            </androidx.cardview.widget.CardView>
+
+        </FrameLayout>
+        <!--Frente-->
+        <LinearLayout
+            android:clickable="true"
+            android:background="@drawable/ic_list_header_background"
+            android:paddingTop="20dp"
+            android:orientation="vertical"
+            android:id="@+id/content_layout_cart"
+            android:layout_width="match_parent"
+            android:layout_height="450dp"
+            android:elevation="10dp"
+            app:behavior_peekHeight="144dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+            <!--Conteudo-->
+            <LinearLayout
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="26dp">
+                    <TextView
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="18sp"
+                        android:text="Entregar em:"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:textStyle="bold|italic"
+                        android:textColor="@color/colorAccent"
+                        android:layout_gravity="top|end"
+                        android:textSize="14sp"
+                        android:text="Mudar endereço"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </FrameLayout>
+                <TextView
+                    android:maxLines="1"
+                    android:textStyle="bold"
+                    android:id="@+id/tv_nome_rua_cart"
+                    android:textSize="22sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:textColor="@color/colorSecondaryLight"/>
+            </LinearLayout>
+            <FrameLayout
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="2dp"
                 android:layout_height="26dp">
                 <TextView
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="18sp"
-                    android:text="Entregar em:"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:textStyle="bold|italic"
-                    android:textColor="@color/colorAccent"
-                    android:layout_gravity="top|end"
-                    android:textSize="14sp"
-                    android:text="Mudar endereço"
+                    android:text="Minhas compras:"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </FrameLayout>
-            <TextView
-                android:maxLines="1"
-                android:textStyle="bold"
-                android:id="@+id/tv_nome_rua_cart"
-                android:textSize="22sp"
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginBottom="6dp"
+                android:id="@+id/rv_cart"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:textColor="@color/colorSecondaryLight"/>
-        </LinearLayout>
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginBottom="12dp"
-            android:id="@+id/rv_cart"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"/>
-    </LinearLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+                android:layout_height="200dp"/>
+            <LinearLayout
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+                <LinearLayout
+                    android:layout_marginRight="16dp"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="10sp"
+                        android:text="Taxa de entrega:"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <com.robinhood.ticker.TickerView
+                        android:layout_marginTop="2dp"
+                        android:maxLines="1"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        app:ticker_animationDuration="1500"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/taxa_entrega"
+                        android:textColor="@color/colorSecondaryLight"/>
 
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="10sp"
+                        android:text="Valor das Compras:"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <com.robinhood.ticker.TickerView
+                        android:id="@+id/total_compras"
+                        android:layout_marginTop="2dp"
+                        android:maxLines="1"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:ticker_animationDuration="1500"
+                        android:textColor="@color/colorSecondaryLight"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom">
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bt_app_bar_cart"
+            style="@style/Widget.MaterialComponents.BottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabAlignmentMode="end"
+            app:fabCradleMargin="10dp"
+            app:fabCradleRoundedCornerRadius="10dp"
+            app:fabCradleVerticalOffset="5dp"
+            app:hideOnScroll="true">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <View
+                    android:backgroundTint="@color/colorSecondaryLight"
+                    android:background="@drawable/ic_arrow_back_black_24dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center|start"
+                    android:clickable="true"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"/>
+                <TextView
+                    android:gravity="center|start"
+                    android:layout_gravity="center|start"
+                    android:layout_marginRight="8dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorSecondaryLight"
+                    android:textSize="19sp"
+                    android:text="Total:"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <com.robinhood.ticker.TickerView
+                    android:gravity="center|start"
+                    android:layout_gravity="center|start"
+                    android:id="@+id/total_cart"
+                    android:maxLines="1"
+                    android:textStyle="bold"
+                    app:ticker_animationDuration="1500"
+                    android:textSize="23sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorSecondaryLight"/>
+            </LinearLayout>
+        </com.google.android.material.bottomappbar.BottomAppBar>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            app:layout_anchor="@id/bt_app_bar_cart"
+            android:id="@+id/fab_inventario_edt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/colorPrimary"
+            app:backgroundTint="@color/fab1"
+            android:src="@drawable/ic_attach_money_black_24dp"
+            app:fabSize="normal"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

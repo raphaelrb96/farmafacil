@@ -68,6 +68,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
+import com.google.maps.android.SphericalUtil;
+import com.robinhood.ticker.TickerUtils;
+import com.robinhood.ticker.TickerView;
 
 import javax.annotation.Nullable;
 
@@ -113,6 +116,8 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
     private BottomSheetBehavior<LinearLayout> sheetBehavior;
     private PlaceAutocompleteFragment autocompleteFragment;
     private CollectionReference cart;
+    private int precoEntrega = 0;
+    private TickerView taxaEntregaTV, totalTV, ttcomprasTV;
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
         Window win = activity.getWindow();
@@ -144,11 +149,12 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                     somo = (int) (((float) somo) + valores.get(j));
                 }
 
-//                firebaseFirestoreException = PayFinalActivity.this.valorFinalCompra;
-//                StringBuilder stringBuilder = new StringBuilder();
-//                stringBuilder.append(String.valueOf(PayFinalActivity.this.somo));
-//                stringBuilder.append(",00");
-//                valor.setText(stringBuilder.toString());
+
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(String.valueOf(somo + precoEntrega));
+                stringBuilder.append(",00");
+                totalTV.setText(stringBuilder.toString());
+                ttcomprasTV.setText(String.valueOf(somo) + ",00");
                 if (querySnapshot.getDocuments().size() == 0) {
 //                    PayFinalActivity.this.emptyCar.setVisibility(0);
 //                    PayFinalActivity.this.mPayList.setVisibility(8);
@@ -187,6 +193,12 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
         rv = (RecyclerView) findViewById(R.id.rv_cart);
         tv_nome_rua_cart = (TextView) findViewById(R.id.tv_nome_rua_cart);
+        taxaEntregaTV = (TickerView) findViewById(R.id.taxa_entrega);
+        totalTV = (TickerView) findViewById(R.id.total_cart);
+        ttcomprasTV = (TickerView) findViewById(R.id.total_compras);
+        taxaEntregaTV.setCharacterList(TickerUtils.getDefaultNumberList());
+        totalTV.setCharacterList(TickerUtils.getDefaultNumberList());
+        ttcomprasTV.setCharacterList(TickerUtils.getDefaultNumberList());
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout_cart);
         firestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -337,6 +349,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 18));
                             mMap.addMarker(new MarkerOptions()
                                     .position(mDefaultLocation));
+                            mMap.getUiSettings().setMyLocationButtonEnabled(true);
                         } else {
                             float factor = getResources().getDisplayMetrics().density;
                             int h = (int) (450 * factor);
@@ -358,48 +371,29 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
     private void exibirEnderecoAtual() {
 
-//        List<Address> addresses = null;
-//        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-//        try {
-//            addresses = geocoder.getFromLocation(mDefaultLocation.latitude, mDefaultLocation.longitude, 1);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            exibirEnderecoAtual();
-//        }
-//
-//        if (addresses != null) {
-//            String rua = addresses.get(0).getThoroughfare();
-//            autocompleteFragment.setText(rua + ",");
-//            Toast.makeText(this, addresses.toString(), Toast.LENGTH_LONG).show();
-//            tv_nome_rua_cart.setText(rua);
-//        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                 TODO: Consider calling
-                //    Activity#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for Activity#requestPermissions for more details.
-                return;
-            }
+        List<Address> addresses = null;
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(mDefaultLocation.latitude, mDefaultLocation.longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            exibirEnderecoAtual();
         }
-        Task<PlaceLikelihoodBufferResponse> placeResult = mPlaceDetectionClient.getCurrentPlace(null);
-        placeResult.addOnSuccessListener(new OnSuccessListener<PlaceLikelihoodBufferResponse>() {
-            @Override
-            public void onSuccess(PlaceLikelihoodBufferResponse placeLikelihoods) {
-                if (placeLikelihoods.getCount() > 0) {
-                    //String sss = "Name: " + placeLikelihoods.get(0).getPlace().getName().toString();
-                    //tv_nome_rua_cart.setText(sss);
-                    String rua = placeLikelihoods.get(0).getPlace().getAddress().toString();
-                    autocompleteFragment.setText(rua + ",");
-                    Toast.makeText(CarrinhoActivity.this, placeLikelihoods.get(0).getPlace().toString(), Toast.LENGTH_LONG).show();
-                    tv_nome_rua_cart.setText(rua);
-                }
-            }
-        });
+
+        if (addresses != null) {
+            String rua = addresses.get(0).getThoroughfare();
+            autocompleteFragment.setText(rua + ",");
+            tv_nome_rua_cart.setText(rua);
+            precoEntrega = calcularEntregaRapida(mDefaultLocation.latitude, mDefaultLocation.longitude);
+            String valorDaEntrega = String.valueOf(precoEntrega) + ",00";
+            String valorDasCompras = String.valueOf(somo) + ",00";
+            int tt = precoEntrega + somo;
+            String total = String.valueOf(tt) + ",00";
+            totalTV.setText(total);
+            ttcomprasTV.setText(valorDasCompras);
+            taxaEntregaTV.setText(valorDaEntrega);
+        }
+
     }
 
     private void showCurrentPlace() {
@@ -572,4 +566,35 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
     public void removerProduto(String str) {
 
     }
+
+    private int calcularEntregaRapida(double la, double lo) {
+        int placeIdObj = (int) SphericalUtil.computeDistanceBetween(new LatLng(-3.1174754000000005d, -60.001966200000005d), new LatLng(la, lo));
+        if (placeIdObj > 30000) {
+            return 30;
+        }
+        if (placeIdObj > 20000) {
+            return 20;
+        }
+        if (placeIdObj > 15000) {
+            return 18;
+        }
+        if (placeIdObj > 12000) {
+            return 15;
+        }
+        if (placeIdObj > 10000) {
+            return 12;
+        }
+        if (placeIdObj > 8000) {
+            return 10;
+        }
+        if (placeIdObj > 6000) {
+            return 8;
+        }
+        return placeIdObj > 4000 ? 6 : 5;
+    }
+
+    private int calcularEntregaFacil(PlaceIdObj placeIdObj) {
+        return ((int) SphericalUtil.computeDistanceBetween(new LatLng(-3.1174754000000005d, -60.001966200000005d), new LatLng(placeIdObj.getLat(), placeIdObj.getLng()))) > 10000 ? 5 : 3;
+    }
+
 }

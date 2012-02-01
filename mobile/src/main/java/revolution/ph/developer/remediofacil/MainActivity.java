@@ -164,6 +164,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (querySnapshot.getDocuments().size() > 0) {
                     fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+                    for (int i = 0; i < querySnapshot.getDocuments().size(); i++) {
+                        String id = querySnapshot.getDocuments().get(i).getId();
+                        if (!ids.contains(id)) {
+                            ids.add(id);
+                        }
+                    }
                 } else {
                     fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.fab1)));
                 }
