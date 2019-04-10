@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6.0dip"
+            android:text="Envie uma foto de sua receita ou  produto" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="40.0dip">
+
+            <LinearLayout
+                android:gravity="center"
+                android:id="@+id/enviar_foto_mensagem"
+                android:visibility="gone"
+                android:layout_width="0.0dip"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="5.0dip"
+                android:layout_marginBottom="5.0dip"
+                android:layout_weight="1.0">
+
+                <FrameLayout
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_launcher_background"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:textSize="16.0sp"
+                    android:textColor="#ff000000"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6.0dip"
+                    android:text="Tirar Foto" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="center"
+                android:id="@+id/escolher_foto_mensagem"
+                android:layout_width="0.0dip"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="5.0dip"
+                android:layout_marginBottom="5.0dip"
+                android:layout_weight="1.0">
+
+                <FrameLayout
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_launcher_background"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:textSize="16.0sp"
+                    android:textColor="#ff000000"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6.0dip"
+                    android:text="Escolher Foto" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0.0dip"
+            android:layout_weight="1.0">
+
+            <ProgressBar
+                android:layout_gravity="center"
+                android:id="@+id/pb_mensagem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textSize="22.0sp"
+                android:textStyle="italic"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:id="@+id/tv_lista_vazia_mensagem"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50.0dip"
+                android:layout_marginRight="50.0dip"
+                android:text="Aqui você poderá mandar fotos de receita medica, produtos que desejar, sujestões e menssagens" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_mensagens"
+                android:visibility="gone"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                app:reverseLayout="true" />
+
+            <ImageView
+                android:layout_gravity="bottom|center"
+                android:id="@+id/imageView_send_mensagens"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10.0dip"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:maxWidth="170.0dip"
+                android:maxHeight="200.0dip" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="50.0dip"
+            android:layout_marginTop="5.0dip"
+            android:layout_marginBottom="5.0dip">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0.0dip"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="20.0dip"
+                android:layout_marginTop="5.0dip"
+                android:layout_marginBottom="5.0dip"
+                android:layout_weight="1.0"
+                app:cardCornerRadius="16.0dip">
+
+                <EditText
+                    android:id="@+id/et_mensagem"
+                    android:background="@color/cardview_light_background"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10.0dip"
+                    android:layout_marginTop="4.0dip"
+                    android:layout_marginRight="10.0dip"
+                    android:layout_marginBottom="4.0dip"
+                    android:hint="Escreva uma menssagem"
+                    android:lines="1" />
+
+            </androidx.cardview.widget.CardView>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_gravity="center_vertical"
+                android:id="@+id/fab_enviar_mensagem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8.0dip"
+                android:layout_marginRight="20.0dip"
+                android:src="@drawable/com_facebook_send_button_icon"
+                app:backgroundTint="@color/colorPrimary"
+                app:fabSize="mini" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

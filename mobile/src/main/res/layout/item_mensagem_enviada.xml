@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <FrameLayout
+        android:layout_gravity="right"
+        android:background="@drawable/ballom_right"
+        android:paddingLeft="10dp"
+        android:paddingTop="6dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="4dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/item_produto_mensagem_enviada"
+                android:visibility="gone"
+                android:layout_width="200dp"
+                android:layout_height="270dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="2dp"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto">
+
+                <ImageView
+                    android:id="@+id/capa_produto_mensagem_enviada"
+                    android:layout_width="fill_parent"
+                    android:layout_height="150dp"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true" />
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="150dp"
+                    android:layout_marginBottom="8dp">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="6dp"
+                        android:layout_marginBottom="10dp">
+
+                        <TextView
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:id="@+id/tv_item_prodt_mensagem_enviada"
+                            android:layout_width="fill_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="8dp"
+                            android:maxLines="2" />
+
+                        <TextView
+                            android:gravity="start"
+                            android:id="@+id/tv_item_lab"
+                            android:visibility="gone"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:textSize="18sp"
+                            android:gravity="start|bottom|center"
+                            android:id="@+id/tv_item_valor_mensagem_enviada"
+                            android:layout_width="fill_parent"
+                            android:layout_height="38dp" />
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_gravity="end|bottom|center"
+                    android:id="@+id/fab_item_add_remv_mensagem_enviada"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6dp"
+                    app:backgroundTint="@color/colorPrimary"
+                    app:fabSize="mini" />
+
+            </androidx.cardview.widget.CardView>
+
+            <ImageView
+                android:id="@+id/img_mensagens_enviada"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="10dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:maxWidth="170dp"
+                android:maxHeight="200dp" />
+
+            <TextView
+                android:textSize="18sp"
+                android:textColor="#ffffffff"
+                android:id="@+id/tv_menssagem_enviada"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="EXEMPLO" />
+
+            <TextView
+                android:textSize="14sp"
+                android:textStyle="italic"
+                android:textColor="#ffffffff"
+                android:gravity="end"
+                android:layout_gravity="end"
+                android:id="@+id/tv_hora_mensagem_enviada"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EXEMPLO" />
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>
