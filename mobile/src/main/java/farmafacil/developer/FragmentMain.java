@@ -2,6 +2,7 @@ package farmafacil.developer;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,14 +37,12 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     public static FrameLayout containerFrag;
     public static RecyclerView mListMercadorias;
     public static FragmentManager manager;
-    public static FragmentTransaction transaction;
     private FirebaseAuth auth;
     private CollectionReference carrinhoDoUsuario;
     private FirebaseFirestore firebaseFirestore;
     private AdapterProdutos mAdapter;
     private CarComprasActivy mComprasActivy;
     private String myUserAtual;
-    private Query ref;
     private int referencia = 0;
 
     @Nullable
@@ -56,6 +55,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         mListMercadorias = (RecyclerView) view.findViewById(R.id.rv_fragment_main);
 
         filterIcon = coordinatorLayout.findViewById(R.id.filterIcon);
+        View btChat = (View) view.findViewById(R.id.bt_abrir_chat);
         LinearLayout contentLayout = coordinatorLayout.findViewById(R.id.contentLayout);
 
         firestore = FirebaseFirestore.getInstance();
@@ -88,6 +88,13 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                     mListMercadorias.setLayoutManager(layoutManager);
                     mListMercadorias.setAdapter(mAdapter);
                 }
+            }
+        });
+
+        btChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), MensagemActivity.class));
             }
         });
 

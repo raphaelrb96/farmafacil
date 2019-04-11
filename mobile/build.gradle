@@ -6,6 +6,7 @@ android {
         applicationId "farmafacil.developer"
         minSdkVersion 16
         targetSdkVersion 28
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -37,6 +38,8 @@ dependencies {
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
     implementation 'com.google.guava:guava:27.0.1-android'
+
+    implementation 'androidx.multidex:multidex:2.0.0'
 
     //ULTILIDADES BASICAS
     implementation 'com.github.bijoysingh:android-basics:5.0.0'
