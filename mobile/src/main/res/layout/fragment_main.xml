@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/coordinatorLayout_pai"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_marginBottom="300dp"
+            android:src="@drawable/remedios2"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <FrameLayout
+            android:alpha="0.8"
+            android:background="#000"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+    <FrameLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:id="@+id/top_bar"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:paddingLeft="16dp"
+                android:paddingRight="56dp"
+                android:lines="1"
+                android:hint="Pesquisar Produto..."
+                android:textColorHint="#ecebeb"
+                android:textColor="#fff"
+                android:background="@drawable/background_et_pesquisar"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+
+                <View
+                    android:background="@drawable/ic_search_branco_24dp"
+                    android:layout_gravity="end|center"
+                    android:layout_marginRight="6dp"
+                    android:layout_marginLeft="8dp"
+                    android:src="@drawable/ic_action_add_preto"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp" />
+            </EditText>
+
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_marginTop="100dp"
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <!--This the interface sitting behind the backdrop and shown when it is collapsed-->
+        <FrameLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+
+
+
+        </FrameLayout>
+
+        <!--This is the backdrop's content with a BottomSheetBehaviour applied to it-->
+        <LinearLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:behavior_peekHeight="400dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <!--This is the backdrop's header with a title and icon-->
+            <FrameLayout
+                android:padding="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:clickable="true"
+                android:background="@drawable/ic_list_header_background"
+                android:elevation="8dp">
+
+
+                <ImageView
+                    android:id="@+id/filterIcon"
+                    android:layout_width="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/baner_mini"
+                    android:layout_gravity="center"/>
+
+            </FrameLayout>
+
+            <!--And finally this is the body of the backdrop's content. You can add here whatever you need inside a view group (LinearLayout, RelativeLayout, SwipeRefreshLayout, ConstraintLayout, etc.)-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:background="#dcdcdc"
+                android:id="@+id/rv_fragment_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+
+        </LinearLayout>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</FrameLayout>
