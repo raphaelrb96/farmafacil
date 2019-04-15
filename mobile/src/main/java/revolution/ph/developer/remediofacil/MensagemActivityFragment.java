@@ -1,4 +1,4 @@
-package farmafacil.developer;
+package revolution.ph.developer.remediofacil;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;

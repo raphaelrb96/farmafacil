@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "farmafacil.developer"
+        applicationId "revolution.ph.developer.remediofacil"
         minSdkVersion 16
         targetSdkVersion 28
         multiDexEnabled true
@@ -52,6 +52,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.9.0") {
         exclude group: "com.android.support"
     }
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 
     //TIMBER
@@ -73,6 +74,10 @@ dependencies {
     wearApp project(':wear')
     implementation 'com.google.android.gms:play-services-wearable:+'
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+
+    implementation 'com.google.android.gms:play-services-places:16.0.0'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

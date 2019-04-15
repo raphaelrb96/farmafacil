@@ -1,4 +1,4 @@
-package farmafacil.developer;
+package revolution.ph.developer.remediofacil;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -41,8 +41,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import javax.annotation.Nullable;
-
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;

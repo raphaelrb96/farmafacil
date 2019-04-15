@@ -1,4 +1,4 @@
-package farmafacil.developer;
+package revolution.ph.developer.remediofacil;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -9,11 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static revolution.ph.developer.remediofacil.MainActivity.ids;
 
 public class AdapterProdutos extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -23,6 +26,9 @@ public class AdapterProdutos extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface ClickProdutoCliente {
         void openDetalhe(ProdObj prodObj);
+        void onclick(int i, ColorStateList colorStateList, View view, ProdObj prodObj);
+
+        void openChat();
     }
 
     public AdapterProdutos(ClickProdutoCliente clickProdutoCliente, Context context, ArrayList<ProdObj> produtos) {
@@ -45,6 +51,10 @@ public class AdapterProdutos extends RecyclerView.Adapter<RecyclerView.ViewHolde
         vh.setImagem(obj.imgCapa);
         vh.setPreco(String.valueOf((int)obj.prodValor)+",00");
         vh.setNome(obj.prodName);
+        vh.fab.setBackgroundTintList(ColorStateList.valueOf(this.context.getResources().getColor(R.color.fab1)));
+        if (ids.contains(obj.getIdProduto())) {
+            vh.fab.setBackgroundTintList(ColorStateList.valueOf(this.context.getResources().getColor(R.color.colorPrimaryDark)));
+        }
     }
 
     @Override
@@ -56,6 +66,7 @@ public class AdapterProdutos extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         private ImageView imageView;
         private TextView nome, preco;
+        private FloatingActionButton fab;
 
         private Context context;
         private ArrayList<ProdObj> produtos;
@@ -67,12 +78,16 @@ public class AdapterProdutos extends RecyclerView.Adapter<RecyclerView.ViewHolde
             imageView = (ImageView) itemView.findViewById(R.id.img_item_produto_principal);
             nome = (TextView) itemView.findViewById(R.id.nome_produto_principal);
             preco = (TextView) itemView.findViewById(R.id.preco_item_produto_principal);
+            fab = (FloatingActionButton) itemView.findViewById(R.id.fab_produto_item);
             itemView.setOnClickListener(this);
+            fab.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-
+            if (v.getId() == R.id.fab_produto_item) {
+                clickProdutoCliente.onclick(getAdapterPosition(), fab.getBackgroundTintList(), v, produtos.get(getAdapterPosition()));
+            }
         }
 
         public void setPreco(String p) {

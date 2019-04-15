@@ -1,4 +1,4 @@
-package farmafacil.developer;
+package revolution.ph.developer.remediofacil;
 
 public class CarComprasActivy {
     String caminhoImg;
@@ -17,6 +17,9 @@ public class CarComprasActivy {
         this.valorUni = f;
         this.quantidade = i;
         this.valorTotal = f2;
+    }
+
+    public CarComprasActivy() {
     }
 
     public String getIdProdut() {

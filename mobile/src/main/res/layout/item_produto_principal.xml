@@ -66,7 +66,8 @@
                 </androidx.cardview.widget.CardView>
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:src="@drawable/ic_add_shopping_cart_black_24dp"
-                    app:backgroundTint="#f1f0f0"
+                    android:id="@+id/fab_produto_item"
+                    app:backgroundTint="@color/fab1"
                     android:layout_marginRight="16dp"
                     app:fabSize="mini"
                     android:layout_marginBottom="70dp"

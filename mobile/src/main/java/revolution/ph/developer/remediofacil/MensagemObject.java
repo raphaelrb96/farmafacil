@@ -1,4 +1,4 @@
-package farmafacil.developer;
+package revolution.ph.developer.remediofacil;
 
 public class MensagemObject {
     private String menssagemText;

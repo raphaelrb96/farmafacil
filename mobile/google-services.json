@@ -21,6 +21,10 @@
             "package_name": "farmafacil.developer",
             "certificate_hash": "6f5f4d2e2720091c04d8cb5d262d84270f716887"
           }
+        },
+        {
+          "client_id": "750810743457-iq30b2ja17fp0ijtijom4hbfns8uroak.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
@@ -78,6 +82,10 @@
             "package_name": "revolution.ph.developer.remediofacil",
             "certificate_hash": "6f5f4d2e2720091c04d8cb5d262d84270f716887"
           }
+        },
+        {
+          "client_id": "750810743457-iq30b2ja17fp0ijtijom4hbfns8uroak.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
