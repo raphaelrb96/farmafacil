@@ -6,6 +6,9 @@
     <string name="google_map_api_key_nova">AIzaSyD651bilZnvCcnzldbob4Mg_Zkm-FVM83Y</string>
     <string name="title_activity_carrinho">Carrinho</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
+    <string name="facebook_app_id">1010408422494276</string>
+    <string name="fb_login_protocol_scheme">fb1010408422494276</string>
+    <string name="meu_web_client_id">750810743457-iq30b2ja17fp0ijtijom4hbfns8uroak.apps.googleusercontent.com</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

@@ -10,14 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ImageView
-            android:layout_marginBottom="300dp"
             android:src="@drawable/remedios2"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
         <FrameLayout
-            android:alpha="0.7"
+            android:alpha="0.5"
             android:background="#000"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
@@ -33,9 +32,27 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <androidx.cardview.widget.CardView
+                app:cardBackgroundColor="@android:color/transparent"
+                android:layout_gravity="center|start"
+                app:cardCornerRadius="22dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:background="@drawable/ic_account_circle_black_24dp"
+                    android:backgroundTint="#fff"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/img_perfil"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp" />
+            </androidx.cardview.widget.CardView>
+
             <EditText
+                android:focusable="false"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
+                android:id="@+id/et_pesquisar"
                 android:lines="1"
                 android:hint="Pesquisar Produto..."
                 android:textColorHint="#ecebeb"
@@ -48,6 +65,7 @@
                 android:layout_weight="1"
                 android:layout_height="40dp"/>
             <ImageButton
+                android:id="@+id/bt_pesquisar"
                 android:background="@drawable/background_botao_pesquisar"
                 android:src="@drawable/ic_search_branco_24dp"
                 android:layout_gravity="end|center"
@@ -73,6 +91,8 @@
             android:layout_height="match_parent"
             android:padding="16dp">
             <ScrollView
+                android:id="@+id/container_menu"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <LinearLayout
@@ -92,6 +112,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="100dp">
                             <LinearLayout
+                                android:id="@+id/ll_bt_ofertas"
                                 android:layout_marginRight="10dp"
                                 android:orientation="vertical"
                                 android:background="@drawable/background_categoria"
@@ -117,6 +138,7 @@
                                     android:layout_height="wrap_content" />
                             </LinearLayout>
                             <LinearLayout
+                                android:id="@+id/ll_bt_medicamentos"
                                 android:layout_marginLeft="10dp"
                                 android:orientation="vertical"
                                 android:background="@drawable/background_categoria"
@@ -149,6 +171,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="100dp">
                             <LinearLayout
+                                android:id="@+id/ll_bt_suplemento"
                                 android:layout_marginRight="10dp"
                                 android:orientation="vertical"
                                 android:background="@drawable/background_categoria"
@@ -174,6 +197,7 @@
                                     android:layout_height="wrap_content" />
                             </LinearLayout>
                             <LinearLayout
+                                android:id="@+id/ll_bt_perfumaria"
                                 android:layout_marginLeft="10dp"
                                 android:orientation="vertical"
                                 android:background="@drawable/background_categoria"
@@ -200,6 +224,7 @@
                             </LinearLayout>
                         </LinearLayout>
                         <LinearLayout
+                            android:id="@+id/ll_bt_sair"
                             android:layout_marginTop="30dp"
                             android:layout_marginBottom="16dp"
                             android:layout_gravity="center"
@@ -227,7 +252,59 @@
                 </LinearLayout>
             </ScrollView>
 
-
+            <LinearLayout
+                android:id="@+id/container_login"
+                android:elevation="10dp"
+                android:background="@drawable/background_categoria"
+                android:layout_marginTop="20dp"
+                android:padding="20dp"
+                android:layout_marginRight="26dp"
+                android:orientation="vertical"
+                android:layout_marginLeft="26dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textColor="@color/colorPrimary"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="22sp"
+                    android:text="LOGIN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:padding="10dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textStyle="italic"
+                    android:textSize="16sp"
+                    android:text="Faça o Login para sua segurança e melhor experiencia. Você poderá criar lista de compras, enviar mensagens e fotos da sua receita e ainda pode concorrer a descontos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                    android:id="@+id/efab_login_face"
+                    android:layout_gravity="center"
+                    app:backgroundTint="@color/colorPrimary"
+                    android:layout_marginTop="22dp"
+                    android:gravity="center"
+                    app:icon="@drawable/myface"
+                    android:text="Facebook"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content" />
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                    android:id="@+id/efab_login_google"
+                    app:backgroundTint="@color/colorPrimary"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    app:icon="@drawable/mygooglw"
+                    android:text="Google"
+                    android:minWidth="140dp"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
 
         </FrameLayout>
@@ -238,11 +315,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:behavior_peekHeight="400dp"
+            app:behavior_peekHeight="200dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
             <!--Este é o Toolbar com um título e um ícone-->
             <FrameLayout
+                android:orientation="horizontal"
                 android:padding="2dp"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -251,6 +329,8 @@
                 android:elevation="8dp">
 
                 <View
+                    android:visibility="gone"
+                    android:clickable="true"
                     android:id="@+id/bt_abrir_chat"
                     android:backgroundTint="@color/colorSecondary"
                     android:background="@drawable/ic_action_chat_branco"
@@ -259,7 +339,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"/>
 
+
+
                 <ImageView
+
                     android:maxWidth="200dp"
                     android:id="@+id/filterIcon"
                     android:layout_width="wrap_content"
@@ -270,6 +353,8 @@
                     android:layout_gravity="center"/>
 
                 <View
+                    android:visibility="gone"
+                    android:clickable="true"
                     android:id="@+id/bt_abrir_carrinho"
                     android:backgroundTint="@color/colorSecondary"
                     android:background="@drawable/ic_action_cart_branco"
@@ -281,11 +366,48 @@
             </FrameLayout>
 
             <!--Corpo do conteúdo  (LinearLayout, RelativeLayout, SwipeRefreshLayout, ConstraintLayout, etc.)-->
-            <androidx.recyclerview.widget.RecyclerView
-                android:background="#dcdcdc"
-                android:id="@+id/rv_fragment_main"
+            <FrameLayout
+                android:background="#fff"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:visibility="gone"
+                    android:background="#fff"
+                    android:id="@+id/rv_fragment_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+                <ProgressBar
+                    android:theme="@style/Pb"
+                    android:id="@+id/pb_main"
+                    android:layout_marginTop="30dp"
+                    android:layout_gravity="center|top"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:visibility="gone"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    android:layout_gravity="center|top"
+                    android:id="@+id/tv_error_main"
+                    android:textColor="#fff"
+                    android:maxWidth="300dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                    android:visibility="gone"
+                    android:layout_margin="20dp"
+                    android:layout_gravity="bottom|center"
+                    app:iconTint="#fff"
+                    app:icon="@drawable/ic_shopping_cart_branco2_35dp"
+                    android:text="Meu Carrinho"
+                    android:textColor="#fff"
+                    app:backgroundTint="#000"
+                    android:id="@+id/efab_cart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
+
 
 
         </LinearLayout>

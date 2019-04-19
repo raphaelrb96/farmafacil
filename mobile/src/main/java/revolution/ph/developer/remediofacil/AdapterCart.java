@@ -53,7 +53,7 @@ public class AdapterCart extends RecyclerView.Adapter<AdapterCart.CartViewHolder
 
         void diminuirQuantidade(CarComprasActivy carComprasActivy, String str, int i);
 
-        void removerProduto(String str);
+        void removerProduto(String str, int p);
     }
 
     public AdapterCart(AnalizarClickPayFinal clickPayFinal, Context context) {
@@ -93,7 +93,7 @@ public class AdapterCart extends RecyclerView.Adapter<AdapterCart.CartViewHolder
             } else if (v.getId() == R.id.bt_diminui_produto_cart) {
                 clickPayFinal.diminuirQuantidade(c, c.idProdut, getAdapterPosition());
             } else if (v.getId() == R.id.bt_remove_produto_cart) {
-                clickPayFinal.removerProduto(c.idProdut);
+                clickPayFinal.removerProduto(c.idProdut, getAdapterPosition());
             }
         }
     }

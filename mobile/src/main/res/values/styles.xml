@@ -17,13 +17,17 @@
         <item name="android:fitsSystemWindows">false</item>
     </style>
 
-    <style name="AppTheme.NoActionBar2" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:fitsSystemWindows">false</item>
+    <style name="Pb" parent="AppTheme.NoActionBar">
+        <item name="colorAccent">#000</item>
     </style>
+
+    <!--<style name="AppTheme.NoActionBar2" parent="Theme.MaterialComponents.Light.DarkActionBar">-->
+        <!--<item name="windowActionBar">false</item>-->
+        <!--<item name="windowNoTitle">true</item>-->
+        <!--<item name="android:windowFullscreen">false</item>-->
+        <!--<item name="android:windowContentOverlay">@null</item>-->
+        <!--<item name="android:fitsSystemWindows">false</item>-->
+    <!--</style>-->
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

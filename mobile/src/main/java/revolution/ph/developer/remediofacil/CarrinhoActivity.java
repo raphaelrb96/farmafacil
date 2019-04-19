@@ -74,6 +74,8 @@ import com.robinhood.ticker.TickerView;
 
 import javax.annotation.Nullable;
 
+import static revolution.ph.developer.remediofacil.MainActivity.ids;
+
 public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, AdapterCart.AnalizarClickPayFinal {
 
     private GoogleMap mMap;
@@ -96,7 +98,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
     private AdapterCart adapter;
 
-    private TextView tv_nome_rua_cart;
+    private TextView tv_nome_rua_cart, mudarEndereco;
 
     private LinearLayout content_layout_cart;
 
@@ -193,6 +195,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
         rv = (RecyclerView) findViewById(R.id.rv_cart);
         tv_nome_rua_cart = (TextView) findViewById(R.id.tv_nome_rua_cart);
+        mudarEndereco = (TextView) findViewById(R.id.bt_mudar_endereco);
         taxaEntregaTV = (TickerView) findViewById(R.id.taxa_entrega);
         totalTV = (TickerView) findViewById(R.id.total_cart);
         ttcomprasTV = (TickerView) findViewById(R.id.total_compras);
@@ -258,6 +261,13 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         rv.setLayoutManager(new LinearLayoutManager(CarrinhoActivity.this, RecyclerView.HORIZONTAL, false));
         adapter = new AdapterCart(CarrinhoActivity.this, CarrinhoActivity.this);
         rv.setAdapter(adapter);
+
+        mudarEndereco.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCurrentPlace();
+            }
+        });
     }
 
 
@@ -314,6 +324,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             if (mLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                getDeviceLocation();
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -563,8 +574,14 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
     }
 
     @Override
-    public void removerProduto(String str) {
-
+    public void removerProduto(String str, int p) {
+        DocumentReference reference = cart.document(str);
+        if (ids.contains(str)) {
+            ids.remove(str);
+        }
+        reference.delete();
+        produtoss.remove(p);
+        adapter.notifyItemRemoved(p);
     }
 
     private int calcularEntregaRapida(double la, double lo) {
