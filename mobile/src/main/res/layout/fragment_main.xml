@@ -49,6 +49,8 @@
             </androidx.cardview.widget.CardView>
 
             <EditText
+                android:imeOptions="actionSearch"
+                android:inputType="text"
                 android:focusable="false"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"

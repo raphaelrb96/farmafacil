@@ -37,6 +37,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha04'
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation 'androidx.exifinterface:exifinterface:1.0.0'
     implementation 'com.google.guava:guava:27.0.1-android'
 
     implementation 'androidx.multidex:multidex:2.0.0'
@@ -80,6 +81,8 @@ dependencies {
 
     implementation 'com.robinhood.ticker:ticker:1.2.0'
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
+
+    implementation 'com.otaliastudios:cameraview:2.0.0-beta04'
 
 }
 

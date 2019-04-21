@@ -10,10 +10,12 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -287,17 +289,19 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             }
         });
 
-//        etpesquisar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (!hasFocus) {
-//                    etpesquisar.setFocusable(false);
-//                    etpesquisar.setFocusableInTouchMode(false);
-//                    ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
-//                            .hideSoftInputFromWindow(etpesquisar.getWindowToken(), 0);
-//                }
-//            }
-//        });
+        etpesquisar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String pesq = etpesquisar.getText().toString();
+                    if (pesq.length() > 0) {
+                        pesquisar(pesq);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
 
     }
 
@@ -458,8 +462,6 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("TAG_Sucess", "signInAnonymously:success");
                             FirebaseUser user = auth.getCurrentUser();
-                            Toast.makeText(getActivity(), "Authentication Anonima foi um sucesso",
-                                    Toast.LENGTH_SHORT).show();
 //                            updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -521,9 +523,15 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
 
     }
 
+    private void esconderTeclado() {
+        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                            .hideSoftInputFromWindow(etpesquisar.getWindowToken(), 0);
+    }
+
     private void pesquisar(String s) {
         String busca = "tag." + s.toLowerCase();
         telaInicialLoadding();
+        esconderTeclado();
         myQuery(firestore.collection("produtos").whereEqualTo(busca, true), true);
     }
 
@@ -629,6 +637,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     }
 
     private void toggleBackContainer(boolean logado) {
+        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         if(logado) {
             containerLogin.setVisibility(View.GONE);
             containerMenu.setVisibility(View.VISIBLE);

@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private float factor= 0;
+    private int b= 0;
     private Context context;
     private ArrayList<MensagemObject> mensagens;
     private String uidUser;
@@ -27,6 +29,10 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.context = context;
         this.mensagens = mensagens;
         this.uidUser = uidUser;
+        if (context != null) {
+            factor = context.getResources().getDisplayMetrics().density;
+            b = (int) (100 * factor);
+        }
     }
 
     public int getItemViewType(int i) {
@@ -42,14 +48,29 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         if (viewType == 1) {
-            return new MensagensEnviadas(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mensagem_enviada, parent, false));
+            MensagensEnviadas enviadas = new MensagensEnviadas(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mensagem_enviada, parent, false));
+//            ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) enviadas.itemView.getLayoutParams();
+//            ViewGroup.MarginLayoutParams mllp = (ViewGroup.MarginLayoutParams) lp;
+//            mllp.bottomMargin = b;
+
+            return enviadas;
         }
-        return new MenssagensRecebidas(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mensagem_recebida, parent, false));
+        MenssagensRecebidas recebidas = new MenssagensRecebidas(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mensagem_recebida, parent, false));
+//        ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) recebidas.itemView.getLayoutParams();
+//        ViewGroup.MarginLayoutParams mllp = (ViewGroup.MarginLayoutParams) lp;
+//        mllp.bottomMargin = b;
+        return recebidas;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (position == 0) {
+            ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) holder.itemView.getLayoutParams();
+            ViewGroup.MarginLayoutParams mllp = (ViewGroup.MarginLayoutParams) lp;
+            mllp.bottomMargin = b;
+        }
         MensagemObject mensagemObject = (MensagemObject) this.mensagens.get(position);
         String date = new Date(mensagemObject.getTimeStamp()).toString();
         if (holder.getItemViewType() == 1) {

@@ -5,78 +5,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <FrameLayout
         android:background="@drawable/ballon_left"
-        android:paddingLeft="30.0dip"
-        android:paddingTop="6.0dip"
-        android:paddingRight="10.0dip"
-        android:paddingBottom="6.0dip"
+        android:paddingLeft="30dp"
+        android:paddingTop="6dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="6dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10.0dip"
-        android:layout_marginTop="8.0dip"
-        android:layout_marginRight="10.0dip"
-        android:layout_marginBottom="4.0dip"
-        android:minHeight="50.0dip">
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="50dp">
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <androidx.cardview.widget.CardView
                 android:id="@+id/item_produto_mensagem_recebida"
                 android:visibility="gone"
-                android:layout_width="200.0dip"
-                android:layout_height="270.0dip"
-                android:layout_marginLeft="4.0dip"
-                android:layout_marginTop="10.0dip"
-                android:layout_marginRight="8.0dip"
-                android:layout_marginBottom="10.0dip"
-                app:cardCornerRadius="2.0dip">
+                android:layout_width="200dp"
+                android:layout_height="270dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="2dp">
 
                 <ImageView
                     android:id="@+id/capa_produto_mensagem_recebida"
-                    android:layout_width="fill_parent"
-                    android:layout_height="150.0dip"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
                     android:scaleType="centerInside"
                     android:adjustViewBounds="true" />
 
                 <FrameLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="120.0dip"
-                    android:layout_marginTop="150.0dip"
-                    android:layout_marginBottom="8.0dip">
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="150dp"
+                    android:layout_marginBottom="8dp">
 
                     <LinearLayout
                         android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_marginLeft="6.0dip"
-                        android:layout_marginTop="4.0dip"
-                        android:layout_marginRight="6.0dip"
-                        android:layout_marginBottom="10.0dip">
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="6dp"
+                        android:layout_marginBottom="10dp">
 
                         <TextView
-                            android:textSize="20.0sp"
+                            android:textSize="20sp"
                             android:textStyle="bold"
                             android:id="@+id/tv_item_prodt_mensagem_recebida"
-                            android:layout_width="fill_parent"
-                            android:layout_height="60.0dip"
-                            android:layout_marginTop="8.0dip"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="8dp"
                             android:maxLines="2" />
 
                         <TextView
                             android:gravity="start"
                             android:id="@id/tv_item_lab"
                             android:visibility="gone"
-                            android:layout_width="fill_parent"
-                            android:layout_height="0.0dip"
-                            android:layout_weight="1.0" />
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
 
                         <TextView
-                            android:textSize="18.0sp"
+                            android:textSize="18sp"
                             android:gravity="start|bottom|center"
                             android:id="@+id/tv_item_valor_mensagem_recebida"
-                            android:layout_width="fill_parent"
-                            android:layout_height="38.0dip" />
+                            android:layout_width="match_parent"
+                            android:layout_height="38dp" />
                     </LinearLayout>
                 </FrameLayout>
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -84,36 +84,35 @@
                     android:layout_gravity="end|bottom|center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="6.0dip"
+                    android:layout_margin="6dp"
                     app:backgroundTint="@color/colorPrimary"
                     app:fabSize="mini" />
             </androidx.cardview.widget.CardView>
             <ImageView
+                android:maxHeight="250dp"
                 android:id="@+id/img_mensagens_recebida"
                 android:visibility="gone"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8.0dip"
-                android:layout_marginTop="10.0dip"
-                android:layout_marginRight="4.0dip"
-                android:layout_marginBottom="10.0dip"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="10dp"
                 android:scaleType="centerCrop"
-                android:adjustViewBounds="true"
-                android:maxWidth="170.0dip"
-                android:maxHeight="200.0dip" />
+                android:adjustViewBounds="true" />
 
             <TextView
-                android:textSize="18.0sp"
+                android:textSize="18sp"
                 android:textColor="#ffffffff"
                 android:layout_gravity="end"
                 android:id="@+id/tv_menssagem_recebida"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="8.0dip"
+                android:layout_marginRight="8dp"
                 android:text="EXEMPLO" />
 
             <TextView
-                android:textSize="14.0sp"
+                android:textSize="14sp"
                 android:textStyle="italic"
                 android:textColor="#ffffffff"
                 android:id="@+id/tv_hora_mensagem_recebida"
