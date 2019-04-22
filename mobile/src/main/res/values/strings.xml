@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">farmafacil</string>
+    <string name="app_name">Farma Fácil</string>
     <string name="title_activity_mensagem">MensagemActivity</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_mensagem_detalhe">MensagemDetalheActivity</string>

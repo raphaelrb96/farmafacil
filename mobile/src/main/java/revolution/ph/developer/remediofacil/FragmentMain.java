@@ -107,6 +107,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     private ProgressBar pb;
     private ImageButton btPesquisar;
     private TextView tvErro;
+    private FrameLayout toolbar;
 
     private LinearLayout btOfertas, btMedicamentos, btPerfumaria, btSuplementos, btSair;
 
@@ -126,6 +127,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
 
         mListMercadorias = (RecyclerView) view.findViewById(R.id.rv_fragment_main);
+        toolbar = (FrameLayout) view.findViewById(R.id.toolbar_main);
         etpesquisar= (EditText) view.findViewById(R.id.et_pesquisar);
         containerLogin = (LinearLayout) view.findViewById(R.id.container_login);
         btMedicamentos = (LinearLayout) view.findViewById(R.id.ll_bt_medicamentos);
@@ -277,6 +279,13 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             @Override
             public void onClick(View v) {
                 signIn();
+            }
+        });
+
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), MensagemActivity.class));
             }
         });
 

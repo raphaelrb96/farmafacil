@@ -322,6 +322,7 @@
 
             <!--Este é o Toolbar com um título e um ícone-->
             <FrameLayout
+                android:id="@+id/toolbar_main"
                 android:orientation="horizontal"
                 android:padding="2dp"
                 android:layout_width="match_parent"
@@ -330,21 +331,37 @@
                 android:background="@drawable/ic_list_header_background"
                 android:elevation="8dp">
 
-                <View
-                    android:visibility="gone"
-                    android:clickable="true"
-                    android:id="@+id/bt_abrir_chat"
-                    android:backgroundTint="@color/colorSecondary"
-                    android:background="@drawable/ic_action_chat_branco"
-                    android:layout_marginLeft="15dp"
-                    android:layout_gravity="center|start"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"/>
+                <LinearLayout
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <View
+                        android:clickable="true"
+                        android:id="@+id/bt_abrir_chat"
+                        android:backgroundTint="@color/colorSecondary"
+                        android:background="@drawable/ic_action_chat_branco"
+                        android:layout_marginRight="12dp"
+                        android:layout_gravity="center|start"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"/>
+
+                    <TextView
+                        android:text="Envie uma mensagem"
+                        android:layout_gravity="center|start"
+                        android:gravity="start|center"
+                        android:textColor="@color/colorSecondaryLight"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:textSize="16sp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
 
 
 
                 <ImageView
-
+                    android:visibility="gone"
                     android:maxWidth="200dp"
                     android:id="@+id/filterIcon"
                     android:layout_width="wrap_content"

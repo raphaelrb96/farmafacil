@@ -21,7 +21,7 @@
         <item name="colorAccent">#000</item>
     </style>
 
-    <style name="PbBranco" parent="AppTheme.NoActionBar">
+    <style name="PbBranco" parent="Pb">
         <item name="colorAccent">#fff</item>
     </style>
 

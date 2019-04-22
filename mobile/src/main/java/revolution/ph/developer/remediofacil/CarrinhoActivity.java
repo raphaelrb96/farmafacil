@@ -11,12 +11,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -37,9 +41,17 @@ import java.util.List;
 import java.util.Locale;
 
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.PlaceLikelihood;
@@ -57,6 +69,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -78,6 +91,7 @@ import static revolution.ph.developer.remediofacil.MainActivity.ids;
 
 public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, AdapterCart.AnalizarClickPayFinal {
 
+    private static final int REQUEST_CHECK_SETTINGS = 109;
     private GoogleMap mMap;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 345;
     private boolean mLocationPermissionGranted;
@@ -227,7 +241,6 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
         // Initialize the AutocompleteSupportFragment.
         autocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -270,9 +283,71 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!gpsLigado()) {
+            ligarGps();
+        } else {
+            mapFragment.getMapAsync(this);
+        }
+    }
 
     //margem do mapa = tamanho do linear layout container
 
+    private void ligarGps() {
+        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(LocationRequest.create().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY))
+                .addLocationRequest(LocationRequest.create().setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY));
+        Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
+
+        task.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                mapFragment.getMapAsync(CarrinhoActivity.this);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception e) {
+                int statusCode = ((ApiException) e).getStatusCode();
+                switch (statusCode) {
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        try {
+                            ResolvableApiException resolvable = (ResolvableApiException) e;
+                            resolvable.startResolutionForResult(CarrinhoActivity.this, REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException se) {
+
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+
+                        break;
+                }
+            }
+        });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @androidx.annotation.Nullable Intent data) {
+        LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS:
+
+                switch (resultCode) {
+
+                    case Activity.RESULT_OK:
+                        mapFragment.getMapAsync(CarrinhoActivity.this);
+                        break;
+                    case Activity.RESULT_CANCELED:
+
+                        break;
+                }
+
+                break;
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
@@ -288,15 +363,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         updateLocationUI();
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -343,12 +410,16 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         try {
             if (mLocationPermissionGranted) {
                 Task locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener() {
+                locationResult.addOnCompleteListener(CarrinhoActivity.this, new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = (Location) task.getResult();
+                            if (mLastKnownLocation == null) {
+                                getDeviceLocation();
+                                return;
+                            }
                             mDefaultLocation = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                             exibirEnderecoAtual();
                             float factor = getResources().getDisplayMetrics().density;
@@ -361,20 +432,25 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                                     .position(mDefaultLocation));
                             mMap.getUiSettings().setMyLocationButtonEnabled(true);
                         } else {
-                            float factor = getResources().getDisplayMetrics().density;
-                            int h = (int) (450 * factor);
-                            int top = (int) (80 * factor);
-                            mMap.setPadding(0, top, 0, h);
-                            Log.d("TesteMap", "Current location is null. Using defaults.");
-                            Log.e("TesteMap", "Exception: %s", task.getException());
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 19));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+                            getDeviceLocation();
+
+//                            float factor = getResources().getDisplayMetrics().density;
+//                            int h = (int) (450 * factor);
+//                            int top = (int) (80 * factor);
+//                            mMap.setPadding(0, top, 0, h);
+//                            Log.d("TesteMap", "Current location is null. Using defaults.");
+//                            Log.e("TesteMap", "Exception: %s", task.getException());
+//                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 19));
+//                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }
                 });
             }
         } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
+            Log.e("Exceptionnn: %s", e.getMessage());
+        } catch (NullPointerException e) {
+            Log.e("Exceptionnn: %s", e.getMessage());
         }
     }
 
@@ -581,6 +657,11 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         reference.delete();
         produtoss.remove(p);
         adapter.notifyItemRemoved(p);
+    }
+
+    private boolean gpsLigado() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     private int calcularEntregaRapida(double la, double lo) {
