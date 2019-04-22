@@ -94,11 +94,35 @@
                 android:clickable="true"
                 android:elevation="8dp">
 
-
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <View
+                        android:backgroundTint="@color/colorSecondaryLight"
+                        android:background="@drawable/ic_arrow_back_black_24dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_gravity="center|start"
+                        android:clickable="true"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"/>
+                    <TextView
+                        android:id="@+id/tv_toolbar_chat"
+                        android:text="Ola, em que podemos lhe ajudar?"
+                        android:layout_gravity="center|start"
+                        android:gravity="start|center"
+                        android:textColor="@color/colorSecondaryLight"
+                        android:textStyle="bold"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:textSize="16sp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
 
 
                 <ImageView
-
+                    android:visibility="gone"
                     android:maxWidth="200dp"
                     android:id="@+id/filterIcon"
                     android:layout_width="wrap_content"

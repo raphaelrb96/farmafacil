@@ -15,7 +15,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="4dp">
+        android:layout_marginBottom="104dp">
 
         <ProgressBar
             android:theme="@style/PbBranco"

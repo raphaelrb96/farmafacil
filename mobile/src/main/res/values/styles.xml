@@ -21,6 +21,10 @@
         <item name="colorAccent">#000</item>
     </style>
 
+    <style name="PbBranco" parent="AppTheme.NoActionBar">
+        <item name="colorAccent">#fff</item>
+    </style>
+
     <!--<style name="AppTheme.NoActionBar2" parent="Theme.MaterialComponents.Light.DarkActionBar">-->
         <!--<item name="windowActionBar">false</item>-->
         <!--<item name="windowNoTitle">true</item>-->

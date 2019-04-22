@@ -104,6 +104,10 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     private View icon_bt_acao_chat_camera;
     private byte[] fotoByte = null;
     public boolean tecladoInput = false;
+    private MensagemSemiCarregada mensagemSemiCarregada;
+    private ArrayList<MensagemSemiCarregada> semiCarregadaArrayList = new ArrayList<>();
+    private MensagemDetalheAdapter adapter;
+    private TextView tv_tolbar;
 
     public MensagemDetalheActivityFragment() {
     }
@@ -129,6 +133,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layoutInflater = inflater.inflate(R.layout.fragment_mensagem_detalhe, container, false);
+        tv_tolbar = (TextView) layoutInflater.findViewById(R.id.tv_toolbar_chat);
         this.tvListaVazia = (TextView) layoutInflater.findViewById(R.id.tv_lista_vazia_mensagem);
         this.recyclerView = (RecyclerView) layoutInflater.findViewById(R.id.rv_mensagens);
         btAbrirCamera= (LinearLayout) layoutInflater.findViewById(R.id.bt_tirar_foto_chat);
@@ -155,6 +160,8 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
         this.storage = FirebaseStorage.getInstance();
         this.storageReference = this.storage.getReference();
         this.firebaseFirestore = FirebaseFirestore.getInstance();
+        String saudacoes = "Olá " + auth.getCurrentUser().getDisplayName() + ", em que podemos lhe ajudar ?";
+        tv_tolbar.setText(saudacoes);
         sheetBehavior = BottomSheetBehavior.from(content_layout_chat);
         sheetBehavior.setHideable(false);
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -203,7 +210,9 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
                     i++;
                 }
                 Collections.reverse(menssagens);
-                recyclerView.setAdapter(new MensagemDetalheAdapter(getActivity(), menssagens, auth.getCurrentUser().getUid()));
+                adapter = new MensagemDetalheAdapter(getActivity(), menssagens, auth.getCurrentUser().getUid());
+
+                recyclerView.setAdapter(adapter);
                 recyclerView.scrollToPosition(0);
             }
         });
@@ -227,13 +236,19 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
                     modoFoto = false;
                     menssagem = editText.getText().toString();
                     editText.setText("");
+                    String st = getNomeImagem();
+                    MensagemObject mensagemObject = new MensagemObject(System.currentTimeMillis(), auth.getCurrentUser().getUid(), 1, null, null, menssagem);
+                    mensagemSemiCarregada = new MensagemSemiCarregada(mensagemObject, fotoByte, mLocationForPhotos, 2, st);
+                    semiCarregadaArrayList.add(mensagemSemiCarregada);
+                    adapter.setSemiCarregadas(semiCarregadaArrayList);
+                    clickEnviarFoto();
                     salvarFotoEmStorage();
                     Log.d("Click", "enviar foto escolhida");
                 } else if (fotoTirada) {
                     //foto tirada
+                    menssagem = editText.getText().toString();
                     if (editText.getText().length() > 0) {
                         //foto com descricao
-                        menssagem = editText.getText().toString();
                         editText.setText("");
                         Log.d("Click", "enviar foto tirada com descricao");
                     } else {
@@ -241,18 +256,28 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
                         Log.d("Click", "enviar foto tirada sem descricao");
                     }
 
+
                     if (fotoByte != null) {
                         Log.d("Click", "enviar foto tirada - fotoByte != null");
-                        salvarFotoCapturadaEmStorage(fotoByte);
+                        String st = getNomeImagem();
+                        MensagemObject mensagemObject = new MensagemObject(System.currentTimeMillis(), auth.getCurrentUser().getUid(), 1, null, null, menssagem);
+                        mensagemSemiCarregada = new MensagemSemiCarregada(mensagemObject, fotoByte, mLocationForPhotos, 1, st);
+                        semiCarregadaArrayList.add(mensagemSemiCarregada);
+                        adapter.setSemiCarregadas(semiCarregadaArrayList);
+                        clickEnviarFoto();
+                        salvarFotoCapturadaEmStorage(mensagemSemiCarregada.getFotoBruta());
                     }
 
-                } else if (cameraAberta) {
+                } else if (cameraAberta && !tecladoInput) {
                     Log.d("Click", "tirar foto");
                     camera.takePicture();
                 } else {
                     if (editText.getText().length() > 0) {
                         menssagem = editText.getText().toString();
                         editText.setText("");
+                        esconderTeclado();
+                        ocultarCamera();
+                        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         Log.d("Click", "enviar mensagem");
                         salvarDadosEmFirestore(null);
                     }
@@ -400,19 +425,15 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
         batch.set(this.collectionMensagens.document(), (Object) mensagemObject);
         batch.commit();
         this.menssagens.add(mensagemObject);
+        adapter.clearSemiCarregadas();
         this.editText.clearFocus();
         this.editText.setText("");
     }
 
     private void salvarFotoEmStorage() {
-        long currentTimeMillis = System.currentTimeMillis();
         StorageReference child = this.storageReference.child("midia_action_chat");
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(currentTimeMillis);
-        stringBuilder.append(this.auth.getCurrentUser().getUid());
-        stringBuilder.append(".jpeg");
-        final StorageReference child2 = child.child(stringBuilder.toString());
-        child2.putFile(this.mLocationForPhotos).continueWithTask(new Continuation<TaskSnapshot, Task<Uri>>() {
+        final StorageReference child2 = child.child(mensagemSemiCarregada.getNomeFotoSemi());
+        child2.putFile(mensagemSemiCarregada.getUriFoto()).continueWithTask(new Continuation<TaskSnapshot, Task<Uri>>() {
             public Task<Uri> then(@NonNull Task<TaskSnapshot> task) throws Exception {
                 if (task.isSuccessful()) {
                     return child2.getDownloadUrl();
@@ -423,9 +444,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
             @Override
             public void onComplete(Task<Uri> task) {
                 if (task.isSuccessful()) {
-                    ocultarFotoTirada();
-                    ocultarCamera();
-                    mLocationForPhotos = null;
+
                     salvarDadosEmFirestore(((Uri) task.getResult()).toString());
                     return;
                 }
@@ -434,19 +453,34 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
         });
     }
 
+    private void clickEnviarFoto() {
+        ocultarFotoTirada();
+        ocultarCamera();
+        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        fotoTirada = false;
+        fotoByte = null;
+        mLocationForPhotos = null;
+        recyclerView.scrollToPosition(0);
+    }
+
     private void esconderTeclado() {
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
-    private void salvarFotoCapturadaEmStorage(byte[] x) {
+    private String getNomeImagem() {
         long currentTimeMillis = System.currentTimeMillis();
         StorageReference child = this.storageReference.child("midia_action_chat");
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(currentTimeMillis);
         stringBuilder.append(this.auth.getCurrentUser().getUid());
         stringBuilder.append(".jpeg");
-        final StorageReference child2 = child.child(stringBuilder.toString());
+        return stringBuilder.toString();
+    }
+
+    private void salvarFotoCapturadaEmStorage(byte[] x) {
+        StorageReference child = this.storageReference.child("midia_action_chat");
+        final StorageReference child2 = child.child(mensagemSemiCarregada.getNomeFotoSemi());
         child2.putBytes(x).continueWithTask(new Continuation<TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(Task<TaskSnapshot> task) throws Exception {
@@ -459,10 +493,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
             @Override
             public void onComplete(Task<Uri> task) {
                 if (task.isSuccessful()) {
-                    ocultarFotoTirada();
-                    ocultarCamera();
-                    fotoTirada = false;
-                    fotoByte = null;
+
                     salvarDadosEmFirestore(task.getResult().toString());
                     return;
                 }
