@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AdmActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Aguarde..."
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:textSize="18sp"
+                android:id="@+id/tv_drogaria_aberta_fechada"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/efab_abrir_fechar_drogaria"
+                app:backgroundTint="@color/colorSecondaryDark"
+                android:textColor="#fff"
+                android:layout_gravity="center"
+                android:text="Abrir/Fechar"
+                android:layout_marginBottom="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:onClick="verProdutos"
+                android:background="@color/colorPrimary"
+                android:text="Produtos"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Button
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:onClick="verMensagens"
+                android:background="@color/colorPrimary"
+                android:text="Mensagens"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Button
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:onClick="verVendas"
+                android:background="@color/colorPrimary"
+                android:text="Vendas"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Button
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:onClick="verCupons"
+                android:background="@color/colorPrimary"
+                android:text="Cupons"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:onClick="verAnalytics"
+                android:background="@color/colorPrimary"
+                android:text="Analytics"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

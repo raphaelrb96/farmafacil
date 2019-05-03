@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        app:cardCornerRadius="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_marginTop="8dp"
+            android:id="@+id/img_produto_invantario"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+
+        <LinearLayout
+            android:layout_marginLeft="100dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:maxLines="2"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:id="@+id/nome_produto_inventario"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorAccent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:maxLines="3"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:id="@+id/descricao_produto_inventario"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:maxLines="1"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:id="@+id/categoria_produto_inventario"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:id="@+id/preco_consumidor_produto_inventario"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:textColor="@color/colorSecondaryLight"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:textColor="@color/colorSecondaryLight"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:id="@+id/preco_compra_produto_inventario"
+                        android:textStyle="bold|italic"
+                        android:textSize="14sp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

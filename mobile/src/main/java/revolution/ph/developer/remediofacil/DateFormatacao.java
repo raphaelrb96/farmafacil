@@ -7,7 +7,14 @@ public class DateFormatacao {
 
     public static String getDiaString(Date date) {
 
-        SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yy");
+        return fmt.format(date);
+
+    }
+
+    public static String getDiaStringSmall(Date date) {
+
+        SimpleDateFormat fmt = new SimpleDateFormat("dd/MM");
         return fmt.format(date);
 
     }
@@ -36,6 +43,20 @@ public class DateFormatacao {
             return "Hoje, " + hh;
         } else {
             return hm + ",  " + hh;
+        }
+
+    }
+
+    public static String dataCompletaCorrigidaSmall(Date horaMensagem, Date horaAtual) {
+
+        String hm = getDiaStringSmall(horaMensagem);
+        String ha = getDiaStringSmall(horaAtual);
+        String hh = getHoraString(horaMensagem);
+
+        if (isHoje(hm, ha)) {
+            return "Hoje\n" + hh;
+        } else {
+            return hm + "\n" + hh;
         }
 
     }

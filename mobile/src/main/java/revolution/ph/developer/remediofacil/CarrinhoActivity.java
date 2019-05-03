@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,18 +24,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,7 +62,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -73,6 +69,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -92,7 +89,7 @@ import static revolution.ph.developer.remediofacil.MainActivity.ids;
 public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, AdapterCart.AnalizarClickPayFinal {
 
     private static final int REQUEST_CHECK_SETTINGS = 109;
-    private GoogleMap mMap;
+    private GoogleMap mMap = null;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 345;
     private boolean mLocationPermissionGranted;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -100,19 +97,21 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
     private GeoDataClient mGeoDataClient;
     private PlaceDetectionClient mPlaceDetectionClient;
     private int M_MAX_ENTRIES = 5;
-    private LatLng mDefaultLocation;
+    private LatLng mDefaultLocation, autoCompleteLocation;
     private String[] mLikelyPlaceNames;
     private String[] mLikelyPlaceAddresses;
     private LatLng[] mLikelyPlaceLatLngs;
     private String[] mLikelyPlaceAttributions;
     private float DEFAULT_ZOOM = 17;
+    private View btVoltar, closeHelp;
+    private ProgressBar pb;
 
     public static ArrayList<Float> valores = new ArrayList();
     private int somo = 0;
 
     private AdapterCart adapter;
 
-    private TextView tv_nome_rua_cart, mudarEndereco;
+    private TextView tv_nome_rua_cart, btAjuda, tv_exemplo_help;
 
     private LinearLayout content_layout_cart;
 
@@ -134,6 +133,9 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
     private CollectionReference cart;
     private int precoEntrega = 0;
     private TickerView taxaEntregaTV, totalTV, ttcomprasTV;
+
+    private FloatingActionButton fab;
+    private FrameLayout containerHelp;
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
         Window win = activity.getWindow();
@@ -208,11 +210,17 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         coordinator_layout_cart = (CoordinatorLayout) findViewById(R.id.coordinator_layout_cart);
 
         rv = (RecyclerView) findViewById(R.id.rv_cart);
+        containerHelp = (FrameLayout) findViewById(R.id.container_help);
+        fab = (FloatingActionButton) findViewById(R.id.fab_carrinho);
         tv_nome_rua_cart = (TextView) findViewById(R.id.tv_nome_rua_cart);
-        mudarEndereco = (TextView) findViewById(R.id.bt_mudar_endereco);
+        tv_exemplo_help = (TextView) findViewById(R.id.tv_exemplo_help);
+        btAjuda = (TextView) findViewById(R.id.bt_mudar_endereco);
         taxaEntregaTV = (TickerView) findViewById(R.id.taxa_entrega);
         totalTV = (TickerView) findViewById(R.id.total_cart);
         ttcomprasTV = (TickerView) findViewById(R.id.total_compras);
+        btVoltar = (View) findViewById(R.id.bt_voltar_cart);
+        closeHelp = (View) findViewById(R.id.close_help);
+        pb = (ProgressBar) findViewById(R.id.pb_cart);
         taxaEntregaTV.setCharacterList(TickerUtils.getDefaultNumberList());
         totalTV.setCharacterList(TickerUtils.getDefaultNumberList());
         ttcomprasTV.setCharacterList(TickerUtils.getDefaultNumberList());
@@ -252,14 +260,14 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             public void onPlaceSelected(Place place) {
                 tv_nome_rua_cart.setText(place.getAddress());
                 if (mMap != null) {
-                    mDefaultLocation = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
+                    autoCompleteLocation = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
                     float factor = getResources().getDisplayMetrics().density;
                     int h = (int) (450 * factor);
                     int top = (int) (80 * factor);
                     mMap.setPadding(0, top, 0, h);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 18));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(autoCompleteLocation, 18));
                     mMap.addMarker(new MarkerOptions()
-                            .position(mDefaultLocation));
+                            .position(autoCompleteLocation));
                 }
             }
 
@@ -275,12 +283,41 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         adapter = new AdapterCart(CarrinhoActivity.this, CarrinhoActivity.this);
         rv.setAdapter(adapter);
 
-        mudarEndereco.setOnClickListener(new View.OnClickListener() {
+        btAjuda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCurrentPlace();
+                containerHelp.setVisibility(View.VISIBLE);
+
+                if (sheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+
             }
         });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(CarrinhoActivity.this, ConfirmarCompraActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        closeHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                containerHelp.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     @Override
@@ -331,6 +368,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @androidx.annotation.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
         switch (requestCode) {
             case REQUEST_CHECK_SETTINGS:
@@ -357,6 +395,8 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true;
+                } else if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                    finish();
                 }
             }
         }
@@ -366,7 +406,15 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        //pb.setVisibility(View.GONE);
+
+        if (mMap != null) {
+            mMap.clear();
+        }
+
         mMap = googleMap;
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
 //        Add a marker in Sydney and move the camera
 //        LatLng sydney = new LatLng(-34, 151);
@@ -407,6 +455,21 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
          */
+
+        if (autoCompleteLocation != null) {
+            exibirEnderecoAtual();
+            float factor = getResources().getDisplayMetrics().density;
+            int h = (int) (450 * factor);
+            int top = (int) (80 * factor);
+
+            mMap.setPadding(0, top, 0, h);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(autoCompleteLocation, 18));
+            mMap.addMarker(new MarkerOptions()
+                    .position(autoCompleteLocation));
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            return;
+        }
+
         try {
             if (mLocationPermissionGranted) {
                 Task locationResult = mFusedLocationProviderClient.getLastLocation();
@@ -415,9 +478,12 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
+
+                            pb.setVisibility(View.GONE);
+
                             mLastKnownLocation = (Location) task.getResult();
                             if (mLastKnownLocation == null) {
-                                getDeviceLocation();
+                                //getDeviceLocation();
                                 return;
                             }
                             mDefaultLocation = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
@@ -433,7 +499,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                             mMap.getUiSettings().setMyLocationButtonEnabled(true);
                         } else {
 
-                            getDeviceLocation();
+                            //getDeviceLocation();
 
 //                            float factor = getResources().getDisplayMetrics().density;
 //                            int h = (int) (450 * factor);
@@ -457,6 +523,10 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
     private void exibirEnderecoAtual() {
 
+        if (autoCompleteLocation != null) {
+            mDefaultLocation = autoCompleteLocation;
+        }
+
         List<Address> addresses = null;
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
@@ -470,6 +540,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             String rua = addresses.get(0).getThoroughfare();
             autocompleteFragment.setText(rua + ",");
             tv_nome_rua_cart.setText(rua);
+            tv_exemplo_help.setText(rua + ", 10");
             precoEntrega = calcularEntregaRapida(mDefaultLocation.latitude, mDefaultLocation.longitude);
             String valorDaEntrega = String.valueOf(precoEntrega) + ",00";
             String valorDasCompras = String.valueOf(somo) + ",00";
@@ -562,22 +633,33 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // The "which" argument contains the position of the selected item.
+
+                if (mMap != null) {
+                    mMap.clear();
+                }
+
+                autoCompleteLocation = null;
+
                 LatLng markerLatLng = mLikelyPlaceLatLngs[which];
                 String markerSnippet = mLikelyPlaceAddresses[which];
                 if (mLikelyPlaceAttributions[which] != null) {
                     markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
                 }
 
+                mDefaultLocation = new LatLng(markerLatLng.latitude, markerLatLng.longitude);
+
                 // Add a marker for the selected place, with an info window
                 // showing information about that place.
                 mMap.addMarker(new MarkerOptions()
-                        .title(mLikelyPlaceNames[which])
-                        .position(markerLatLng)
+                        .position(mDefaultLocation)
                         .snippet(markerSnippet));
 
                 // Position the map's camera at the location of the marker.
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation,
                         DEFAULT_ZOOM));
+
+                autocompleteFragment.setText(markerSnippet);
+                tv_nome_rua_cart.setText(markerSnippet);
             }
         };
 
@@ -657,6 +739,9 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         reference.delete();
         produtoss.remove(p);
         adapter.notifyItemRemoved(p);
+        if (produtoss.size() == 0) {
+            finish();
+        }
     }
 
     private boolean gpsLigado() {
@@ -690,8 +775,15 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         return placeIdObj > 4000 ? 6 : 5;
     }
 
+    private int calcularEntregaUltraRapida(double la, double lo) {
+        return calcularEntregaRapida(la, lo) * 2;
+    }
+
     private int calcularEntregaFacil(PlaceIdObj placeIdObj) {
         return ((int) SphericalUtil.computeDistanceBetween(new LatLng(-3.1174754000000005d, -60.001966200000005d), new LatLng(placeIdObj.getLat(), placeIdObj.getLng()))) > 10000 ? 5 : 3;
     }
 
+    public void verProximidades(View view) {
+        showCurrentPlace();
+    }
 }

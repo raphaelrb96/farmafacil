@@ -1,24 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MensagemActivity">
+    tools:context=".InventarioActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:theme="@style/MeuTemaDark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <androidx.appcompat.widget.Toolbar
-            android:theme="@style/MeuTemaDark"
-            android:id="@+id/toolbar_msg"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_mensagem" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="?attr/actionBarSize"
+        android:visibility="gone"
+        android:id="@+id/rv_inventario"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
+    <ProgressBar
+        android:id="@+id/pb_inventario"
+        android:layout_marginTop="90dp"
+        android:layout_gravity="center|top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

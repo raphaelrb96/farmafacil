@@ -1,32 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <TextView
-        android:layout_margin="4dp"
-        android:id="@+id/title_item_msg_list"
-        android:layout_marginBottom="8dp"
-        android:gravity="bottom"
-        android:textSize="20sp"
-        android:layout_weight="2"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="6dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <FrameLayout
+        android:layout_marginBottom="1dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:layout_margin="4dp"
-        android:textStyle="bold"
-        android:gravity="top"
-        android:id="@+id/timestamp_item_msg_list"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <androidx.cardview.widget.CardView
+            android:layout_margin="10dp"
+            app:cardCornerRadius="25dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp">
+            <ImageView
+                android:background="@drawable/ic_account_circle_black_24dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:id="@+id/img_perfil_central_mensagem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.cardview.widget.CardView>
+        <LinearLayout
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="80dp"
+            android:layout_marginLeft="70dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <TextView
+                android:layout_marginLeft="14dp"
+                android:id="@+id/title_item_msg_list"
+                android:gravity="bottom"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/tv_descricao_central_mensagem"
+                android:gravity="top"
+                android:textColor="@color/colorSecondaryLight"
+                android:layout_marginLeft="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_gravity="end"
+            android:orientation="vertical"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textColor="@color/colorAccent"
+                android:layout_gravity="center"
+                android:layout_marginRight="12dp"
+                android:layout_marginLeft="8dp"
+                android:layout_margin="4dp"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:id="@+id/timestamp_item_msg_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+        </LinearLayout>
+    </FrameLayout>
     <View
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="#393939"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="84dp"
+        android:layout_marginRight="12dp"
+        android:background="@color/back_rv"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
+</FrameLayout>
 
-</LinearLayout>

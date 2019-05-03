@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:src="@drawable/remedios2"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <FrameLayout
+            android:alpha="1"
+            android:background="@color/back_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <FrameLayout
+            android:alpha="0.3"
+            android:background="#000"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"/>
+    </FrameLayout>
+    <LinearLayout
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="166dp">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+            <LinearLayout
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textStyle="bold"
+                    android:textColor="@color/colorSecondaryLight"
+                    android:textSize="10sp"
+                    android:text="Taxa de entrega:"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <com.robinhood.ticker.TickerView
+                    android:layout_marginTop="2dp"
+                    android:maxLines="1"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    app:ticker_animationDuration="1500"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/taxa_entrega"
+                    android:textColor="@color/colorSecondary"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textStyle="bold"
+                    android:textColor="@color/colorSecondaryLight"
+                    android:textSize="10sp"
+                    android:text="Valor das Compras:"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <com.robinhood.ticker.TickerView
+                    android:id="@+id/total_compras"
+                    android:layout_marginTop="2dp"
+                    android:maxLines="1"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:ticker_animationDuration="1500"
+                    android:textColor="@color/colorSecondary"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textStyle="bold"
+                    android:textColor="@color/colorSecondaryLight"
+                    android:textSize="10sp"
+                    android:text="Total:"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <com.robinhood.ticker.TickerView
+                    android:id="@+id/total"
+                    android:layout_marginTop="2dp"
+                    android:maxLines="1"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:ticker_animationDuration="1500"
+                    android:textColor="@color/colorSecondaryDark"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="26dp">
+            <TextView
+                android:textStyle="bold"
+                android:textColor="@color/colorSecondaryLight"
+                android:textSize="18sp"
+                android:text="Entregar em:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/bt_mudar_endereco_conf"
+                android:clickable="true"
+                android:textStyle="bold|italic"
+                android:textColor="@color/colorSecondary"
+                android:layout_gravity="top|end"
+                android:textSize="14sp"
+                android:text="Mudar endereço"
+                android:layout_width="wrap_content"
+                android:textAllCaps="true"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+        <TextView
+            android:maxLines="2"
+            android:textStyle="bold"
+            android:id="@+id/tv_nome_rua_conf"
+            android:textSize="12sp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="@color/colorSecondaryDark"/>
+    </LinearLayout>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_marginTop="208dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ConfirmarCompraActivityFragment">
+
+        <!--Fundo-->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="10dp"
+                        app:errorEnabled="true"
+                        app:hintEnabled="true"
+                        app:hintTextColor="@color/colorSecondaryDark"
+                        app:helperTextTextColor="@color/colorSecondary"
+                        app:boxCornerRadiusTopEnd="4dp"
+                        app:boxCornerRadiusTopStart="4dp"
+                        app:boxCornerRadiusBottomEnd="4dp"
+                        app:boxCornerRadiusBottomStart="4dp"
+                        app:helperText="Informe o seu numero"
+                        app:helperTextEnabled="true"
+                        style="@style/MeuEditText"
+                        app:hintAnimationEnabled="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Celular">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:inputType="phone"
+                            android:imeOptions="actionNext"
+                            android:textCursorDrawable="@drawable/curso_text_input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <!--<com.google.android.material.textfield.TextInputLayout-->
+                        <!--android:layout_marginRight="16dp"-->
+                        <!--android:layout_marginLeft="16dp"-->
+                        <!--android:layout_marginTop="10dp"-->
+                        <!--app:errorEnabled="true"-->
+                        <!--app:hintEnabled="true"-->
+                        <!--app:boxCornerRadiusBottomEnd="5dp"-->
+                        <!--app:boxCornerRadiusBottomStart="5dp"-->
+                        <!--app:boxCornerRadiusTopEnd="5dp"-->
+                        <!--app:boxCornerRadiusTopStart="5dp"-->
+                        <!--app:helperText="Nome da rua, numero da casa"-->
+                        <!--app:helperTextEnabled="true"-->
+                        <!--app:boxStrokeColor="@color/colorPrimaryLight"-->
+                        <!--app:hintTextColor="@color/colorPrimaryLight"-->
+                        <!--app:helperTextTextColor="@color/colorPrimaryDark"-->
+                        <!--style="@style/MeuEditTextBranco"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:hint="Endereço Detalhado">-->
+
+                        <!--<com.google.android.material.textfield.TextInputEditText-->
+                            <!--android:maxHeight="120dp"-->
+                            <!--android:imeOptions="actionNext"-->
+                            <!--android:textCursorDrawable="@drawable/curso_text_input"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"/>-->
+
+                    <!--</com.google.android.material.textfield.TextInputLayout>-->
+
+                    <!--checkbox's-->
+                    <LinearLayout
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:background="@drawable/background_categoria"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <CheckBox
+                            android:buttonTint="@color/colorPrimary"
+                            android:drawableTint="@color/colorPrimary"
+                            android:textColor="@color/colorPrimary"
+                            android:id="@+id/cb_entrega_facil"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_gravity="center"
+                            android:text="Entrega Fácil"
+                            android:checked="true"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="39dp" />
+
+                        <View
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@color/back_rv"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"/>
+                        <TextView
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="16dp"
+                            android:text="Ideal para quem quer economizar, ou quando está sem pressa"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="14sp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <View
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@color/back_rv"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"/>
+
+                        <LinearLayout
+                            android:layout_margin="10dp"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <View
+                                android:backgroundTint="@color/colorPrimaryDark"
+                                android:layout_marginRight="8dp"
+                                android:layout_gravity="center_vertical"
+                                android:background="@drawable/ic_access_time_black_24dp"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"/>
+                            <TextView
+                                android:text="1 a 3 horas"
+                                android:textSize="22sp"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:gravity="center|start"
+                                android:layout_gravity="center|start"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:background="@drawable/background_categoria"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <CheckBox
+                            android:buttonTint="@color/colorPrimary"
+                            android:drawableTint="@color/colorPrimary"
+                            android:textColor="@color/colorPrimary"
+                            android:id="@+id/cb_entrega_rapida"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_gravity="center"
+                            android:text="Entrega Rápida"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="39dp" />
+
+                        <View
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@color/back_rv"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"/>
+                        <TextView
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="16dp"
+                            android:text="Ideal para quem tem um pouco de pressa em receber seu pedido"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="14sp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <View
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@color/back_rv"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"/>
+
+                        <LinearLayout
+                            android:layout_margin="10dp"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <View
+                                android:backgroundTint="@color/colorPrimaryDark"
+                                android:layout_marginRight="8dp"
+                                android:layout_gravity="center_vertical"
+                                android:background="@drawable/ic_access_time_black_24dp"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"/>
+                            <TextView
+                                android:text="30 a 60 minutos"
+                                android:textSize="22sp"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:gravity="center|start"
+                                android:layout_gravity="center|start"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+        </FrameLayout>
+
+
+        <!--Frente-->
+        <FrameLayout
+            android:clickable="true"
+            android:background="@color/colorPrimaryLight"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:orientation="vertical"
+            app:behavior_peekHeight="80dp"
+            android:id="@+id/content_layout_cart"
+            app:behavior_hideable="false"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+            <LinearLayout
+                android:elevation="8dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="80dp">
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="@color/colorSecondaryLight"
+                    android:layout_gravity="center"
+                    app:cardCornerRadius="2dp"
+                    android:layout_width="30dp"
+                    android:layout_height="4dp"/>
+                <TextView
+                    android:text="Formas de Pagamento"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorSecondaryLight"
+                    android:textSize="28sp"
+                    android:gravity="center|top"
+                    android:layout_gravity="center|top"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <androidx.core.widget.NestedScrollView
+                android:layout_marginTop="80dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <!--dinheiro-->
+                    <LinearLayout
+                        android:layout_marginTop="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <CheckBox
+                            android:textStyle="bold"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:textSize="20sp"
+                            android:buttonTint="@color/colorSecondaryDark"
+                            android:text="Dinheiro"
+                            android:layout_marginRight="10dp"
+                            android:layout_gravity="center|start"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <View
+                            android:id="@+id/icon_tipo_pagamento"
+                            android:layout_gravity="center|start"
+                            android:background="@drawable/ic_dinheiro_black_24dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/container_pagamento_dinheiro"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/text_input_troco"
+                            app:hintEnabled="true"
+                            app:boxCornerRadiusBottomEnd="5dp"
+                            app:boxCornerRadiusBottomStart="5dp"
+                            app:helperText="Vai precisar de troco ?"
+                            app:boxCornerRadiusTopEnd="5dp"
+                            app:boxCornerRadiusTopStart="5dp"
+                            style="@style/MeuEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Troco">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:imeOptions="actionDone"
+                                android:id="@+id/et_troco"
+                                android:textCursorDrawable="@drawable/curso_text_input"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <CheckBox
+                            android:layout_marginTop="4dp"
+                            android:id="@+id/cb_nao_precisa_troco"
+                            android:text="Não vou precisar de troco"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <!--debitto-->
+                    <LinearLayout
+                        android:layout_marginTop="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <CheckBox
+                            android:textStyle="bold"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:textSize="20sp"
+                            android:buttonTint="@color/colorSecondaryDark"
+                            android:text="Débito"
+                            android:layout_marginRight="10dp"
+                            android:layout_gravity="center|start"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <View
+                            android:layout_gravity="center|start"
+                            android:background="@drawable/ic_cartao_black_24dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginLeft="35dp"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Elo"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Visa"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Mastercard"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Cabal"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <!--credito-->
+                    <LinearLayout
+                        android:layout_marginTop="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <CheckBox
+                            android:textStyle="bold"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:textSize="20sp"
+                            android:buttonTint="@color/colorSecondaryDark"
+                            android:text="Crédito"
+                            android:layout_marginRight="10dp"
+                            android:layout_gravity="center|start"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <View
+                            android:layout_gravity="center|start"
+                            android:background="@drawable/ic_cartao_black_24dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginLeft="35dp"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Elo"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Visa"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Mastercard"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Cabal"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Hiper"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Hipercard"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <!--alimentacao-->
+                    <LinearLayout
+                        android:layout_marginTop="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <CheckBox
+                            android:textStyle="bold"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:textSize="20sp"
+                            android:buttonTint="@color/colorSecondaryDark"
+                            android:text="Alimentação"
+                            android:layout_marginRight="10dp"
+                            android:layout_gravity="center|start"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <View
+                            android:layout_gravity="center|start"
+                            android:background="@drawable/ic_vale_alimentacao_black_24dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginLeft="35dp"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Alelo"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="VR"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Ticket"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAllCaps="true"
+                            android:text="Sodexo"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="100dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                app:backgroundTint="@color/colorSecondaryDark"
+                android:text="Confimar Compra"
+                android:textColor="#fff"
+                app:icon="@drawable/ic_action_check_branco"
+                app:iconTint="#fff"
+                android:layout_gravity="center|bottom"
+                android:layout_marginBottom="18dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</FrameLayout>

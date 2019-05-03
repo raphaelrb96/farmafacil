@@ -132,6 +132,8 @@
         </LinearLayout>
 
         <ProgressBar
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="8dp"
             android:theme="@style/PbBranco"
             android:id="@+id/pb_mensagem_enviada"
             android:visibility="gone"

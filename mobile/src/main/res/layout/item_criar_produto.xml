@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:layout_gravity="center"
+        android:layout_marginTop="22dp"
+        android:layout_marginBottom="22dp"
+        android:textColor="#fff"
+        android:text="Criar Produto"
+        android:textSize="16sp"
+        app:icon="@drawable/ic_add_circle_outline_black_30dp"
+        app:iconTint="#fff"
+        app:backgroundTint="@color/colorSecondaryDark"
+        android:id="@+id/efab_criar_produto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</FrameLayout>

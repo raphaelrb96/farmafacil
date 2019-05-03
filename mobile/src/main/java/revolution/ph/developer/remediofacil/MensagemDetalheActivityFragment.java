@@ -63,6 +63,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static revolution.ph.developer.remediofacil.FragmentMain.pathFotoUser;
+import static revolution.ph.developer.remediofacil.FragmentMain.user;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -108,6 +111,8 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     private ArrayList<MensagemSemiCarregada> semiCarregadaArrayList = new ArrayList<>();
     private MensagemDetalheAdapter adapter;
     private TextView tv_tolbar;
+
+    private String idGetIntent;
 
     public MensagemDetalheActivityFragment() {
     }
@@ -330,6 +335,8 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
             }
         });
 
+        idGetIntent = getActivity().getIntent().getStringExtra("id");
+
         return layoutInflater;
     }
 
@@ -419,9 +426,16 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     private void salvarDadosEmFirestore(String str) {
         CollectionReference collection = this.firebaseFirestore.collection("centralMensagens");
         WriteBatch batch = this.firebaseFirestore.batch();
-        Object centralMensagens = new CentralMensagens(new Date(), getActivity().getIntent().getStringExtra("id"));
-        MensagemObject mensagemObject = new MensagemObject(System.currentTimeMillis(), this.auth.getCurrentUser().getUid(), 1, str, null, this.menssagem);
-        batch.set(collection.document(this.auth.getCurrentUser().getUid()), centralMensagens);
+        MensagemObject mensagemObject = new MensagemObject(System.currentTimeMillis(), user.getUid(), 1, str, null, this.menssagem);
+
+        //batch.set(collection.document(idGetIntent), centralMensagens);
+        batch.update(collection.document(idGetIntent), "time", new Date());
+        batch.update(collection.document(idGetIntent), "timeNovaMensagem", System.currentTimeMillis());
+        batch.update(collection.document(idGetIntent), "uid", idGetIntent);
+        batch.update(collection.document(idGetIntent), "foto", pathFotoUser);
+        batch.update(collection.document(idGetIntent), "nomeUser", user.getDisplayName());
+        batch.update(collection.document(idGetIntent), "descricao", mensagemObject.getMenssagemText());
+
         batch.set(this.collectionMensagens.document(), (Object) mensagemObject);
         batch.commit();
         this.menssagens.add(mensagemObject);

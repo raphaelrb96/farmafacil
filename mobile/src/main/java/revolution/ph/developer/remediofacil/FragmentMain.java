@@ -3,6 +3,7 @@ package revolution.ph.developer.remediofacil;
 import android.app.Fragment;
 import android.app.MediaRouteButton;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.ConnectivityManager;
@@ -51,6 +52,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -70,6 +72,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -103,7 +106,8 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     private GoogleSignInClient mGoogleSignInClient;
     private ImageView imgPerfil;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private FirebaseUser user;
+    public static FirebaseUser user = null;
+    public static String pathFotoUser;
     private ProgressBar pb;
     private ImageButton btPesquisar;
     private TextView tvErro;
@@ -187,7 +191,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
 
                     onSignedInInitialize();
 
-                    if (firebaseAuth.getCurrentUser().isAnonymous()) {
+                    if (user.isAnonymous()) {
                         efabCart.setVisibility(View.GONE);
                         toggleBackContainer(false);
                         obterListaDeProdutos(tipoReferencia);
@@ -236,7 +240,19 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         efabCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), CarrinhoActivity.class));
+
+                Snackbar snackbar = null;
+
+                if (user.isAnonymous()) {
+                    showDialog(1);
+                } else if (!isDeviceOnline()) {
+                    showDialog(2);
+                } else if (ids.size() == 0) {
+                    showDialog(3);
+                } else {
+                    startActivity(new Intent(getActivity(), CarrinhoActivity.class));
+                }
+
             }
         });
 
@@ -285,7 +301,9 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), MensagemActivity.class));
+                if (user != null) {
+                    startActivity(new Intent(getActivity(), MensagemDetalheActivity.class).putExtra("id", user.getUid()));
+                }
             }
         });
 
@@ -309,6 +327,13 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                     return true;
                 }
                 return false;
+            }
+        });
+
+        imgPerfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), AdmActivity.class));
             }
         });
 
@@ -366,6 +391,56 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         }
     }
 
+    private void showDialog(int tipo) {
+        switch (tipo) {
+            case 1:
+                AlertDialog.Builder dialogAnonimus = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialog)
+                        .setTitle("Atenção")
+                        .setMessage("Faça login para poder ter seu carrinho de compras")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                            }
+                        });
+                AlertDialog alertDialogAnonimus = dialogAnonimus.create();
+                alertDialogAnonimus.show();
+                alertDialogAnonimus.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getActivity().getResources().getColor(R.color.colorSecondaryDark));
+                break;
+            case 2:
+                AlertDialog.Builder dialogOffline = new AlertDialog.Builder(getActivity())
+                        .setTitle("Atenção")
+                        .setMessage("Baixa conectividade. Verifique sua internet e tente novamente")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alertDialogOff = dialogOffline.create();
+                alertDialogOff.show();
+                alertDialogOff.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getActivity().getResources().getColor(R.color.colorSecondaryDark));
+                break;
+            case 3:
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity())
+                        .setTitle("Atenção")
+                        .setMessage("Seu carrinho está vazio")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alertDialog = dialog.create();
+                alertDialog.show();
+                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getActivity().getResources().getColor(R.color.colorSecondaryDark));
+                break;
+            default:
+                break;
+        }
+    }
+
     private void carregarFotoPerfil() {
         if (auth == null || auth.getCurrentUser() == null) {
             return;
@@ -378,6 +453,8 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                     xs = auth.getCurrentUser().getProviderData().get(xis).getPhotoUrl().toString() + "?type=large&redirect=true&width=500&height=500";
                 }
                 Log.d("FotoPerfil", xs);
+
+                pathFotoUser = xs;
                 Glide.with(getActivity()).load(xs).into(imgPerfil);
             } catch (NullPointerException e) {
 

@@ -12,24 +12,26 @@ public class ProdObj {
     int nivel;
     String prodName;
     float prodValor;
+    float precoDeCompra;
     boolean promocional;
     Map<String, Boolean> tag;
 
     public ProdObj() {
     }
 
-    public ProdObj(String str, String str2, String str3, String str4, float f, int i, boolean z, int i2, boolean z2, String str5, Map<String, Boolean> map) {
-        this.imgCapa = str;
-        this.prodName = str2;
-        this.laboratorio = str3;
-        this.descr = str4;
-        this.prodValor = f;
-        this.categoria = i;
-        this.disponivel = z;
-        this.nivel = i2;
-        this.promocional = z2;
-        this.idProduto = str5;
-        this.tag = map;
+    public ProdObj(int categoria, String descr, boolean disponivel, String idProduto, String imgCapa, String laboratorio, int nivel, String prodName, float prodValor, float precoDeCompra, boolean promocional, Map<String, Boolean> tag) {
+        this.categoria = categoria;
+        this.descr = descr;
+        this.disponivel = disponivel;
+        this.idProduto = idProduto;
+        this.imgCapa = imgCapa;
+        this.laboratorio = laboratorio;
+        this.nivel = nivel;
+        this.prodName = prodName;
+        this.prodValor = prodValor;
+        this.precoDeCompra = precoDeCompra;
+        this.promocional = promocional;
+        this.tag = tag;
     }
 
     public Map<String, Boolean> getTag() {
@@ -74,5 +76,9 @@ public class ProdObj {
 
     public String getDescr() {
         return this.descr;
+    }
+
+    public float getPrecoDeCompra() {
+        return precoDeCompra;
     }
 }

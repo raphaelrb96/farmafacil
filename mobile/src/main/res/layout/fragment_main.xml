@@ -216,7 +216,7 @@
                                 <TextView
                                     android:layout_marginTop="10dp"
                                     android:gravity="center|start"
-                                    android:text="Perfumaria"
+                                    android:text="Variedades"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="18sp"
                                     android:textStyle="bold"

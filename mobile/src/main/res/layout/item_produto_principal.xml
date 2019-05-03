@@ -39,7 +39,7 @@
                         android:layout_marginRight="10dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="10dp"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -61,7 +61,7 @@
                             android:maxLines="2"
                             android:textSize="12sp"
                             android:layout_width="match_parent"
-                            android:layout_height="30dp" />
+                            android:layout_height="40dp" />
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>

@@ -4,9 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
+import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,8 +41,35 @@ public class CentralMensagemAdapter extends RecyclerView.Adapter<CentralMensagem
     @Override
     public void onBindViewHolder(@NonNull ItemMensagemCentral holder, int position) {
         CentralMensagens cm = list.get(position);
-        holder.hora.setText(cm.getTime().toString());
-        holder.uid.setText(cm.getUid());
+        Date date = null;
+
+        if (cm.getFoto() != null) {
+            Glide.with(context).load(cm.getFoto()).into(holder.foto);
+        } else {
+            holder.foto.setImageResource(R.drawable.ic_account_circle_black_24dp);
+        }
+
+        if (String.valueOf(cm.getTimeNovaMensagem()).length() > 0 && cm.getTimeNovaMensagem() != 0) {
+            date = new Date(cm.getTimeNovaMensagem());
+        } else {
+            date = cm.getTime();
+        }
+
+        String horarioStr = DateFormatacao.dataCompletaCorrigidaSmall(date, new Date());
+        holder.hora.setText(horarioStr);
+
+        if (cm.getNomeUser() == null) {
+            holder.nome.setText(cm.getUid());
+        } else {
+            holder.nome.setText(cm.getNomeUser());
+        }
+
+        if (cm.getDescricao() != null) {
+            holder.mensagem.setText(cm.getDescricao());
+        } else {
+            holder.mensagem.setText("");
+        }
+
     }
 
     @Override
@@ -48,12 +79,15 @@ public class CentralMensagemAdapter extends RecyclerView.Adapter<CentralMensagem
 
     class ItemMensagemCentral extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView uid, hora;
+        TextView nome, hora, mensagem;
+        ImageView foto;
 
         public ItemMensagemCentral(@NonNull View itemView) {
             super(itemView);
-            uid = (TextView) itemView.findViewById(R.id.title_item_msg_list);
+            nome = (TextView) itemView.findViewById(R.id.title_item_msg_list);
             hora = (TextView) itemView.findViewById(R.id.timestamp_item_msg_list);
+            mensagem = (TextView) itemView.findViewById(R.id.tv_descricao_central_mensagem);
+            foto = (ImageView) itemView.findViewById(R.id.img_perfil_central_mensagem);
             itemView.setOnClickListener(this);
         }
 

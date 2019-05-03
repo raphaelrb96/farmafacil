@@ -25,10 +25,15 @@
                 android:background="#000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+            <FrameLayout
+                android:alpha="0.3"
+                android:background="#000"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"/>
             <androidx.cardview.widget.CardView
                 android:alpha="0.7"
                 map:cardCornerRadius="8dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
@@ -40,6 +45,104 @@
                     android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
                     />
             </androidx.cardview.widget.CardView>
+
+            <ProgressBar
+                android:theme="@style/Pb"
+                android:id="@+id/pb_cart"
+                android:layout_marginTop="140dp"
+                android:layout_gravity="center|top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:id="@+id/container_help"
+                android:padding="12dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/backgroud_endereco"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_height="290dp"
+                android:layout_marginBottom="155dp">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:layout_marginRight="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+                        <LinearLayout
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:textStyle="bold"
+                                android:textColor="@color/colorSecondaryDark"
+                                android:textSize="20sp"
+                                android:text="Ajuda"
+                                android:layout_marginBottom="10dp"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content" />
+                            <View
+                                android:id="@+id/close_help"
+                                android:background="@drawable/ic_close_black_24dp"
+                                android:layout_gravity="end"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"/>
+                        </LinearLayout>
+                        <TextView
+                            android:text="Insira o nome da sua rua e o numero da sua casa, separados por uma virgula"
+                            android:textSize="16sp"
+                            android:textColor="@color/colorSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_marginBottom="6dp"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:text="Exemplo:"
+                            android:textSize="14sp"
+                            android:textColor="@color/colorSecondaryLight"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/tv_exemplo_help"
+                            android:text="Rua x, 10"
+                            android:textSize="16sp"
+                            android:textColor="@color/colorSecondaryLight"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:text="OBS: Sua rua pode ser reconhecida pelo nome antigo"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:textStyle="bold|italic"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:textSize="14sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <Button
+                        android:onClick="verProximidades"
+                        android:text="Locais Proximos"
+                        android:textColor="@color/colorPrimaryLight"
+                        android:backgroundTint="#000"
+                        android:layout_marginBottom="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingLeft="10dp"
+                        android:layout_gravity="center_horizontal"
+                        android:minWidth="180dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </FrameLayout>
 
         </FrameLayout>
         <!--Frente-->
@@ -73,13 +176,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <TextView
+                        android:layout_marginRight="16dp"
                         android:id="@+id/bt_mudar_endereco"
                         android:clickable="true"
                         android:textStyle="bold|italic"
                         android:textColor="@color/colorAccent"
                         android:layout_gravity="top|end"
                         android:textSize="14sp"
-                        android:text="Mudar endereço"
+                        android:text="Ajuda"
+                        android:textAllCaps="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </FrameLayout>
@@ -192,9 +297,10 @@
                 <View
                     android:backgroundTint="@color/colorSecondaryLight"
                     android:background="@drawable/ic_arrow_back_black_24dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="8dp"
                     android:layout_gravity="center|start"
                     android:clickable="true"
+                    android:id="@+id/bt_voltar_cart"
                     android:layout_width="30dp"
                     android:layout_height="30dp"/>
                 <TextView
@@ -222,7 +328,7 @@
         </com.google.android.material.bottomappbar.BottomAppBar>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             app:layout_anchor="@id/bt_app_bar_cart"
-            android:id="@+id/fab_inventario_edt"
+            android:id="@+id/fab_carrinho"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tint="@color/colorPrimary"
