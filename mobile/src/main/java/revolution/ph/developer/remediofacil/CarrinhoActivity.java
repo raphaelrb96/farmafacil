@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import revolution.ph.developer.remediofacil.objects.CompraFinalParcelable;
 
 import android.app.Activity;
 import android.content.Context;
@@ -84,6 +85,8 @@ import com.robinhood.ticker.TickerView;
 
 import javax.annotation.Nullable;
 
+import static revolution.ph.developer.remediofacil.FragmentMain.pathFotoUser;
+import static revolution.ph.developer.remediofacil.FragmentMain.user;
 import static revolution.ph.developer.remediofacil.MainActivity.ids;
 
 public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, AdapterCart.AnalizarClickPayFinal {
@@ -105,6 +108,10 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
     private float DEFAULT_ZOOM = 17;
     private View btVoltar, closeHelp;
     private ProgressBar pb;
+
+    private boolean proximidadeSelected = false;
+
+    private String ruaMain = null;
 
     public static ArrayList<Float> valores = new ArrayList();
     private int somo = 0;
@@ -232,8 +239,8 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
         content_layout_cart = (LinearLayout) findViewById(R.id.content_layout_cart);
 
         if (savedInstanceState != null) {
-            mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
-            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+//            mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+//            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
         // Construct a FusedLocationProviderClient.
@@ -259,8 +266,10 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             @Override
             public void onPlaceSelected(Place place) {
                 tv_nome_rua_cart.setText(place.getAddress());
+                proximidadeSelected = false;
                 if (mMap != null) {
                     autoCompleteLocation = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
+                    mDefaultLocation = autoCompleteLocation;
                     float factor = getResources().getDisplayMetrics().density;
                     int h = (int) (450 * factor);
                     int top = (int) (80 * factor);
@@ -300,7 +309,12 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             public void onClick(View v) {
 
                 Intent intent = new Intent(CarrinhoActivity.this, ConfirmarCompraActivity.class);
-                startActivity(intent);
+                if (precoEntrega != 0 && somo != 0 && ruaMain != null) {
+
+                    CompraFinalParcelable cfp = new CompraFinalParcelable(ruaMain, mDefaultLocation.latitude, mDefaultLocation.longitude, produtoss, user.getUid(), user.getDisplayName(), pathFotoUser, precoEntrega, somo);
+                    intent.putExtra("cfp", cfp);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -462,6 +476,8 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             int h = (int) (450 * factor);
             int top = (int) (80 * factor);
 
+            mDefaultLocation = autoCompleteLocation;
+
             mMap.setPadding(0, top, 0, h);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(autoCompleteLocation, 18));
             mMap.addMarker(new MarkerOptions()
@@ -469,6 +485,21 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
             return;
         }
+
+        if (proximidadeSelected) {
+            exibirEnderecoAtual();
+            float factor = getResources().getDisplayMetrics().density;
+            int h = (int) (450 * factor);
+            int top = (int) (80 * factor);
+
+            mMap.setPadding(0, top, 0, h);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 18));
+            mMap.addMarker(new MarkerOptions()
+                    .position(mDefaultLocation));
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            return;
+        }
+
 
         try {
             if (mLocationPermissionGranted) {
@@ -538,6 +569,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
         if (addresses != null) {
             String rua = addresses.get(0).getThoroughfare();
+            ruaMain = rua;
             autocompleteFragment.setText(rua + ",");
             tv_nome_rua_cart.setText(rua);
             tv_exemplo_help.setText(rua + ", 10");
@@ -658,8 +690,9 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation,
                         DEFAULT_ZOOM));
 
-                autocompleteFragment.setText(markerSnippet);
-                tv_nome_rua_cart.setText(markerSnippet);
+                proximidadeSelected = true;
+
+                exibirEnderecoAtual();
             }
         };
 

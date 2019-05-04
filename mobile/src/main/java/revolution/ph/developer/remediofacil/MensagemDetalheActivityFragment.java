@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -94,14 +96,15 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     private StorageReference storageReference;
     //private LinearLayout tirarFoto;
     private TextView tvListaVazia, tv_bt_acao_chat_camera;
-    private CoordinatorLayout coordinator_layout_chat;
+    private CoordinatorLayout coordinator_layout_chat, coordinatorLayoutMensagem;
     private LinearLayout content_layout_chat;
     private BottomSheetBehavior<LinearLayout> sheetBehavior;
     private CameraView camera;
+    private boolean fotoComDescricaoEnviada = false;
     private boolean cameraAberta = false;
     private boolean mCameraAudioPermissionGranted;
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA_AUDIO = 678;
-    private FrameLayout backgroundcamera;
+    private FrameLayout backgroundcamera, root;
     private LinearLayout btAbrirCamera;
     private LinearLayout bt_escolher_foto_chat;
     private View icon_bt_acao_chat_camera;
@@ -145,12 +148,14 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
         bt_escolher_foto_chat = (LinearLayout) layoutInflater.findViewById(R.id.bt_escolher_foto_chat);
         bt_escolher_foto_chat.setOnTouchListener(this);
         coordinator_layout_chat = (CoordinatorLayout) layoutInflater.findViewById(R.id.coordinator_layout_chat);
+        coordinatorLayoutMensagem = (CoordinatorLayout) layoutInflater.findViewById(R.id.coordinator_mensagem_bottom);
         coordinator_layout_chat.setOnTouchListener(this);
         camera = layoutInflater.findViewById(R.id.camera);
         icon_bt_acao_chat_camera = (View) layoutInflater.findViewById(R.id.icon_bt_acao_chat_camera);
         tv_bt_acao_chat_camera = (TextView) layoutInflater.findViewById(R.id.tv_bt_acao_chat_camera);
         image_chat_camera = (ImageView) layoutInflater.findViewById(R.id.foto_tirada_chat);
         backgroundcamera= (FrameLayout) layoutInflater.findViewById(R.id.background_chat_camera);
+        root= (FrameLayout) layoutInflater.findViewById(R.id.root_mensagem);
         content_layout_chat = (LinearLayout) layoutInflater.findViewById(R.id.content_layout_chat);
         content_layout_chat.setOnTouchListener(this);
         //this.tirarFoto = (LinearLayout) layoutInflater.findViewById(R.id.enviar_foto_mensagem);
@@ -200,6 +205,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
         this.collectionMensagens.orderBy("timeStamp").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException e) {
+                if (querySnapshot == null) return;
                 pb.setVisibility(View.GONE);
                 int i = 0;
                 if (querySnapshot.getDocuments().size() == 0) {
@@ -207,8 +213,11 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
                     recyclerView.setVisibility(View.GONE);
                     return;
                 }
-                tvListaVazia.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
+
+                if (sheetBehavior.getState() != BottomSheetBehavior.STATE_COLLAPSED) {
+                    tvListaVazia.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
                 menssagens = new ArrayList();
                 while (i < querySnapshot.getDocuments().size()) {
                     menssagens.add((MensagemObject) ((DocumentSnapshot) querySnapshot.getDocuments().get(i)).toObject(MensagemObject.class));
@@ -252,14 +261,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
                 } else if (fotoTirada) {
                     //foto tirada
                     menssagem = editText.getText().toString();
-                    if (editText.getText().length() > 0) {
-                        //foto com descricao
-                        editText.setText("");
-                        Log.d("Click", "enviar foto tirada com descricao");
-                    } else {
-                        //foto sem descricao
-                        Log.d("Click", "enviar foto tirada sem descricao");
-                    }
+                    editText.setText("");
 
 
                     if (fotoByte != null) {
@@ -295,14 +297,20 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
             public boolean onTouch(View v, MotionEvent event) {
                 editText.setFocusable(true);
                 editText.setFocusableInTouchMode(true);
+                tecladoInput = true;
                 sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 Log.d("TesteInput", "Com foco");
-                tecladoInput = true;
                 fabEnviar.setImageResource(R.drawable.ic_send_black_30dp);
                 return false;
             }
         });
 
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.d("msg_focus", String.valueOf(hasFocus));
+            }
+        });
 
         bt_escolher_foto_chat.setOnClickListener(new OnClickListener() {
             @Override
@@ -336,6 +344,37 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
         });
 
         idGetIntent = getActivity().getIntent().getStringExtra("id");
+
+        root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                root.getWindowVisibleDisplayFrame(r);
+                int sh = root.getRootView().getHeight();
+
+                int k = sh - r.bottom;
+                float factor = getResources().getDisplayMetrics().density;
+
+                if (k > sh * 0.15) {
+                    Log.d("teclado", "aberto");
+                    //224dp
+                    int h = (int) (374 * factor);
+                    if (!fotoTirada) {
+                        sheetBehavior.setPeekHeight(h, true);
+                    }
+                } else {
+                    Log.d("teclado", "fechado");
+                    int h = (int) (224 * factor);
+                    sheetBehavior.setPeekHeight(h, true);
+                    if (fotoComDescricaoEnviada && fotoTirada) {
+                        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        fotoComDescricaoEnviada = false;
+                        fotoTirada = false;
+                        toggleBtAcaoCamera();
+                    }
+                }
+            }
+        });
 
         return layoutInflater;
     }
@@ -470,11 +509,14 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     private void clickEnviarFoto() {
         ocultarFotoTirada();
         ocultarCamera();
-        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        fotoTirada = false;
         fotoByte = null;
+        modoFoto = false;
+        tecladoInput = false;
         mLocationForPhotos = null;
         recyclerView.scrollToPosition(0);
+        fotoComDescricaoEnviada = true;
+        esconderTeclado();
+        //toggleBtAcaoCamera();
     }
 
     private void esconderTeclado() {

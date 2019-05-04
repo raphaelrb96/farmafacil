@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
+    android:id="@+id/root_mensagem"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -199,6 +200,7 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_mensagem_bottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom">
@@ -214,7 +216,7 @@
             app:fabCradleMargin="10dp"
             app:fabCradleRoundedCornerRadius="10dp"
             app:fabCradleVerticalOffset="5dp"
-            app:hideOnScroll="true">
+            app:hideOnScroll="false">
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -243,5 +245,6 @@
             android:src="@drawable/ic_send_black_30dp"
             app:fabSize="normal"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
 </FrameLayout>

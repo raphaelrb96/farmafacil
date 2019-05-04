@@ -452,7 +452,6 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                 if (auth.getCurrentUser().getProviderData().get(xis).getProviderId().equals("facebook.com")) {
                     xs = auth.getCurrentUser().getProviderData().get(xis).getPhotoUrl().toString() + "?type=large&redirect=true&width=500&height=500";
                 }
-                Log.d("FotoPerfil", xs);
 
                 pathFotoUser = xs;
                 Glide.with(getActivity()).load(xs).into(imgPerfil);
