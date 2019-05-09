@@ -176,22 +176,19 @@
                     android:gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="112dp">
-                    <View
-                        android:id="@+id/icon_bt_acao_chat_camera"
-                        android:layout_gravity="center"
-                        android:background="@drawable/ic_photo_library_black_40dp"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"/>
-                    <TextView
-                        android:id="@+id/tv_bt_acao_chat_camera"
-                        android:textStyle="bold"
-                        android:layout_marginTop="4dp"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:text="Escolher Foto"
-                        android:textColor="#000"
+                    <FrameLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="20dp" />
+                        android:layout_height="match_parent">
+                        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                            android:layout_margin="26dp"
+                            android:text="Abrir Galeria"
+                            map:backgroundTint="@color/back_rv"
+                            android:id="@+id/efab_acao_chat"
+                            android:textColor="@color/colorSecondaryDark"
+                            map:icon="@drawable/ic_photo_library_black_40dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </FrameLayout>
                 </LinearLayout>
 
             </FrameLayout>
@@ -229,7 +226,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="120dp"
-                    android:layout_marginBottom="4dp"
+                    android:paddingBottom="6dp"
                     android:hint="Escreva uma menssagem"
                     android:lines="1"
                     android:maxLength="80"/>

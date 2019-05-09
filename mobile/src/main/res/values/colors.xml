@@ -9,4 +9,5 @@
     <color name="colorAccent">@color/colorSecondary</color>
     <color name="fab1">#f1f0f0</color>
     <color name="back_rv">#dcdcdc</color>
+    <color name="red">#ff0000</color>
 </resources>

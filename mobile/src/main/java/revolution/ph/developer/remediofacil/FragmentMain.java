@@ -63,8 +63,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
+import com.google.firebase.firestore.WriteBatch;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,12 +82,20 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import revolution.ph.developer.remediofacil.analitycs.AnalitycsFacebook;
+import revolution.ph.developer.remediofacil.analitycs.AnalitycsGoogle;
+import revolution.ph.developer.remediofacil.objects.TokenFcm;
+import revolution.ph.developer.remediofacil.objects.Usuario;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 import static revolution.ph.developer.remediofacil.MainActivity.ids;
 
 public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdutoCliente, FacebookCallback<LoginResult> {
+
+    private AnalitycsGoogle analitycsGoogle;
+    private AnalitycsFacebook analitycsFacebook;
 
     private static final int RC_SIGN_IN = 124;
     private static final int RC_SIGN_IN_ADM = 567;
@@ -107,7 +120,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     private ImageView imgPerfil;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static FirebaseUser user = null;
-    public static String pathFotoUser;
+    public static String pathFotoUser = "";
     private ProgressBar pb;
     private ImageButton btPesquisar;
     private TextView tvErro;
@@ -119,6 +132,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
 
     private int tipoReferencia = 4;
     private Query query;
+    private boolean ADMINISTRADOR = false;
 
     @Nullable
     @Override
@@ -178,6 +192,9 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
 
         ligarOuvintes();
 
+        analitycsFacebook = new AnalitycsFacebook(getActivity());
+        analitycsGoogle = new AnalitycsGoogle(getActivity());
+
         return view;
     }
 
@@ -200,6 +217,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                         toggleBackContainer(true);
                         carregarFotoPerfil();
                         getListCart();
+                        getTokenNoificacoes();
                     }
 
                 } else {
@@ -208,6 +226,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                     ids.clear();
                     ids = new ArrayList();
                     if (isDeviceOnline()) {
+                        //TODO 001: TROCAR NA COMPILACAO DE ADM
                         //loginAdmin();
                         //ou
                         loginUsuarioAnonimo();
@@ -244,11 +263,11 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                 Snackbar snackbar = null;
 
                 if (user.isAnonymous()) {
-                    showDialog(1);
+                    showDialog(1, "Faça login para poder ter seu carrinho de compras");
                 } else if (!isDeviceOnline()) {
-                    showDialog(2);
+                    showDialog(2, "Baixa conectividade. Verifique sua internet e tente novamente");
                 } else if (ids.size() == 0) {
-                    showDialog(3);
+                    showDialog(3, "Seu carrinho está vazio");
                 } else {
                     startActivity(new Intent(getActivity(), CarrinhoActivity.class));
                 }
@@ -260,6 +279,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             @Override
             public void onClick(View v) {
                 auth.signOut();
+                getActivity().recreate();
             }
         });
 
@@ -302,6 +322,10 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             @Override
             public void onClick(View v) {
                 if (user != null) {
+                    if (user.isAnonymous()) {
+                        showDialog(1, "Faça login para poder enviar uma mensagem");
+                        return;
+                    }
                     startActivity(new Intent(getActivity(), MensagemDetalheActivity.class).putExtra("id", user.getUid()));
                 }
             }
@@ -339,6 +363,102 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
 
     }
 
+    private void checkDadosUsuario(final String tokenAtual) {
+
+        final DocumentReference usuarioRef = firestore.collection("Usuario").document(user.getUid());
+        final DocumentReference admRef = firestore.collection("Adm").document(user.getUid());
+
+        usuarioRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot userDoc) {
+                WriteBatch batch = firestore.batch();
+                if (ADMINISTRADOR) {
+                    TokenFcm tokenFcmAdmin = new TokenFcm(tokenAtual, user.getDisplayName());
+                    batch.set(admRef, tokenFcmAdmin);
+                }
+
+                if (pathFotoUser.equals("")) {
+                    pathFotoUser = getFotoUser(user);
+                }
+
+                if (userDoc.exists()) {
+                    boolean mudarFoto = false;
+                    boolean mudarToken = false;
+
+                    Usuario usuarioObj = userDoc.toObject(Usuario.class);
+
+                    if(!pathFotoUser.equals(usuarioObj.getPathFoto())) {
+                        mudarFoto = true;
+                    }
+
+                    if (!tokenAtual.equals(usuarioObj.getTokenFcm())) {
+                        mudarToken = true;
+                    }
+
+                    if (mudarFoto && mudarToken) {
+                        batch.update(usuarioRef, "tokenFcm", tokenAtual);
+                        batch.update(usuarioRef, "pathFoto", pathFotoUser);
+                    } else if (!mudarFoto && mudarToken){
+                        batch.update(usuarioRef, "tokenFcm", tokenAtual);
+                    } else if (!mudarToken && mudarFoto) {
+                        batch.update(usuarioRef, "pathFoto", pathFotoUser);
+                    }
+                } else {
+                    //novo
+                    String num = "";
+                    String provedor = "Google";
+                    if (user.getPhoneNumber() != null) {
+                        num = user.getPhoneNumber();
+                    }
+
+
+                    if (user.getProviderId().equals("facebook.com")) {
+                        provedor = "Facebook";
+                    }
+                    long time = System.currentTimeMillis();
+                    Usuario noovoUsuario = new Usuario(user.getDisplayName(), user.getEmail(), num, Constantes.CONTROLE_VERSAO_USUARIO, user.getUid(), pathFotoUser, 0, provedor, null, time, tokenAtual, time);
+                    batch.set(usuarioRef, noovoUsuario);
+                }
+
+                batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getActivity(), user.getDisplayName() + ", Ok", Toast.LENGTH_LONG).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    private void getTokenNoificacoes() {
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            //Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        String token = task.getResult().getToken();
+                        checkDadosUsuario(token);
+
+                    }
+                });
+    }
+
     private void onSignedInInitialize() {
         carrinhoDoUsuario = FirebaseFirestore.getInstance().collection("carComprasActivy").document("usuario").collection(user.getUid());
     }
@@ -356,13 +476,13 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             } catch (ApiException e) {
 
             }
-            Log.d("TesteLogin", "Google");
         } else if (requestCode == RC_SIGN_IN_ADM) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 user = FirebaseAuth.getInstance().getCurrentUser();
+                ADMINISTRADOR = true;
                 //abrirMensagem();
                 // ...
             } else {
@@ -372,7 +492,6 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                 // ...
             }
         } else {
-            Log.d("TesteLogin", "Face");
         }
     }
 
@@ -391,12 +510,13 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         }
     }
 
-    private void showDialog(int tipo) {
+    private void showDialog(int tipo, String msg) {
         switch (tipo) {
             case 1:
-                AlertDialog.Builder dialogAnonimus = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialog)
+                //R.style.AppCompatAlertDialog
+                AlertDialog.Builder dialogAnonimus = new AlertDialog.Builder(getActivity())
                         .setTitle("Atenção")
-                        .setMessage("Faça login para poder ter seu carrinho de compras")
+                        .setMessage(msg)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -411,7 +531,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             case 2:
                 AlertDialog.Builder dialogOffline = new AlertDialog.Builder(getActivity())
                         .setTitle("Atenção")
-                        .setMessage("Baixa conectividade. Verifique sua internet e tente novamente")
+                        .setMessage(msg)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -425,7 +545,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             case 3:
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity())
                         .setTitle("Atenção")
-                        .setMessage("Seu carrinho está vazio")
+                        .setMessage(msg)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -441,16 +561,37 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         }
     }
 
+    private String getFotoUser (FirebaseUser user) {
+        if (user == null) return "";
+
+        for(int xis = 0; xis < user.getProviderData().size(); xis++) {
+            try {
+                String xs = user.getProviderData().get(xis).getPhotoUrl().toString() + "";
+
+                if (user.getProviderData().get(xis).getProviderId().equals("facebook.com")) {
+                    xs = user.getProviderData().get(xis).getPhotoUrl().toString() + "?type=large&redirect=true&width=500&height=500";
+                }
+                return xs;
+            } catch (NullPointerException e) {
+                return "";
+            }
+
+        }
+
+        return "";
+
+    }
+
     private void carregarFotoPerfil() {
-        if (auth == null || auth.getCurrentUser() == null) {
+        if (user == null) {
             return;
         }
-        for(int xis = 0; xis < auth.getCurrentUser().getProviderData().size(); xis++) {
+        for(int xis = 0; xis < user.getProviderData().size(); xis++) {
             try {
-                String xs = auth.getCurrentUser().getProviderData().get(xis).getPhotoUrl().toString();
+                String xs = user.getProviderData().get(xis).getPhotoUrl().toString();
 
-                if (auth.getCurrentUser().getProviderData().get(xis).getProviderId().equals("facebook.com")) {
-                    xs = auth.getCurrentUser().getProviderData().get(xis).getPhotoUrl().toString() + "?type=large&redirect=true&width=500&height=500";
+                if (user.getProviderData().get(xis).getProviderId().equals("facebook.com")) {
+                    xs = user.getProviderData().get(xis).getPhotoUrl().toString() + "?type=large&redirect=true&width=500&height=500";
                 }
 
                 pathFotoUser = xs;
@@ -478,8 +619,8 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
 
     @Override
     public void onclick(int i, ColorStateList colorStateList, View view, ProdObj prodObj) {
-        if (auth.getCurrentUser().isAnonymous()) {
-
+        if (user.isAnonymous()) {
+            showDialog(1, "Faça login para poder adicionar algum produto no seu carrinho de compras");
             return;
         }
         String str = prodObj.getIdProduto();
@@ -494,6 +635,12 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             }
             reference.set(carComprasActivy);
             mAdapter.notifyItemChanged(i);
+
+            analitycsFacebook.logAdicionarAoCarrinhoEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), prodObj.prodValor);
+            analitycsGoogle.logAdicionarAoCarrinhoEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), prodObj.prodValor);
+
+            analitycsFacebook.logUsuarioAdicionaProdutoAoCartEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), user.getDisplayName(), user.getUid(), user.getEmail(), pathFotoUser, prodObj.prodValor);
+            analitycsGoogle.logUsuarioAdicionaProdutoAoCartEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), user.getDisplayName(), user.getUid(), user.getEmail(), pathFotoUser, prodObj.prodValor);
             return;
         }
 
@@ -559,12 +706,13 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                 });
     }
 
-    private void myQuery(Query meuQuery, final boolean isPesquisa) {
+    private void myQuery(Query meuQuery, final boolean isPesquisa, final String sPesquisa) {
         prodObjs.clear();
 
         meuQuery.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                int sizeDoc = queryDocumentSnapshots.size();
                 if (!queryDocumentSnapshots.isEmpty()) {
 
                     final ArrayList<ProdObj> list = new ArrayList<>();
@@ -574,7 +722,10 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                         list.add(prod);
                     }
 
-
+                    if (isPesquisa) {
+                        analitycsFacebook.logPesquisaProdutoEvent(sPesquisa, user.getDisplayName(), user.getUid(), true, sizeDoc + " resultado(s)");
+                        analitycsGoogle.logPesquisaProdutoEvent(sPesquisa, user.getDisplayName(), user.getUid(), true);
+                    }
                     mAdapter = new AdapterProdutos(FragmentMain.this, getActivity(), list);
                     StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                     mListMercadorias.setLayoutManager(layoutManager);
@@ -584,8 +735,12 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                     return;
                 }
 
-                if (isPesquisa && queryDocumentSnapshots.size() == 0){
+
+
+                if (isPesquisa && sizeDoc == 0){
                     Toast.makeText(getActivity(), "Nenhum resultado para sua pesquisa", Toast.LENGTH_LONG).show();
+                    analitycsFacebook.logPesquisaProdutoEvent(sPesquisa, user.getDisplayName(), user.getUid(), false, sizeDoc + " resultado(s)");
+                    analitycsGoogle.logPesquisaProdutoEvent(sPesquisa, user.getDisplayName(), user.getUid(), false);
                     obterListaDeProdutos(4);
                 }
             }
@@ -601,9 +756,9 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         telaInicialLoadding();
         if (tipo != 4) {
-            myQuery(firestore.collection("produtos").whereEqualTo("categoria", tipo), false);
+            myQuery(firestore.collection("produtos").whereEqualTo("categoria", tipo), false, "");
         } else {
-            myQuery(firestore.collection("produtos").whereEqualTo("promocional", true), false);
+            myQuery(firestore.collection("produtos").whereEqualTo("promocional", true), false, "");
         }
 
     }
@@ -617,7 +772,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         String busca = "tag." + s.toLowerCase();
         telaInicialLoadding();
         esconderTeclado();
-        myQuery(firestore.collection("produtos").whereEqualTo(busca, true), true);
+        myQuery(firestore.collection("produtos").whereEqualTo(busca, true), true, s);
     }
 
     private void getListCart () {
@@ -650,7 +805,10 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                     public void onSuccess(AuthResult authResult) {
                         if (authResult != null) {
                             FirebaseUser user = authResult.getUser();
-                            Log.d("TesteLogin", "Goglle sucess");
+//                            Log.d("TesteLogin", "Goglle sucess");
+                            String foto = getFotoUser(user);
+                            analitycsFacebook.logLoginGoogleEvent(true, user.getDisplayName(), user.getUid());
+                            analitycsGoogle.logLoginGoogleEvent(true, user.getDisplayName(), user.getUid(), foto, user.getEmail(), user.getPhoneNumber(), Constantes.CONTROLE_VERSAO_USUARIO);
                             updateUI(user);
                         } else {
                             Log.d("TesteLogin", "GoogleErro");
@@ -669,20 +827,23 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                     public void onSuccess(AuthResult authResult) {
                         if (authResult != null) {
                             FirebaseUser user = authResult.getUser();
+                            String foto = getFotoUser(user);
+                            analitycsFacebook.logLoginFaceEvent(true, user.getDisplayName(),user.getUid());
+                            analitycsGoogle.logLoginFaceEvent(true, user.getDisplayName(), user.getUid(), foto, user.getEmail(), user.getPhoneNumber(), Constantes.CONTROLE_VERSAO_USUARIO);
                             updateUI(user);
-                            Log.d("TesteLogin", "Facesucess");
+//                            Log.d("TesteLogin", "Facesucess");
                         } else {
                             updateUI(null);
-                            Log.d("TesteLogin", "Faceerro");
+//                            Log.d("TesteLogin", "Faceerro");
                         }
                     }
                 });
     }
 
     private void updateUI(FirebaseUser firebaseUser) {
-        Timber.d("UpdateUI");
+//        Timber.d("UpdateUI");
         if (firebaseUser != null) {
-            Log.d("TesteLogin", "UpdateUISucesso");
+//            Log.d("TesteLogin", "UpdateUISucesso");
             //tirar container login e subir a lista de produtos
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             carregarFotoPerfil();

@@ -564,7 +564,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             addresses = geocoder.getFromLocation(mDefaultLocation.latitude, mDefaultLocation.longitude, 1);
         } catch (IOException e) {
             e.printStackTrace();
-            exibirEnderecoAtual();
+            //exibirEnderecoAtual();
         }
 
         if (addresses != null) {
@@ -619,7 +619,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
                                 for (PlaceLikelihood placeLikelihood : likelyPlaces) {
                                     // Build a list of likely places to show the user.
-                                    mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
+                                    mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getAddress();
                                     mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace()
                                             .getAddress();
                                     mLikelyPlaceAttributions[i] = (String) placeLikelihood.getPlace()

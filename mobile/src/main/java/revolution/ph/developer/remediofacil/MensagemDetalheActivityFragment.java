@@ -31,6 +31,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -64,6 +65,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import revolution.ph.developer.remediofacil.analitycs.AnalitycsFacebook;
+import revolution.ph.developer.remediofacil.analitycs.AnalitycsGoogle;
 
 import static revolution.ph.developer.remediofacil.FragmentMain.pathFotoUser;
 import static revolution.ph.developer.remediofacil.FragmentMain.user;
@@ -95,7 +98,8 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     private FirebaseStorage storage;
     private StorageReference storageReference;
     //private LinearLayout tirarFoto;
-    private TextView tvListaVazia, tv_bt_acao_chat_camera;
+    private ExtendedFloatingActionButton efabAcao;
+    private TextView tvListaVazia;
     private CoordinatorLayout coordinator_layout_chat, coordinatorLayoutMensagem;
     private LinearLayout content_layout_chat;
     private BottomSheetBehavior<LinearLayout> sheetBehavior;
@@ -107,7 +111,6 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     private FrameLayout backgroundcamera, root;
     private LinearLayout btAbrirCamera;
     private LinearLayout bt_escolher_foto_chat;
-    private View icon_bt_acao_chat_camera;
     private byte[] fotoByte = null;
     public boolean tecladoInput = false;
     private MensagemSemiCarregada mensagemSemiCarregada;
@@ -116,6 +119,9 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     private TextView tv_tolbar;
 
     private String idGetIntent;
+
+    private AnalitycsFacebook analitycsFacebook;
+    private AnalitycsGoogle analitycsGoogle;
 
     public MensagemDetalheActivityFragment() {
     }
@@ -151,8 +157,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
         coordinatorLayoutMensagem = (CoordinatorLayout) layoutInflater.findViewById(R.id.coordinator_mensagem_bottom);
         coordinator_layout_chat.setOnTouchListener(this);
         camera = layoutInflater.findViewById(R.id.camera);
-        icon_bt_acao_chat_camera = (View) layoutInflater.findViewById(R.id.icon_bt_acao_chat_camera);
-        tv_bt_acao_chat_camera = (TextView) layoutInflater.findViewById(R.id.tv_bt_acao_chat_camera);
+        efabAcao = (ExtendedFloatingActionButton) layoutInflater.findViewById(R.id.efab_acao_chat);
         image_chat_camera = (ImageView) layoutInflater.findViewById(R.id.foto_tirada_chat);
         backgroundcamera= (FrameLayout) layoutInflater.findViewById(R.id.background_chat_camera);
         root= (FrameLayout) layoutInflater.findViewById(R.id.root_mensagem);
@@ -170,6 +175,8 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
         this.storage = FirebaseStorage.getInstance();
         this.storageReference = this.storage.getReference();
         this.firebaseFirestore = FirebaseFirestore.getInstance();
+        analitycsFacebook = new AnalitycsFacebook(getActivity());
+        analitycsGoogle = new AnalitycsGoogle(getActivity());
         String saudacoes = "Olá " + auth.getCurrentUser().getDisplayName() + ", em que podemos lhe ajudar ?";
         tv_tolbar.setText(saudacoes);
         sheetBehavior = BottomSheetBehavior.from(content_layout_chat);
@@ -312,7 +319,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
             }
         });
 
-        bt_escolher_foto_chat.setOnClickListener(new OnClickListener() {
+        efabAcao.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!fotoTirada) {
@@ -361,6 +368,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
                     int h = (int) (374 * factor);
                     if (!fotoTirada) {
                         sheetBehavior.setPeekHeight(h, true);
+                        //exibirRv();
                     }
                 } else {
                     Log.d("teclado", "fechado");
@@ -381,11 +389,11 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
 
     private void toggleBtAcaoCamera() {
         if (fotoTirada) {
-            icon_bt_acao_chat_camera.setBackgroundResource(R.drawable.ic_add_a_photo_black_40dp);
-            tv_bt_acao_chat_camera.setText("Tirar outra foto");
+            efabAcao.setIcon(getActivity().getResources().getDrawable(R.drawable.ic_add_a_photo_black_40dp));
+            efabAcao.setText("Tirar outra foto");
         } else {
-            icon_bt_acao_chat_camera.setBackgroundResource(R.drawable.ic_photo_library_black_40dp);
-            tv_bt_acao_chat_camera.setText("Escolher foto");
+            efabAcao.setIcon(getActivity().getResources().getDrawable(R.drawable.ic_photo_library_black_40dp));
+            efabAcao.setText("Escolher foto");
         }
     }
 
@@ -470,17 +478,20 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
         //batch.set(collection.document(idGetIntent), centralMensagens);
         batch.update(collection.document(idGetIntent), "time", new Date());
         batch.update(collection.document(idGetIntent), "timeNovaMensagem", System.currentTimeMillis());
+        batch.update(collection.document(idGetIntent), "descricao", mensagemObject.getMenssagemText());
+        //TODO 001: O ADMIN NAO PRECISA ENVIAR ESSES DADOS ... COMENTA-LOS NA COMPILACAO DE ADM
         batch.update(collection.document(idGetIntent), "uid", idGetIntent);
         batch.update(collection.document(idGetIntent), "foto", pathFotoUser);
         batch.update(collection.document(idGetIntent), "nomeUser", user.getDisplayName());
-        batch.update(collection.document(idGetIntent), "descricao", mensagemObject.getMenssagemText());
 
-        batch.set(this.collectionMensagens.document(), (Object) mensagemObject);
+        batch.set(this.collectionMensagens.document(), mensagemObject);
         batch.commit();
         this.menssagens.add(mensagemObject);
         adapter.clearSemiCarregadas();
         this.editText.clearFocus();
         this.editText.setText("");
+        analitycsGoogle.logUserEnviaMensagemEvent(user.getDisplayName(), user.getUid());
+        analitycsFacebook.logUserEnviaMensagemEvent(user.getDisplayName(), user.getUid());
     }
 
     private void salvarFotoEmStorage() {
