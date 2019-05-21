@@ -89,19 +89,18 @@
                         android:layout_marginLeft="20dp"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
+                        android:layout_height="match_parent">
                         <LinearLayout
                             android:layout_marginTop="8dp"
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="32dp">
                             <TextView
                                 android:textStyle="bold"
                                 android:textColor="@color/colorSecondaryDark"
                                 android:textSize="20sp"
-                                android:text="Ajuda"
-                                android:layout_marginBottom="10dp"
+                                android:text="Endereço"
+                                android:layout_marginBottom="4dp"
                                 android:layout_weight="1"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content" />
@@ -112,26 +111,76 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"/>
                         </LinearLayout>
-                        <TextView
-                            android:text="Insira o nome da sua rua e o numero da sua casa, separados por uma virgula"
-                            android:textSize="16sp"
-                            android:textColor="@color/colorSecondary"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_marginTop="5dp"
+                            android:id="@+id/text_input_numero_casa"
+                            map:helperTextEnabled="true"
+                            map:helperText="Da casa ou imovel"
+                            app:boxCornerRadiusBottomEnd="5dp"
+                            app:boxCornerRadiusBottomStart="5dp"
+                            app:boxCornerRadiusTopEnd="5dp"
+                            app:boxCornerRadiusTopStart="5dp"
+                            style="@style/MeuEditText"
+                            map:helperTextTextColor="@color/colorSecondaryLight"
                             android:layout_width="match_parent"
-                            android:layout_marginBottom="6dp"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:text="Exemplo:"
-                            android:textSize="14sp"
-                            android:textColor="@color/colorSecondaryLight"
+                            android:layout_height="wrap_content"
+                            android:hint="Número">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:imeOptions="actionDone"
+                                android:inputType="numberDecimal"
+                                android:id="@+id/et_numero_casa"
+                                android:lines="1"
+                                android:textCursorDrawable="@drawable/curso_text_input"
+                                android:layout_width="match_parent"
+                                android:layout_height="45dp"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            map:helperTextTextColor="@color/colorSecondaryLight"
+                            android:layout_marginTop="6dp"
+                            android:id="@+id/text_input_complemento"
+                            map:helperTextEnabled="true"
+                            map:helperText="Informações que ajudam na entrega"
+                            app:boxCornerRadiusBottomEnd="5dp"
+                            app:boxCornerRadiusBottomStart="5dp"
+                            app:boxCornerRadiusTopEnd="5dp"
+                            app:boxCornerRadiusTopStart="5dp"
+                            style="@style/MeuEditText"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:id="@+id/tv_exemplo_help"
-                            android:text="Rua x, 10"
-                            android:textSize="16sp"
-                            android:textColor="@color/colorSecondaryLight"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:hint="Complemento">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:id="@+id/et_complemento"
+                                android:lines="1"
+                                android:textCursorDrawable="@drawable/curso_text_input"
+                                android:layout_width="match_parent"
+                                android:layout_height="45dp"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <!--<TextView-->
+                            <!--android:text="Insira o nome da sua rua e o numero da sua casa, separados por uma virgula"-->
+                            <!--android:textSize="16sp"-->
+                            <!--android:textColor="@color/colorSecondary"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_marginBottom="6dp"-->
+                            <!--android:layout_height="wrap_content" />-->
+                        <!--<TextView-->
+                            <!--android:text="Exemplo:"-->
+                            <!--android:textSize="14sp"-->
+                            <!--android:textColor="@color/colorSecondaryLight"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content" />-->
+                        <!--<TextView-->
+                            <!--android:id="@+id/tv_exemplo_help"-->
+                            <!--android:text="Rua x, 10"-->
+                            <!--android:textSize="16sp"-->
+                            <!--android:textColor="@color/colorSecondaryLight"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content" />-->
                         <TextView
                             android:text="OBS: Sua rua pode ser reconhecida pelo nome antigo"
                             android:layout_marginTop="10dp"
@@ -143,6 +192,7 @@
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                     <Button
+                        android:visibility="gone"
                         android:onClick="verProximidades"
                         android:text="Sugestões"
                         android:textColor="@color/colorSecondaryDark"
@@ -153,7 +203,7 @@
                         android:layout_gravity="center_horizontal"
                         android:minWidth="180dp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="40dp" />
 
                 </LinearLayout>
 
@@ -198,7 +248,7 @@
                         android:textColor="@color/colorAccent"
                         android:layout_gravity="top|end"
                         android:textSize="14sp"
-                        android:text="Ajuda"
+                        android:text="Detalhes"
                         android:textAllCaps="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />

@@ -8,10 +8,11 @@
     tools:context=".InventarioActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        app:elevation="10dp"
+        android:theme="@style/MeuTemaDark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <androidx.appcompat.widget.Toolbar
+            android:theme="@style/MeuTemaDark"
             android:id="@+id/toolbar_inventario"
             android:layout_width="match_parent"
             android:layout_height="112dp">

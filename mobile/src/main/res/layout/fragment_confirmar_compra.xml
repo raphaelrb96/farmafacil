@@ -78,7 +78,8 @@
                     android:textColor="@color/colorSecondary"/>
             </LinearLayout>
             <LinearLayout
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="6dp"
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -125,7 +126,7 @@
                 android:layout_height="wrap_content" />
         </FrameLayout>
         <TextView
-            android:maxLines="3"
+            android:maxLines="2"
             android:textStyle="bold"
             android:id="@+id/tv_nome_rua_conf_compra"
             android:textSize="22sp"
@@ -164,7 +165,7 @@
                         app:boxCornerRadiusTopStart="4dp"
                         app:boxCornerRadiusBottomEnd="4dp"
                         app:boxCornerRadiusBottomStart="4dp"
-                        app:helperText="Informe o seu numero"
+                        app:helperText="Celular de preferencia o WhatsApp ou telefone"
                         app:helperTextEnabled="true"
                         style="@style/MeuEditText"
                         app:hintAnimationEnabled="true"
@@ -561,7 +562,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
-
+                    <FrameLayout
+                        android:layout_width="40dp"
+                        android:layout_height="80dp"/>
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -572,10 +575,11 @@
                 app:icon="@drawable/ic_action_check_branco"
                 app:iconTint="#fff"
                 android:layout_gravity="center|bottom"
-                android:layout_marginBottom="18dp"
+                android:layout_marginBottom="25dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <ProgressBar
+                android:visibility="gone"
                 android:id="@+id/pb_confirmar_compra"
                 style="@style/Pb"
                 android:layout_gravity="center|bottom"

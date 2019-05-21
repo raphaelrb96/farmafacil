@@ -3,28 +3,28 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "revolution.ph.developer.remediofacil"
+        applicationId "revolution.ph.developer.remediofacilmanaus"
         minSdkVersion 16
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode 1
-        versionName "1.0"
+        versionCode 8
+        versionName "2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    publishNonDefault true
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            debuggable true
+            debuggable false
         }
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     //SUPPORT ANDROID
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
@@ -39,26 +39,20 @@ dependencies {
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.0.0'
     implementation 'com.google.guava:guava:27.0.1-android'
-
     implementation 'androidx.multidex:multidex:2.0.0'
-
     //ULTILIDADES BASICAS
     implementation 'com.github.bijoysingh:android-basics:5.0.0'
     implementation 'net.danlew:android.joda:2.8.1'
-
     //GRAFICOS
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
     //GLIDE
-    implementation("com.github.bumptech.glide:glide:4.9.0") {
+    implementation('com.github.bumptech.glide:glide:4.9.0') {
         exclude group: "com.android.support"
     }
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
-
     //TIMBER
     implementation 'com.jakewharton.timber:timber:4.7.1'
-
     //FIREBASE
     implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.firebase:firebase-messaging:17.5.0'
@@ -68,22 +62,17 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'com.google.firebase:firebase-storage:16.0.1'
     implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
-
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0-alpha03'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha03'
     wearApp project(':wear')
     implementation 'com.google.android.gms:play-services-wearable:+'
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
-
     implementation 'com.google.android.gms:play-services-places:16.0.0'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
-
     implementation 'com.robinhood.ticker:ticker:1.2.0'
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
-
     implementation 'com.otaliastudios:cameraview:2.0.0-beta04'
-
 }
 
 apply plugin: 'com.google.gms.google-services'

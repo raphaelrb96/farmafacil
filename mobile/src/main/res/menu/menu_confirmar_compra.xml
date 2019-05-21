@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="revolution.ph.developer.remediofacil.ConfirmarCompraActivity">
+    tools:context="revolution.ph.developer.remediofacilmanaus.ConfirmarCompraActivity">
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

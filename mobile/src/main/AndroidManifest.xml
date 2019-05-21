@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="revolution.ph.developer.remediofacil">
+    package="revolution.ph.developer.remediofacilmanaus">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -43,17 +43,18 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"
             tools:replace="android:value" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_star_black_24dp" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/red" />
 
-        <service android:name="MyFirebaseMessagingService">
+        <service android:name=".MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -107,10 +108,10 @@
             android:value="@string/google_map_api_key_nova" />
 
         <activity
-            android:theme="@style/MapaCar"
             android:name=".CarrinhoActivity"
             android:label="@string/title_activity_carrinho"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/MapaCar" />
         <activity
             android:name=".ScrollingActivity"
             android:label="@string/title_activity_scrolling"
@@ -129,9 +130,21 @@
             android:screenOrientation="portrait"
             android:theme="@style/MeuTemaDark" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".ConfirmarCompraActivity"
-            android:label="@string/title_activity_confirmar_compra"/>
+            android:label="@string/title_activity_confirmar_compra"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ConclusaoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MinhasComprasActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:screenOrientation="portrait"
+            android:theme="@style/MeuTemaDark"
+            android:name=".CentralComprasActivity"/>
     </application>
 
 </manifest>

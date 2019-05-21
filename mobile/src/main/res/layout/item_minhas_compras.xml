@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginTop="6dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.cardview.widget.CardView
+        android:layout_margin="10dp"
+        app:cardCornerRadius="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="45dp">
+                <View
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/ic_access_time_black_24dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:id="@+id/hora_minha_compra"
+                    android:text="21/01/19     09:45"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:textSize="20sp" />
+            </LinearLayout>
+            <View
+                android:background="@color/back_rv"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+                <TextView
+                    android:textColor="@color/colorSecondaryLight"
+                    android:text="Valor da compra"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/soma_minha_compra"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_gravity="end|center_vertical"
+                    android:text="R$ 100,00"
+                    android:textSize="18sp"
+                    android:gravity="end"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+                <TextView
+                    android:textColor="@color/colorSecondaryLight"
+                    android:text="Taxa de entrega"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/taxa_minha_compra"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_gravity="end|center_vertical"
+                    android:text="R$ 10,00"
+                    android:textSize="18sp"
+                    android:gravity="end"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+                <TextView
+                    android:textColor="@color/colorSecondaryLight"
+                    android:text="Total"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/total_minhas_compras"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_gravity="end|center_vertical"
+                    android:text="R$ 110,00"
+                    android:textSize="18sp"
+                    android:gravity="end"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/status_minha_compra"
+                android:textStyle="italic"
+                android:textSize="22sp"
+                android:layout_margin="10dp"
+                android:layout_gravity="center"
+                android:text="Solicitada"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>

@@ -11,6 +11,7 @@ db.settings(settings);
 
 const acaoCompra = 'compra';
 const acaoMensagem = 'mensagem';
+const acaoStatusCompra = 'statusCompra';
 
 const produtoPesquisa = 1;
 
@@ -124,7 +125,7 @@ exports.atualizarTimestampMensagem = functions.firestore.document('mensagens/ati
         timeStamp: Date.now()
     });
     let finalRef = db.collection('centralMensagens').doc(context.params.uidUser);
-    batch.update(finalRef, {
+    batch.set(finalRef, {
         timeNovaMensagem : Date.now()
     });
     return batch.commit();
@@ -167,19 +168,59 @@ exports.enviarNotificacaoMensagem = functions.firestore.document('mensagens/ativ
     }
 });
 
-exports.novaCompraRealizada = functions.firestore.document('centralComprasPendentes/{idDoc}').onUpdate((change, context) => {
+exports.updateStatusCompra = functions.firestore.document('Compras/{idDoc}').onUpdate((change, context) => {
 	const newValue = change.after.data();
-	const valorTT = String(newValue.valorTotal).charAt(1);
-	let body = newValue.userNome + ' efetuou um compra de R$ ' + valorTT + ',00';
-    return enviarNotificacaoAdmin(acaoCompra, 'Nova Compra', body);
+	const previousValue = change.before.data();
+
+	let statusAtual = newValue.statusCompra;
+	let statusAntigo = previousValue.statusCompra;
+
+	if (statusAntigo !== statusAtual) {
+		//status mudou
+		switch(statusAtual) {
+			case 2:
+				enviarNotificacaoUsuario(acaoStatusCompra, 'Aguarde, sua compra chegará em breve', 'Compra Confirmada');
+				break;
+			case 3:
+				enviarNotificacaoUsuario(acaoStatusCompra, 'Infelizmente aconteceu um imprevisto. Pedimos desculpas', 'Compra Cancelada');
+				break;
+			case 4:
+				enviarNotificacaoUsuario(acaoStatusCompra, 'Atenção. Sua compra está chegando', 'Compra a caminho');
+				break;
+			default:
+				break;
+		}
+	}
+
+	//const valorTT = String(newValue.valorTotal).charAt(1);
+	//let body = newValue.userNome + ' efetuou um compra de R$ ' + valorTT + ',00';
+    //return enviarNotificacaoAdmin(acaoCompra, 'Nova Compra', body);
+
+    return 0;
 });
 
-exports.atualizarTimestampCompraRealizada = functions.firestore.document('centralComprasPendentes/{idDoc}').onCreate((snap, context) => {
+exports.atualizarTimestampCompraRealizada = functions.firestore.document('Compras/{idDoc}').onCreate((snap, context) => {
     const newDoc = snap.data();
-    return snap.ref.update({
-        hora : Date.now()
-    });
+    let batch = db.batch();
+
+    let valorTotal = newDoc.valorTotal;
+    let nomeCliente = newDoc.userNome;
+
+    enviarNotificacaoAdmin(acaoCompra, 'De R$ ' + valorTotal + ',00 por ' + nomeCliente, 'Nova Compra');
+
+    let obj = {
+		hora: Date.now()
+    };
+
+    let compraRef = snap.ref;
+    let minhaCompraRef = db.collection('MinhasCompras').doc('Usuario').collection(newDoc.uidUserCompra).doc(context.params.idDoc);
+
+    batch.update(compraRef, obj);
+    batch.update(minhaCompraRef, obj);
+
+    return batch.commit();
 });
+
 
 
 //FUNCOES

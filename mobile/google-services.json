@@ -52,19 +52,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "750810743457-5ph3usbeg9cfr82poff938dujm6jc6l9.apps.googleusercontent.com",
+          "client_id": "750810743457-ejjcio71krphqha16fc2mqn3ts8risko.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "revolution.ph.developer.remediofacil",
-            "certificate_hash": "14145dac9894f393106e23773b5d0a08a2c1471a"
-          }
-        },
-        {
-          "client_id": "750810743457-4qjvs1kruikda8tf6gc63r3lm7khusfk.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "revolution.ph.developer.remediofacil",
-            "certificate_hash": "d39fe86bc139d852edf45c78db042fa762206a89"
+            "certificate_hash": "6f5f4d2e2720091c04d8cb5d262d84270f716887"
           }
         },
         {
@@ -76,10 +68,55 @@
           }
         },
         {
-          "client_id": "750810743457-ejjcio71krphqha16fc2mqn3ts8risko.apps.googleusercontent.com",
+          "client_id": "750810743457-4qjvs1kruikda8tf6gc63r3lm7khusfk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "revolution.ph.developer.remediofacil",
+            "certificate_hash": "d39fe86bc139d852edf45c78db042fa762206a89"
+          }
+        },
+        {
+          "client_id": "750810743457-5ph3usbeg9cfr82poff938dujm6jc6l9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "revolution.ph.developer.remediofacil",
+            "certificate_hash": "14145dac9894f393106e23773b5d0a08a2c1471a"
+          }
+        },
+        {
+          "client_id": "750810743457-iq30b2ja17fp0ijtijom4hbfns8uroak.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAz0S8nbMN1gfnpKA7WwXQsgDlgbOcu0Lo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "750810743457-iq30b2ja17fp0ijtijom4hbfns8uroak.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750810743457:android:1669d46f5d9012d1",
+        "android_client_info": {
+          "package_name": "revolution.ph.developer.remediofacilmanaus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "750810743457-t84v4t64rs4gogolvncluehuitreudru.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "revolution.ph.developer.remediofacilmanaus",
             "certificate_hash": "6f5f4d2e2720091c04d8cb5d262d84270f716887"
           }
         },
