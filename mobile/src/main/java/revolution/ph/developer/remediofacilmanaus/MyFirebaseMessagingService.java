@@ -12,6 +12,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import androidx.core.app.NotificationCompat;
 
 import static revolution.ph.developer.remediofacilmanaus.MainActivity.MEU_CANAL;
+import static revolution.ph.developer.remediofacilmanaus.FragmentMain.ADMINISTRADOR;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -60,7 +61,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         builder.setDefaults(NotificationCompat.DEFAULT_ALL);
         builder.setAutoCancel(true);
         if (action.equals("mensagem")) {
-            builder.setContentIntent(pendingIntent);
+            if (ADMINISTRADOR) {
+                builder.setContentIntent(centralCompras);
+            } else {
+                builder.setContentIntent(pendingIntent);
+            }
             //todo abrir central de mensagens quando for a compilacao do admin
         } else if (action.equals("compra")) {
             //todo abrir central de compras quando for a compilacao do admin

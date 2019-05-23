@@ -124,7 +124,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
 
     private int tipoReferencia = 4;
     private Query query;
-    public static final boolean ADMINISTRADOR = false;
+    public static final boolean ADMINISTRADOR = true;
 
     @Nullable
     @Override
@@ -132,7 +132,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
 
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        //FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
 
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
 

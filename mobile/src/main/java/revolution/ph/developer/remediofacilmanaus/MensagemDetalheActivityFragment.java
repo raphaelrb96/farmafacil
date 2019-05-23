@@ -371,6 +371,9 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
         });
 
         idGetIntent = getActivity().getIntent().getStringExtra("id");
+        if (idGetIntent == null) {
+            idGetIntent = user.getUid();
+        }
 
         root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -510,7 +513,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
             doc.put("time", new Date());
             doc.put("timeNovaMensagem", System.currentTimeMillis());
             doc.put("descricao", mensagemObject.getMenssagemText());
-            batch.set(collection.document(idGetIntent), doc);
+            batch.update(collection.document(idGetIntent), doc);
 //            batch.update(collection.document(idGetIntent), "time", new Date());
 //            batch.update(collection.document(idGetIntent), "timeNovaMensagem", System.currentTimeMillis());
 //            batch.update(collection.document(idGetIntent), "descricao", mensagemObject.getMenssagemText());
