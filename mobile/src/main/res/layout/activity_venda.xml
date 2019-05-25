@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VendaActivity">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout_venda"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--fundo-->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <FrameLayout
+                android:alpha="0.4"
+                android:background="#000"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"/>
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:layout_gravity="center_horizontal"
+                android:onClick="abrirMapa"
+                map:icon="@drawable/ic_my_location_black_24dp"
+                android:text="Abrir rota"
+                map:iconTint="@color/colorPrimaryLight"
+                android:textColor="@color/colorPrimaryLight"
+                android:layout_marginTop="34dp"
+                android:layout_width="wrap_content"
+                map:backgroundTint="@color/colorSecondary"
+                android:layout_height="wrap_content" />
+            <ProgressBar
+                android:theme="@style/Pb"
+                android:id="@+id/pb_venda"
+                android:layout_marginTop="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
+        <!--frente-->
+        <LinearLayout
+            android:layout_marginTop="100dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:behavior_peekHeight="204dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+            <!--toolbar-->
+            <LinearLayout
+                android:layout_marginTop="24dp"
+                android:elevation="8dp"
+                android:background="@drawable/ic_list_header_background"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="80dp">
+                <View
+                    android:id="@+id/bt_voltar_venda"
+                    android:backgroundTint="@color/colorSecondaryLight"
+                    android:background="@drawable/ic_arrow_back_black_24dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_gravity="center|start"
+                    android:clickable="true"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"/>
+                <androidx.cardview.widget.CardView
+                    app:cardBackgroundColor="@color/colorSecondaryLight"
+                    android:layout_gravity="center|start"
+                    app:cardCornerRadius="22dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:background="@drawable/ic_account_circle_black_24dp"
+                        android:backgroundTint="#fff"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:id="@+id/img_perfil_venda"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp" />
+                </androidx.cardview.widget.CardView>
+                <LinearLayout
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="6dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tv_nome_usuario_venda"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center|start"
+                        android:maxLines="2"
+                        android:text="Nome"
+                        android:textColor="@color/colorSecondaryLight"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+                <View
+                    android:id="@+id/bt_ligar_venda"
+                    android:backgroundTint="@color/colorSecondaryLight"
+                    android:layout_marginRight="16dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_phone_black_30dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"/>
+            </LinearLayout>
+            <androidx.core.widget.NestedScrollView
+                android:background="@color/colorPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:background="@color/back_rv"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp">
+
+                        <LinearLayout
+                            android:id="@+id/ll_bt_confirmar_venda"
+                            android:layout_width="90dp"
+                            android:layout_height="90dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_check_black_100dp"
+                                map:backgroundTint="@color/colorPrimary"
+                                map:fabSize="normal" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="8dp"
+                                android:text="Confirmar" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_bt_entregar_venda"
+                            android:layout_width="90dp"
+                            android:layout_height="90dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_despachar_black_24dp"
+                                map:backgroundTint="@color/colorPrimary"
+                                map:fabSize="normal" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="8dp"
+                                android:text="Entregar" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_bt_cancelar_venda"
+                            android:layout_width="90dp"
+                            android:layout_height="90dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_close_black_24dp"
+                                map:backgroundTint="@color/colorPrimary"
+                                map:fabSize="normal" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="8dp"
+                                android:text="Cancelar" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_bt_concluir_venda"
+                            android:layout_width="90dp"
+                            android:layout_height="90dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_star_black_24dp"
+                                map:backgroundTint="@color/colorPrimary"
+                                map:fabSize="normal" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="8dp"
+                                android:text="Concluir" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp">
+                        <View
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/ic_access_time_black_24dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"/>
+
+                        <TextView
+                            android:id="@+id/hora_venda"
+                            android:text="21/01/19     09:45"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_marginTop="14dp"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorSecondaryLight"
+                        android:textSize="18sp"
+                        android:text="Status:"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tv_status_venda"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="16dp"
+                        android:text="Solicitada"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_marginTop="14dp"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorSecondaryLight"
+                        android:textSize="18sp"
+                        android:text="Produtos:"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="6dp"
+                        android:id="@+id/rv_vendas"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"/>
+                    <LinearLayout
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp">
+                        <LinearLayout
+                            android:layout_marginRight="16dp"
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:textStyle="bold"
+                                android:textColor="@color/colorSecondaryLight"
+                                android:textSize="10sp"
+                                android:text="Taxa de entrega:"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <TextView
+                                android:layout_marginTop="2dp"
+                                android:maxLines="1"
+                                android:textStyle="bold"
+                                android:textSize="26sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/taxa_entrega_venda"
+                                android:textColor="@color/colorSecondary"/>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_marginRight="16dp"
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:textStyle="bold"
+                                android:textColor="@color/colorSecondaryLight"
+                                android:textSize="10sp"
+                                android:text="Valor das Compras:"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <TextView
+                                android:id="@+id/total_compras_venda"
+                                android:layout_marginTop="2dp"
+                                android:maxLines="1"
+                                android:textStyle="bold"
+                                android:textSize="26sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/colorSecondary"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="6dp"
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:textStyle="bold"
+                                android:textColor="@color/colorSecondaryLight"
+                                android:textSize="10sp"
+                                android:text="Total:"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <TextView
+                                android:id="@+id/total_venda"
+                                android:layout_marginTop="2dp"
+                                android:maxLines="1"
+                                android:textStyle="bold"
+                                android:textSize="26sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/colorSecondaryDark"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_marginTop="14dp"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorSecondaryLight"
+                        android:textSize="18sp"
+                        android:text="Pagamento:"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tv_pagamento_venda"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="16dp"
+                        android:text="Dinheiro, troco pra 100,00"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_marginTop="14dp"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorSecondaryLight"
+                        android:textSize="18sp"
+                        android:text="Tipo de Entrega:"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tv_tipo_entrega_venda"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="16dp"
+                        android:text="Fácil"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_marginTop="14dp"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorSecondaryLight"
+                        android:textSize="18sp"
+                        android:text="Entregar em:"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_marginBottom="30dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:text="Rua xxxxxx xxxxxxx xxxxxxx x xx xx xxx x xxxx xxxxx xxxx xx"
+                        android:textStyle="bold"
+                        android:id="@+id/tv_nome_rua_venda"
+                        android:textSize="24sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorSecondaryDark"/>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>
+

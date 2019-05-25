@@ -151,6 +151,10 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layoutInflater = inflater.inflate(R.layout.fragment_mensagem_detalhe, container, false);
+        idGetIntent = getActivity().getIntent().getStringExtra("id");
+        if (idGetIntent == null) {
+            idGetIntent = user.getUid();
+        }
         tv_tolbar = (TextView) layoutInflater.findViewById(R.id.tv_toolbar_chat);
         this.tvListaVazia = (TextView) layoutInflater.findViewById(R.id.tv_lista_vazia_mensagem);
         this.recyclerView = (RecyclerView) layoutInflater.findViewById(R.id.rv_mensagens);
@@ -213,7 +217,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
 
             }
         });
-        this.collectionMensagens = this.firebaseFirestore.collection("mensagens").document("ativas").collection(getActivity().getIntent().getStringExtra("id"));
+        this.collectionMensagens = this.firebaseFirestore.collection("mensagens").document("ativas").collection(idGetIntent);
         this.collectionMensagens.orderBy("timeStamp").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException e) {
@@ -369,11 +373,6 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
                 exibirFotoTirada(fotoByte);
             }
         });
-
-        idGetIntent = getActivity().getIntent().getStringExtra("id");
-        if (idGetIntent == null) {
-            idGetIntent = user.getUid();
-        }
 
         root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

@@ -325,7 +325,7 @@ public class ConfirmarCompraActivityFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    detalhePagamento = "Dinheiro está trocado";
+                    detalhePagamento = "está trocado";
                     etTroco.clearFocus();
                     esconderTeclado(etTroco);
                 } else {

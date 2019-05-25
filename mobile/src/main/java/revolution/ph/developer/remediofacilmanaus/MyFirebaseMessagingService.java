@@ -39,6 +39,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Intent intent = new Intent(this, MensagemDetalheActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
+        Intent intentCentMsg = new Intent(this, MensagemActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         Intent intentCentralCompras = new Intent(this, CentralComprasActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -46,8 +49,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        PendingIntent centralCompras = PendingIntent.getActivity(this, 1, intentCentralCompras, 0);
-        PendingIntent minhasCompras = PendingIntent.getActivity(this, 1, intentMinhasCompras, 0);
+        PendingIntent pendingIntentCentMsg = PendingIntent.getActivity(this, 1, intentCentMsg, 0);
+        PendingIntent centralCompras = PendingIntent.getActivity(this, 2, intentCentralCompras, 0);
+        PendingIntent minhasCompras = PendingIntent.getActivity(this, 3, intentMinhasCompras, 0);
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, MEU_CANAL);
@@ -62,13 +66,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         builder.setAutoCancel(true);
         if (action.equals("mensagem")) {
             if (ADMINISTRADOR) {
-                builder.setContentIntent(centralCompras);
+                builder.setContentIntent(pendingIntentCentMsg);
             } else {
                 builder.setContentIntent(pendingIntent);
             }
             //todo abrir central de mensagens quando for a compilacao do admin
         } else if (action.equals("compra")) {
             //todo abrir central de compras quando for a compilacao do admin
+            builder.setContentIntent(centralCompras);
         } else if (action.equals("statusCompra")){
             builder.setContentIntent(minhasCompras);
         }

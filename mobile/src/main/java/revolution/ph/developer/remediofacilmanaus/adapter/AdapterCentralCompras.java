@@ -32,7 +32,7 @@ public class AdapterCentralCompras extends RecyclerView.Adapter<AdapterCentralCo
     }
 
     public interface ClickCentralCompra {
-        void detalhesCompra(String idCompra);
+        void detalhesCompra(CompraFinalizada compra);
     }
 
     @NonNull
@@ -110,7 +110,7 @@ public class AdapterCentralCompras extends RecyclerView.Adapter<AdapterCentralCo
         @Override
         public void onClick(View v) {
             CompraFinalizada cf = compraFinalizadas.get(getAdapterPosition());
-            listene.detalhesCompra(cf.getIdCompra());
+            listene.detalhesCompra(cf);
         }
     }
 

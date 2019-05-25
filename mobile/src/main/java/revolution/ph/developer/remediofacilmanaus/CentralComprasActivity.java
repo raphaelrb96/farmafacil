@@ -4,9 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import revolution.ph.developer.remediofacilmanaus.adapter.AdapterCentralCompras;
+import revolution.ph.developer.remediofacilmanaus.objects.CarComprasActivyParcelable;
 import revolution.ph.developer.remediofacilmanaus.objects.CompraFinalizada;
+import revolution.ph.developer.remediofacilmanaus.objects.CompraFinalizadaParcelable;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -103,7 +106,17 @@ public class CentralComprasActivity extends AppCompatActivity implements Adapter
     }
 
     @Override
-    public void detalhesCompra(String idCompra) {
+    public void detalhesCompra(CompraFinalizada compra) {
+        ArrayList<CarComprasActivyParcelable> carComprasActivyParcelableArrayList = new ArrayList<>();
+        for (int i = 0; i < compra.getListaDeProdutos().size(); i++) {
+            CarComprasActivyParcelable p = new CarComprasActivyParcelable(compra.getListaDeProdutos().get(i));
+            carComprasActivyParcelableArrayList.add(p);
+        }
 
+        CompraFinalizadaParcelable compraFinalizadaParcelable = new CompraFinalizadaParcelable(compra);
+        Intent intent = new Intent(this, VendaActivity.class);
+        intent.putParcelableArrayListExtra("itens", carComprasActivyParcelableArrayList);
+        intent.putExtra("compra", compraFinalizadaParcelable);
+        startActivity(intent);
     }
 }
