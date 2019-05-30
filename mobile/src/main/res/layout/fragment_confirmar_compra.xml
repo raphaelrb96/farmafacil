@@ -336,7 +336,9 @@
                         </LinearLayout>
 
                     </LinearLayout>
-
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"/>
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
         </FrameLayout>
@@ -379,7 +381,8 @@
                     android:layout_gravity="center|top"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </LinearLayout
+                >
             <androidx.core.widget.NestedScrollView
                 android:layout_marginTop="80dp"
                 android:layout_width="match_parent"

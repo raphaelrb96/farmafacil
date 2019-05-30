@@ -19,11 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+
+import javax.annotation.Nullable;
 
 import static revolution.ph.developer.remediofacilmanaus.FragmentMain.user;
 
@@ -81,29 +85,31 @@ public class MinhasComprasActivity extends AppCompatActivity {
         }
 
 
-        firestore.collection("MinhasCompras").document("Usuario").collection(uid).orderBy("hora", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (queryDocumentSnapshots != null) {
-                    if (queryDocumentSnapshots.getDocuments().size() < 1) {
-                        pb.setVisibility(View.GONE);
-                        containerErro.setVisibility(View.VISIBLE);
-                    } else {
-                        ArrayList<CompraFinalizada> compraFinalizadas = new ArrayList<>();
-                        for (int i = 0; i < queryDocumentSnapshots.getDocuments().size(); i++) {
-                            CompraFinalizada cf = queryDocumentSnapshots.getDocuments().get(i).toObject(CompraFinalizada.class);
-                            compraFinalizadas.add(cf);
-                        }
+        firestore.collection("MinhasCompras").document("Usuario")
+                .collection(uid).orderBy("hora", Query.Direction.DESCENDING)
+                .addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (queryDocumentSnapshots != null) {
+                            if (queryDocumentSnapshots.getDocuments().size() < 1) {
+                                pb.setVisibility(View.GONE);
+                                containerErro.setVisibility(View.VISIBLE);
+                            } else {
+                                ArrayList<CompraFinalizada> compraFinalizadas = new ArrayList<>();
+                                for (int i = 0; i < queryDocumentSnapshots.getDocuments().size(); i++) {
+                                    CompraFinalizada cf = queryDocumentSnapshots.getDocuments().get(i).toObject(CompraFinalizada.class);
+                                    compraFinalizadas.add(cf);
+                                }
 
-                        AdapterMinhasCompras adapter = new AdapterMinhasCompras(MinhasComprasActivity.this, compraFinalizadas);
-                        rv.setLayoutManager(new LinearLayoutManager(MinhasComprasActivity.this));
-                        rv.setAdapter(adapter);
-                        pb.setVisibility(View.GONE);
-                        rv.setVisibility(View.VISIBLE);
+                                AdapterMinhasCompras adapter = new AdapterMinhasCompras(MinhasComprasActivity.this, compraFinalizadas);
+                                rv.setLayoutManager(new LinearLayoutManager(MinhasComprasActivity.this));
+                                rv.setAdapter(adapter);
+                                pb.setVisibility(View.GONE);
+                                rv.setVisibility(View.VISIBLE);
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
 
         btVoltar.setOnClickListener(new View.OnClickListener() {
             @Override

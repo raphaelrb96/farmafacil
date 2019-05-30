@@ -117,6 +117,7 @@
                 android:textStyle="italic"
                 android:textSize="22sp"
                 android:layout_margin="10dp"
+                android:gravity="center"
                 android:layout_gravity="center"
                 android:text="Solicitada"
                 android:layout_width="wrap_content"

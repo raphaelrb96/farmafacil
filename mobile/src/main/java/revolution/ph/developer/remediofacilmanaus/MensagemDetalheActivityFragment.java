@@ -102,7 +102,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     private StorageReference storageReference;
     //private LinearLayout tirarFoto;
     private ExtendedFloatingActionButton efabAcao;
-    private TextView tvListaVazia;
+    private LinearLayout tvListaVazia;
     private CoordinatorLayout coordinator_layout_chat, coordinatorLayoutMensagem;
     private LinearLayout content_layout_chat;
     private BottomSheetBehavior<LinearLayout> sheetBehavior;
@@ -156,7 +156,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
             idGetIntent = user.getUid();
         }
         tv_tolbar = (TextView) layoutInflater.findViewById(R.id.tv_toolbar_chat);
-        this.tvListaVazia = (TextView) layoutInflater.findViewById(R.id.tv_lista_vazia_mensagem);
+        this.tvListaVazia = (LinearLayout) layoutInflater.findViewById(R.id.tv_lista_vazia_mensagem);
         this.recyclerView = (RecyclerView) layoutInflater.findViewById(R.id.rv_mensagens);
         btAbrirCamera= (LinearLayout) layoutInflater.findViewById(R.id.bt_tirar_foto_chat);
         bt_escolher_foto_chat = (LinearLayout) layoutInflater.findViewById(R.id.bt_escolher_foto_chat);
@@ -196,13 +196,13 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                     //sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 if (newState == 4){
-                    Log.d("BottomSheet", "Baixo");
+                    //Log.d("BottomSheet", "Baixo");
                     if (mLocationForPhotos != null || fotoByte != null) {
                         editText.setHint("Escreva uma descrição");
                     }
                     exibirCamera();
                 } else if (newState == 3){
-                    Log.d("BottomSheet", "Alto");
+                    //Log.d("BottomSheet", "Alto");
                     if (mLocationForPhotos == null || fotoByte == null) {
                         editText.setHint("Escreva uma mensagem");
                     }
@@ -471,6 +471,11 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     }
 
     private void exibirRv() {
+        if(menssagens.size() == 0) {
+            recyclerView.setVisibility(View.GONE);
+            tvListaVazia.setVisibility(View.VISIBLE);
+            return;
+        }
         recyclerView.setVisibility(View.VISIBLE);
     }
 
@@ -493,6 +498,9 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     }
 
     private void salvarDadosEmFirestore(String str) {
+        if (user == null) {
+            user = FirebaseAuth.getInstance().getCurrentUser();
+        }
         CollectionReference collection = this.firebaseFirestore.collection("centralMensagens");
         WriteBatch batch = this.firebaseFirestore.batch();
         MensagemObject mensagemObject = new MensagemObject(System.currentTimeMillis(), user.getUid(), 1, str, null, this.menssagem);

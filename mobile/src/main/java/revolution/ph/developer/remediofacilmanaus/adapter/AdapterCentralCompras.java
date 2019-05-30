@@ -72,7 +72,7 @@ public class AdapterCentralCompras extends RecyclerView.Adapter<AdapterCentralCo
                 break;
             case 4:
                 holder.status_minha_compra.setText("Sua compra está a caminho");
-                holder.status_minha_compra.setTextColor(Color.YELLOW);
+                holder.status_minha_compra.setTextColor(Color.GRAY);
                 break;
             case 5:
                 holder.status_minha_compra.setText("Concluida");

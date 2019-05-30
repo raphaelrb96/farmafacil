@@ -25,6 +25,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -109,9 +113,72 @@ public class VendaActivity extends FragmentActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 String uri = "tel:" + dadosCompra.getPhoneUser().trim();
-                Intent intent = new Intent(Intent.ACTION_CALL);
+                Intent intent = new Intent(Intent.ACTION_DIAL);
                 intent.setData(Uri.parse(uri));
                 startActivity(intent);
+            }
+        });
+        ll_bt_cancelar_venda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateState(3);
+            }
+        });
+        ll_bt_confirmar_venda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateState(2);
+            }
+        });
+        ll_bt_entregar_venda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateState(4);
+            }
+        });
+        ll_bt_concluir_venda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateState(5);
+            }
+        });
+    }
+
+    private void updateState(final int i) {
+        pb.setVisibility(View.VISIBLE);
+
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        WriteBatch batch = firestore.batch();
+
+        DocumentReference compras = firestore.collection("Compras").document(dadosCompra.getIdCompra());
+        DocumentReference minhasCompras = firestore.collection("MinhasCompras").document("Usuario").collection(dadosCompra.getUidUserCompra()).document(dadosCompra.getIdCompra());
+
+        batch.update(compras, "statusCompra", i);
+        batch.update(minhasCompras, "statusCompra", i);
+
+        batch.commit().addOnSuccessListener(VendaActivity.this, new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                pb.setVisibility(View.GONE);
+                switch (i) {
+                    case 1:
+                        tv_status_venda.setText("Aguardando a confirmação do pedido");
+                        break;
+                    case 2:
+                        tv_status_venda.setText("Confirmada");
+                        break;
+                    case 3:
+                        tv_status_venda.setText("Cancelada");
+                        break;
+                    case 4:
+                        tv_status_venda.setText("Saiu para entrega");
+                        break;
+                    case 5:
+                        tv_status_venda.setText("Concluida");
+                        break;
+                    default:
+                        break;
+                }
             }
         });
     }

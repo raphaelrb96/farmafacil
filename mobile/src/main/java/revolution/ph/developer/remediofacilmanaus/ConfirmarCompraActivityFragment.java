@@ -537,6 +537,7 @@ public class ConfirmarCompraActivityFragment extends Fragment {
             }
             mToast = Toast.makeText(getActivity(), "Insira os 8 digitos do seu número", Toast.LENGTH_LONG);
             mToast.show();
+            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             return null;
         }
         CompraFinalizada compraFinalizada = new CompraFinalizada(cfp.getRua(), "", detalhePagamento, tipoDePagamento, System.currentTimeMillis(), cfp.getLat(), produtoss, cfp.getLng(), telefoneMain, tipoEntrega, cfp.getUidUserCompra(), cfp.getUserNome(), cfp.getPathPhoto(), total, taxa, soma, 1, "");

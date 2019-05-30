@@ -33,6 +33,7 @@ public class CentralComprasActivity extends AppCompatActivity implements Adapter
     private ProgressBar pb;
     private LinearLayout containerErro;
     private RecyclerView rv;
+    private View bt_voltar_central_compras;
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
         Window win = activity.getWindow();
@@ -64,7 +65,15 @@ public class CentralComprasActivity extends AppCompatActivity implements Adapter
         rv = (RecyclerView) findViewById(R.id.rv_minhas_compras);
         pb = (ProgressBar) findViewById(R.id.pb_minhas_compras);
         containerErro = (LinearLayout) findViewById(R.id.ll_container_erro_minhas_compras);
+        bt_voltar_central_compras = (View) findViewById(R.id.bt_voltar_central_compras);
         firestore = FirebaseFirestore.getInstance();
+
+        bt_voltar_central_compras.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
     }
 

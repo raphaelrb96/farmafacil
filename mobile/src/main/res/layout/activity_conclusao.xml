@@ -11,20 +11,29 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <TextView
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:layout_marginTop="20dp"
             android:text="Sucesso!"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <ImageView
+            android:maxHeight="200dp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:src="@drawable/compra_concluida"
+            android:adjustViewBounds="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <androidx.cardview.widget.CardView
-            app:cardBackgroundColor="@color/verde"
+            app:cardBackgroundColor="@color/colorSecondaryLight"
             android:layout_marginTop="30dp"
             android:layout_gravity="center_horizontal"
-            app:cardCornerRadius="50dp"
-            android:layout_width="100dp"
-            android:layout_height="100dp">
+            app:cardCornerRadius="30dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp">
             <View
                 android:backgroundTint="@color/colorPrimaryLight"
                 android:layout_margin="20dp"
@@ -66,7 +75,7 @@
             app:iconTint="@color/colorSecondaryDark"
             android:id="@+id/efab_conclusao_de_compra"
             android:text="Minhas compras"
-            app:elevation="10dp"
+            app:elevation="8dp"
             app:backgroundTint="@color/colorPrimary"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="30dp"

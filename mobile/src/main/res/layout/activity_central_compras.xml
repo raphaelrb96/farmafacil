@@ -24,7 +24,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_gravity="center|start"
                 android:clickable="true"
-                android:id="@+id/bt_voltar_minhas_compras"
+                android:id="@+id/bt_voltar_central_compras"
                 android:layout_width="25dp"
                 android:layout_height="25dp"/>
             <TextView
