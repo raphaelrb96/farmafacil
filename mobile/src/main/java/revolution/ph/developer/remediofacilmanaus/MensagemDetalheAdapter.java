@@ -27,9 +27,16 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private ArrayList<MensagemSemiCarregada> semiCarregadas;
     private String uidUser;
     private long timeAtual;
+    private ListenerMensagem listenerMensagem;
 
-    public MensagemDetalheAdapter(Context context, ArrayList<MensagemObject> mensagens, String uidUser) {
+    public interface ListenerMensagem {
+        void addCart(ProdObj obj);
+        void abrirFoto(String path);
+    }
+
+    public MensagemDetalheAdapter(Context context, ArrayList<MensagemObject> mensagens, String uidUser, ListenerMensagem listenerMensagem) {
         this.context = context;
+        this.listenerMensagem = listenerMensagem;
         this.mensagens = mensagens;
         this.uidUser = uidUser;//id do usuario atual
         semiCarregadas = new ArrayList<>();
@@ -210,7 +217,7 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         notifyItemInserted(0);
     }
 
-    class MensagensEnviadas extends RecyclerView.ViewHolder {
+    class MensagensEnviadas extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView capaProd;
         private FloatingActionButton fab;
         private TextView hora;
@@ -232,10 +239,21 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             this.valor = (TextView) view.findViewById(R.id.tv_item_valor_mensagem_enviada);
             this.nomeProd = (TextView) view.findViewById(R.id.tv_item_prodt_mensagem_enviada);
             pb_mensagem_enviada = (ProgressBar) view.findViewById(R.id.pb_mensagem_enviada);
+            imgCliente.setOnClickListener(this);
+            fab.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.img_mensagens_enviada) {
+                String s = mensagens.get(getAdapterPosition()).getPathFoto();
+                listenerMensagem.abrirFoto(s);
+
+            }
         }
     }
 
-    class MenssagensRecebidas extends RecyclerView.ViewHolder {
+    class MenssagensRecebidas extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView capaProd;
         private FloatingActionButton fab;
         private TextView hora;
@@ -255,6 +273,16 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             this.imgCliente = (ImageView) view.findViewById(R.id.img_mensagens_recebida);
             this.valor = (TextView) view.findViewById(R.id.tv_item_valor_mensagem_recebida);
             this.nomeProd = (TextView) view.findViewById(R.id.tv_item_prodt_mensagem_recebida);
+            imgCliente.setOnClickListener(this);
+            fab.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.img_mensagens_recebida) {
+                String s = mensagens.get(getAdapterPosition()).getPathFoto();
+                listenerMensagem.abrirFoto(s);
+            }
         }
     }
 

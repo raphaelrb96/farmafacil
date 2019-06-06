@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="revolution.ph.developer.remediofacilmanaus">
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -30,9 +31,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".FullscreenReceitaActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_fullscreen_receita"
+            android:theme="@style/FullscreenTheme"></activity>
+        <activity
+            android:name=".ClienteDetalhesActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/MeuTemaDark"
-            android:name=".ClienteDetalhesActivity"/>
+            android:theme="@style/MeuTemaDark" />
         <activity
             android:name=".ClientesActivity"
             android:screenOrientation="portrait"
@@ -155,6 +161,10 @@
             android:name=".CentralComprasActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MeuTemaDark" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="a3f30b37588cd34a518942313fbe2f2662a7c8a5" />
     </application>
 
 </manifest>

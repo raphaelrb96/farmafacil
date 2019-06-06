@@ -854,8 +854,8 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             boolean palavraChaveExiste = prodObjs.get(x).getTag().containsKey(s.toLowerCase());
             if (palavraChaveExiste || palavraIdentica || palavraParecida) {
                 resultadoPesquisa.add(prodObjs.get(x));
-                Log.d("Teste123", String.valueOf(x) + " adicionada a liste");
-                Log.d("Teste123", resultadoPesquisa.toString());
+                //Log.d("Teste123", String.valueOf(x) + " adicionada a liste");
+                //Log.d("Teste123", resultadoPesquisa.toString());
             }
         }
 

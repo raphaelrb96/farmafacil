@@ -77,7 +77,7 @@ import static revolution.ph.developer.remediofacilmanaus.FragmentMain.user;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MensagemDetalheActivityFragment extends Fragment implements View.OnTouchListener {
+public class MensagemDetalheActivityFragment extends Fragment implements View.OnTouchListener, MensagemDetalheAdapter.ListenerMensagem {
 
 
     private static final String DEMO_PHOTO_PATH = "GaleriaRemedioFacil";
@@ -241,7 +241,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
                     menssagens.add(mensagemObject);
                 }
                 Collections.reverse(menssagens);
-                adapter = new MensagemDetalheAdapter(getActivity(), menssagens, auth.getCurrentUser().getUid());
+                adapter = new MensagemDetalheAdapter(getActivity(), menssagens, auth.getCurrentUser().getUid(), MensagemDetalheActivityFragment.this);
 
                 recyclerView.setAdapter(adapter);
                 recyclerView.scrollToPosition(0);
@@ -714,5 +714,17 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
             return false;
         }
         return false;
+    }
+
+    @Override
+    public void addCart(ProdObj obj) {
+
+    }
+
+    @Override
+    public void abrirFoto(String path) {
+        Intent intent = new Intent(getActivity(), FullscreenReceitaActivity.class);
+        intent.putExtra("img", path);
+        startActivity(intent);
     }
 }

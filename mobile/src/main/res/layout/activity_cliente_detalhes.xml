@@ -261,6 +261,80 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorSecondaryLight"/>
             </LinearLayout>
+            <!--enviar produtos-->
+            <LinearLayout
+                android:id="@+id/container_enviar_produto_cliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Envie um produto"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="2dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorPrimaryDark"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:focusable="false"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:id="@+id/et_pesquisar_produto_enviar_cliente"
+                        android:lines="1"
+                        android:hint="Pesquisar Produto..."
+                        android:textColorHint="@color/colorSecondary"
+                        android:textColor="@color/colorSecondary"
+                        android:layout_marginRight="12dp"
+                        android:layout_gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="40dp"/>
+                    <ImageButton
+                        android:id="@+id/bt_pesquisar_produto_enviar_cliente"
+                        android:background="@drawable/ic_search_branco_24dp"
+                        android:backgroundTint="@color/colorSecondary"
+                        android:layout_gravity="end|center"
+                        android:layout_marginRight="16dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_enviar_produtos_cliente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="8dp" />
+            </LinearLayout>
             <!--carrinho analytics-->
             <LinearLayout
                 android:id="@+id/container_carrinho_analyics_cliente"
@@ -282,15 +356,17 @@
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="22sp"
                         android:textStyle="bold" />
+
                     <View
-                        android:layout_gravity="bottom"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@color/colorPrimaryDark"
                         android:layout_width="0dp"
+                        android:layout_height="2dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="10dp"
                         android:layout_weight="1"
-                        android:layout_height="2dp"/>
+                        android:background="@color/colorPrimaryDark"
+                        android:visibility="gone" />
                 </LinearLayout>
 
 
@@ -306,7 +382,8 @@
                     android:textOff="Recentemente adicionados"
                     android:textOn="Mais adicionados"
                     android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_produtos_cart_add_analyics"
@@ -335,15 +412,17 @@
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="22sp"
                         android:textStyle="bold" />
+
                     <View
-                        android:layout_gravity="bottom"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@color/colorPrimaryDark"
                         android:layout_width="0dp"
+                        android:layout_height="2dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="10dp"
                         android:layout_weight="1"
-                        android:layout_height="2dp"/>
+                        android:background="@color/colorPrimaryDark"
+                        android:visibility="gone" />
                 </LinearLayout>
 
 
