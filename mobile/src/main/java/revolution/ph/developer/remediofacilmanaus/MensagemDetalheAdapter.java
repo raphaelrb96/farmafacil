@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -159,6 +160,7 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     mensagensEnviadas.imgCliente.setVisibility(View.GONE);
                 }
                 if (mensagemObject.getProdObj() != null) {
+                    mensagensEnviadas.container_mensagem_enviada.setVisibility(View.GONE);
                     mensagensEnviadas.itemProd.setVisibility(View.VISIBLE);
                     mensagensEnviadas.nomeProd.setText(mensagemObject.getProdObj().getProdName());
                     mensagensEnviadas.valor.setText(String.valueOf(mensagemObject.getProdObj().getProdValor() + ",00"));
@@ -178,6 +180,7 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     menssagensRecebidas.imgCliente.setVisibility(View.GONE);
                 }
                 if (mensagemObject.getProdObj() != null) {
+                    menssagensRecebidas.container_mensagem_recebida.setVisibility(View.GONE);
                     menssagensRecebidas.itemProd.setVisibility(View.VISIBLE);
                     menssagensRecebidas.nomeProd.setText(mensagemObject.getProdObj().getProdName());
                     menssagensRecebidas.valor.setText(String.valueOf(mensagemObject.getProdObj().getProdValor() + "0,00"));
@@ -227,6 +230,7 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         private TextView nomeProd;
         private TextView valor;
         private ProgressBar pb_mensagem_enviada;
+        private FrameLayout container_mensagem_enviada;
 
         public MensagensEnviadas(View view) {
             super(view);
@@ -238,6 +242,7 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             this.imgCliente = (ImageView) view.findViewById(R.id.img_mensagens_enviada);
             this.valor = (TextView) view.findViewById(R.id.tv_item_valor_mensagem_enviada);
             this.nomeProd = (TextView) view.findViewById(R.id.tv_item_prodt_mensagem_enviada);
+            this.container_mensagem_enviada = (FrameLayout) view.findViewById(R.id.container_mensagem_enviada);
             pb_mensagem_enviada = (ProgressBar) view.findViewById(R.id.pb_mensagem_enviada);
             imgCliente.setOnClickListener(this);
             fab.setOnClickListener(this);
@@ -262,6 +267,7 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         private TextView mensagem;
         private TextView nomeProd;
         private TextView valor;
+        private FrameLayout container_mensagem_recebida;
 
         public MenssagensRecebidas(View view) {
             super(view);
@@ -273,6 +279,7 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             this.imgCliente = (ImageView) view.findViewById(R.id.img_mensagens_recebida);
             this.valor = (TextView) view.findViewById(R.id.tv_item_valor_mensagem_recebida);
             this.nomeProd = (TextView) view.findViewById(R.id.tv_item_prodt_mensagem_recebida);
+            this.container_mensagem_recebida = (FrameLayout) view.findViewById(R.id.container_mensagem_recebida);
             imgCliente.setOnClickListener(this);
             fab.setOnClickListener(this);
         }

@@ -305,7 +305,6 @@
                     <EditText
                         android:imeOptions="actionSearch"
                         android:inputType="text"
-                        android:focusable="false"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
                         android:id="@+id/et_pesquisar_produto_enviar_cliente"
@@ -317,7 +316,7 @@
                         android:layout_gravity="center"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_height="40dp"/>
+                        android:layout_height="wrap_content"/>
                     <ImageButton
                         android:id="@+id/bt_pesquisar_produto_enviar_cliente"
                         android:background="@drawable/ic_search_branco_24dp"
