@@ -24,7 +24,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
-                android:maxHeight="250dp"
                 android:id="@+id/img_mensagens_recebida"
                 android:visibility="gone"
                 android:layout_width="250dp"
@@ -66,7 +65,7 @@
         app:cardCornerRadius="4dp"
         android:layout_marginRight="5dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginStart="3dp"
+        android:layout_marginStart="18dp"
         android:layout_marginEnd="3dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="3dp">

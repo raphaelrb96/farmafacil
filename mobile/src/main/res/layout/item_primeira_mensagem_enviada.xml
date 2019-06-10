@@ -33,7 +33,6 @@
                 android:layout_marginRight="2dp"
                 android:layout_marginBottom="10dp"
                 android:scaleType="centerCrop"
-                android:maxHeight="250dp"
                 android:adjustViewBounds="true" />
 
 
@@ -72,13 +71,14 @@
         android:id="@+id/item_produto_mensagem_enviada"
         android:visibility="gone"
         android:layout_width="200dp"
+        android:layout_gravity="end"
         android:layout_height="wrap_content"
         app:cardElevation="4dp"
         app:cardCornerRadius="4dp"
         android:layout_marginRight="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
+        android:layout_marginEnd="18dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="103dp"
         xmlns:android="http://schemas.android.com/apk/res/android"

@@ -68,6 +68,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -107,6 +108,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     private String myUserAtual;
     private int referencia = 0;
     private ArrayList<ProdObj> prodObjs;
+    private ArrayList<ProdObj> resultadoPesquisa;
     private CallbackManager callbackManager;
     private GoogleSignInClient mGoogleSignInClient;
     private ImageView imgPerfil;
@@ -213,6 +215,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                     } else {
                         toggleBackContainer(true);
                         carregarFotoPerfil();
+                        analitycsGoogle.logUserStreamViewEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
                         getListCart();
                         getTokenNoificacoes();
                     }
@@ -543,6 +546,11 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         if (this.mAuthStateListener != null) {
@@ -661,8 +669,11 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     }
 
     @Override
-    public void openDetalhe(ProdObj prodObj) {
-
+    public void openDetalhe(ProdObj obj) {
+        ProdObjParcelable objParcelable = new ProdObjParcelable(obj.getCategoria(), obj.getDescr(),obj.isDisponivel(), obj.getIdProduto(), obj.getImgCapa(),obj.getLaboratorio(), obj.getNivel(), obj.getProdName(), obj.getProdValor(), obj.isPromocional(), obj.getTag(), obj.getFornecedores());
+        Intent intent = new Intent(getActivity(), ProdutoDetalheActivity.class);
+        intent.putExtra("prod", objParcelable);
+        startActivity(intent);
     }
 
     @Override
@@ -765,7 +776,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     private void myQuery(Query meuQuery, final boolean isPesquisa, final String sPesquisa, final int tipo) {
         prodObjs.clear();
 
-        meuQuery.whereEqualTo("disponivel", true).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        meuQuery.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 int sizeDoc = queryDocumentSnapshots.size();
@@ -830,7 +841,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
     private void obterListaDeProdutos(int tipo) {
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         telaInicialLoadding();
-        myQuery(firestore.collection("produtos"), false, "", tipo);
+        myQuery(firestore.collection("produtos").whereEqualTo("disponivel", true), false, "", tipo);
 
     }
 
@@ -839,19 +850,19 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                             .hideSoftInputFromWindow(etpesquisar.getWindowToken(), 0);
     }
 
-    private void pesquisar(String s) {
-        String busca = "tag." + s.toLowerCase();
+    private void pesquisar(final String st) {
+        String busca = "tag." + st.toLowerCase();
         telaInicialLoadding();
         esconderTeclado();
 
-        ArrayList<ProdObj> resultadoPesquisa = new ArrayList<>();
+        resultadoPesquisa = new ArrayList<>();
 
         for (int x = 0; x < prodObjs.size(); x++) {
             Log.d("Teste123", String.valueOf(x));
             String nomeProd = prodObjs.get(x).getProdName().toLowerCase();
-            boolean palavraIdentica = nomeProd.equals(s.toLowerCase());
-            boolean palavraParecida = nomeProd.contains(s.toLowerCase());
-            boolean palavraChaveExiste = prodObjs.get(x).getTag().containsKey(s.toLowerCase());
+            boolean palavraIdentica = nomeProd.equals(st.toLowerCase());
+            boolean palavraParecida = nomeProd.contains(st.toLowerCase());
+            boolean palavraChaveExiste = prodObjs.get(x).getTag().containsKey(st.toLowerCase());
             if (palavraChaveExiste || palavraIdentica || palavraParecida) {
                 resultadoPesquisa.add(prodObjs.get(x));
                 //Log.d("Teste123", String.valueOf(x) + " adicionada a liste");
@@ -860,7 +871,45 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         }
 
         if (resultadoPesquisa.size() < 1) {
-            myQuery(firestore.collection("produtos").whereEqualTo(busca, true), true, s, -1);
+
+            for (int i = 0; i < prodObjs.size(); i++) {
+
+                final ProdObj obj = prodObjs.get(i);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+                    obj.getTag().forEach(new BiConsumer<String, Boolean>() {
+                        @Override
+                        public void accept(String s, Boolean aBoolean) {
+                            if (s.equals(st) || st.contains(s) || s.contains(st)) {
+                                if (!resultadoPesquisa.contains(obj)) {
+                                    resultadoPesquisa.add(obj);
+                                }
+                            }
+                        }
+                    });
+
+                }
+
+                if (obj.getProdName().contains(st) || obj.getProdName().equals(st) || st.contains(obj.getProdName())) {
+                    if (!resultadoPesquisa.contains(obj)) {
+                        resultadoPesquisa.add(obj);
+                    }
+                }
+            }
+
+            if (resultadoPesquisa.size() < 1) {
+                myQuery(firestore.collection("produtos").whereEqualTo(busca, true), true, st, -1);
+            } else {
+                mAdapter = new AdapterProdutos(FragmentMain.this, getActivity(), resultadoPesquisa);
+                StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                mListMercadorias.setLayoutManager(layoutManager);
+                mListMercadorias.setAdapter(mAdapter);
+                telaInicialSucesso();
+                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+
+
         } else {
             mAdapter = new AdapterProdutos(FragmentMain.this, getActivity(), resultadoPesquisa);
             StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);

@@ -66,6 +66,12 @@ public class AnalitycsGoogle {
         params.putString("IdProduto", idProduto);
         params.putDouble("ValorProduto", valorProduto);
         logger.logEvent("ProdutoVizualizado", params);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CURRENCY, "BRL");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, idProduto);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_LOCATION_ID, nomeProduto);
+        bundle.putDouble(FirebaseAnalytics.Param.VALUE, valorProduto);
+        logger.logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle);
     }
 
 
@@ -104,6 +110,22 @@ public class AnalitycsGoogle {
         params.putString("IdUser", idUser);
         params.putString("ImagemUser", imagemUser);
         logger.logEvent("UserVisitaCarrinho", params);
+    }
+
+    public void logUserVisitaChatEvent (String nomeUser, String idUser, String imagemUser) {
+        Bundle params = new Bundle();
+        params.putString("NomeUser", nomeUser);
+        params.putString("IdUser", idUser);
+        params.putString("ImagemUser", imagemUser);
+        logger.logEvent("UserVisitaChat", params);
+    }
+
+    public void logUserStreamViewEvent (String nomeUser, String idUser, String imagemUser) {
+        Bundle params = new Bundle();
+        params.putString("NomeUser", nomeUser);
+        params.putString("IdUser", idUser);
+        params.putString("ImagemUser", imagemUser);
+        logger.logEvent("UserStreamView", params);
     }
 
 

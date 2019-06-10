@@ -65,6 +65,20 @@ public class AnalitycsFacebook {
         params.putString("IdProduto", idProduto);
         params.putDouble("ValorProduto", valorProduto);
         logger.logEvent("ProdutoVizualizado", params);
+        logViewContentEvent(nomeProduto, nomeProduto, idProduto, "BRL", valorProduto);
+    }
+
+    /**
+     * This function assumes logger is an instance of AppEventsLogger and has been
+     * created using AppEventsLogger.newLogger() call.
+     */
+    public void logViewContentEvent (String contentType, String contentData, String contentId, String currency, double price) {
+        Bundle params = new Bundle();
+        params.putString(AppEventsConstants.EVENT_PARAM_CONTENT_TYPE, contentType);
+        params.putString(AppEventsConstants.EVENT_PARAM_CONTENT, contentData);
+        params.putString(AppEventsConstants.EVENT_PARAM_CONTENT_ID, contentId);
+        params.putString(AppEventsConstants.EVENT_PARAM_CURRENCY, currency);
+        logger.logEvent(AppEventsConstants.EVENT_NAME_VIEWED_CONTENT, price, params);
     }
 
 

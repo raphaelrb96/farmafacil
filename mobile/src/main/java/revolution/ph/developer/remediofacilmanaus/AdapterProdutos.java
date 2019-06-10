@@ -127,6 +127,8 @@ public class AdapterProdutos extends RecyclerView.Adapter<RecyclerView.ViewHolde
             int prodPosition = getAdapterPosition() - 1;
             if (v.getId() == R.id.fab_produto_item) {
                 clickProdutoCliente.onclick(prodPosition, fab.getBackgroundTintList(), v, produtos.get(prodPosition));
+            } else {
+                clickProdutoCliente.openDetalhe(produtos.get(prodPosition));
             }
         }
 

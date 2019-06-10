@@ -718,7 +718,10 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
 
     @Override
     public void addCart(ProdObj obj) {
-
+        ProdObjParcelable objParcelable = new ProdObjParcelable(obj.getCategoria(), obj.getDescr(),obj.isDisponivel(), obj.getIdProduto(), obj.getImgCapa(),obj.getLaboratorio(), obj.getNivel(), obj.getProdName(), obj.getProdValor(), obj.isPromocional(), obj.getTag(), obj.getFornecedores());
+        Intent intent = new Intent(getActivity(), ProdutoDetalheActivity.class);
+        intent.putExtra("prod", objParcelable);
+        startActivity(intent);
     }
 
     @Override
@@ -726,5 +729,11 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
         Intent intent = new Intent(getActivity(), FullscreenReceitaActivity.class);
         intent.putExtra("img", path);
         startActivity(intent);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        analitycsGoogle.logUserVisitaChatEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
     }
 }

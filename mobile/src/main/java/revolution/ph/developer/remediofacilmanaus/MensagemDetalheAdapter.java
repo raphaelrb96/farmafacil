@@ -163,7 +163,7 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     mensagensEnviadas.container_mensagem_enviada.setVisibility(View.GONE);
                     mensagensEnviadas.itemProd.setVisibility(View.VISIBLE);
                     mensagensEnviadas.nomeProd.setText(mensagemObject.getProdObj().getProdName());
-                    mensagensEnviadas.valor.setText(String.valueOf(mensagemObject.getProdObj().getProdValor() + ",00"));
+                    mensagensEnviadas.valor.setText(String.valueOf((int)mensagemObject.getProdObj().getProdValor()) + ",00");
                     Glide.with(this.context).load(mensagemObject.getProdObj().getImgCapa()).into(mensagensEnviadas.capaProd);
                     return;
                 }
@@ -183,7 +183,7 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     menssagensRecebidas.container_mensagem_recebida.setVisibility(View.GONE);
                     menssagensRecebidas.itemProd.setVisibility(View.VISIBLE);
                     menssagensRecebidas.nomeProd.setText(mensagemObject.getProdObj().getProdName());
-                    menssagensRecebidas.valor.setText(String.valueOf(mensagemObject.getProdObj().getProdValor() + "0,00"));
+                    menssagensRecebidas.valor.setText(String.valueOf((int)mensagemObject.getProdObj().getProdValor()) + ",00");
                     Glide.with(this.context).load(mensagemObject.getProdObj().getImgCapa()).into(menssagensRecebidas.capaProd);
                     return;
                 }
@@ -246,6 +246,7 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             pb_mensagem_enviada = (ProgressBar) view.findViewById(R.id.pb_mensagem_enviada);
             imgCliente.setOnClickListener(this);
             fab.setOnClickListener(this);
+            itemProd.setOnClickListener(this);
         }
 
         @Override
@@ -254,6 +255,8 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 String s = mensagens.get(getAdapterPosition()).getPathFoto();
                 listenerMensagem.abrirFoto(s);
 
+            } else if (v.getId() == R.id.fab_item_add_remv_mensagem_enviada || v.getId() == R.id.item_produto_mensagem_enviada) {
+                listenerMensagem.addCart(mensagens.get(getAdapterPosition()).getProdObj());
             }
         }
     }
@@ -281,6 +284,7 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             this.nomeProd = (TextView) view.findViewById(R.id.tv_item_prodt_mensagem_recebida);
             this.container_mensagem_recebida = (FrameLayout) view.findViewById(R.id.container_mensagem_recebida);
             imgCliente.setOnClickListener(this);
+            itemProd.setOnClickListener(this);
             fab.setOnClickListener(this);
         }
 
@@ -289,6 +293,8 @@ public class MensagemDetalheAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             if (v.getId() == R.id.img_mensagens_recebida) {
                 String s = mensagens.get(getAdapterPosition()).getPathFoto();
                 listenerMensagem.abrirFoto(s);
+            } else if (v.getId() == R.id.fab_item_add_remv_mensagem_recebida || v.getId() == R.id.item_produto_mensagem_recebida) {
+                listenerMensagem.addCart(mensagens.get(getAdapterPosition()).getProdObj());
             }
         }
     }
