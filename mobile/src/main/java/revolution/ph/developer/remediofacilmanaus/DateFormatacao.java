@@ -70,7 +70,7 @@ public class DateFormatacao {
         if (isHoje(hm, ha)) {
             return "Hoje as " + hh;
         } else {
-            return hm + " as  " + hh;
+            return hm + " as " + hh;
         }
 
     }

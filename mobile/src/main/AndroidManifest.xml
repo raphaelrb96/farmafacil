@@ -30,9 +30,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:screenOrientation="portrait"
+            android:theme="@style/MeuTemaDark"
+            android:name=".AnalyticsAdmActivity"/>
+        <activity
             android:name=".ProdutoDetalheActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FullscreenReceitaActivity"
             android:screenOrientation="portrait"

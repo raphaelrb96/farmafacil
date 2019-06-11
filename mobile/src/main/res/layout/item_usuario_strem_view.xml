@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="120dp"
+    android:layout_height="150dp">
+    <androidx.cardview.widget.CardView
+        app:cardElevation="1dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:cardCornerRadius="50dp">
+        <ImageView
+            android:id="@+id/img_perfil_stream_view"
+            android:adjustViewBounds="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/nome_user_strem_view"
+        android:gravity="center"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:textSize="15sp"
+        android:textColor="@color/colorSecondaryDark"
+        android:textStyle="bold"
+        android:lines="1"
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+    <TextView
+        android:id="@+id/hora_user_strem_view"
+        android:gravity="center|top"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:textSize="14sp"
+        android:textColor="@color/colorSecondaryDark"
+        android:lines="1"
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+</LinearLayout>

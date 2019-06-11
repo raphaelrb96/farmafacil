@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import revolution.ph.developer.remediofacilmanaus.analitycs.AnalitycsFacebook;
 import revolution.ph.developer.remediofacilmanaus.analitycs.AnalitycsGoogle;
 import revolution.ph.developer.remediofacilmanaus.objects.CompraFinalParcelable;
+import revolution.ph.developer.remediofacilmanaus.objects.UserStreamView;
 
 import android.app.Activity;
 import android.content.Context;
@@ -238,6 +239,8 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
         analitycsFacebook.logUserVisitaCarrinhoEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
         analitycsGoogle.logUserVisitaCarrinhoEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
+        UserStreamView userStreamView = new UserStreamView(user.getDisplayName(), user.getUid(), pathFotoUser, System.currentTimeMillis());
+        firestore.collection("Eventos").document("stream").collection("cart").document(user.getUid()).set(userStreamView);
     }
 
     @Override

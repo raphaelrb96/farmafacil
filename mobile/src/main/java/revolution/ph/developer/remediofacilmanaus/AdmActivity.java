@@ -69,7 +69,8 @@ public class AdmActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     public void verAnalytics(View view) {
-
+        Intent intent = new Intent(this, AnalyticsAdmActivity.class);
+        startActivity(intent);
     }
 
     private void abrirFechar() {

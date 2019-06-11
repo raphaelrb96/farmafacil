@@ -69,6 +69,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import revolution.ph.developer.remediofacilmanaus.analitycs.AnalitycsFacebook;
 import revolution.ph.developer.remediofacilmanaus.analitycs.AnalitycsGoogle;
+import revolution.ph.developer.remediofacilmanaus.objects.UserStreamView;
 
 import static revolution.ph.developer.remediofacilmanaus.FragmentMain.ADMINISTRADOR;
 import static revolution.ph.developer.remediofacilmanaus.FragmentMain.pathFotoUser;
@@ -735,5 +736,7 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     public void onStart() {
         super.onStart();
         analitycsGoogle.logUserVisitaChatEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
+        UserStreamView userStreamView = new UserStreamView(user.getDisplayName(), user.getUid(), pathFotoUser, System.currentTimeMillis());
+        firebaseFirestore.collection("Eventos").document("stream").collection("chat").document(user.getUid()).set(userStreamView);
     }
 }

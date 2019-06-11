@@ -86,10 +86,10 @@
                 android:layout_height="wrap_content" />
             <Button
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:onClick="verCupons"
+                android:layout_marginBottom="20dp"
+                android:onClick="verAnalytics"
                 android:background="@color/colorPrimary"
-                android:text="Cupons"
+                android:text="Analytics"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:layout_width="match_parent"
@@ -97,10 +97,10 @@
 
             <Button
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
-                android:onClick="verAnalytics"
+                android:layout_marginBottom="10dp"
+                android:onClick="verCupons"
                 android:background="@color/colorPrimary"
-                android:text="Analytics"
+                android:text="Cupons"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:layout_width="match_parent"

@@ -80,6 +80,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import revolution.ph.developer.remediofacilmanaus.analitycs.AnalitycsFacebook;
 import revolution.ph.developer.remediofacilmanaus.analitycs.AnalitycsGoogle;
 import revolution.ph.developer.remediofacilmanaus.objects.TokenFcm;
+import revolution.ph.developer.remediofacilmanaus.objects.UserStreamView;
 import revolution.ph.developer.remediofacilmanaus.objects.Usuario;
 
 import static android.app.Activity.RESULT_OK;
@@ -216,6 +217,8 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                         toggleBackContainer(true);
                         carregarFotoPerfil();
                         analitycsGoogle.logUserStreamViewEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
+                        UserStreamView userStreamView = new UserStreamView(user.getDisplayName(), user.getUid(), pathFotoUser, System.currentTimeMillis());
+                        firestore.collection("Eventos").document("stream").collection("app").document(user.getUid()).set(userStreamView);
                         getListCart();
                         getTokenNoificacoes();
                     }
