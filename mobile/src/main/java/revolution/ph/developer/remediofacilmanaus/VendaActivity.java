@@ -240,8 +240,10 @@ public class VendaActivity extends FragmentActivity implements OnMapReadyCallbac
         if (dadosCompra.getTipoDeEntrega() == 1) {
             //facil
             tv_tipo_entrega_venda.setText("Fácil");
-        } else {
+        } else if (dadosCompra.getTipoDeEntrega() == 2) {
             tv_tipo_entrega_venda.setText("Rápida");
+        } else {
+            tv_tipo_entrega_venda.setText("Grátis");
         }
 
         tv_nome_rua_venda.setText(dadosCompra.getAdress() + " - " + dadosCompra.getComplemento());

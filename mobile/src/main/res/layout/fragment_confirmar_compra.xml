@@ -197,36 +197,17 @@
                             android:buttonTint="@color/colorPrimary"
                             android:drawableTint="@color/colorPrimary"
                             android:textColor="@color/colorPrimary"
-                            android:id="@+id/cb_entrega_facil_conf_compra"
+                            android:id="@+id/cb_entrega_gratis_conf_compra"
                             android:layout_marginTop="6dp"
                             android:layout_marginBottom="8dp"
                             android:layout_gravity="center"
-                            android:text="Entrega Fácil"
+                            android:text="Entrega GRÁTIS"
                             android:checked="true"
                             android:textSize="20sp"
                             android:textStyle="bold"
                             android:textAllCaps="true"
                             android:layout_width="wrap_content"
                             android:layout_height="39dp" />
-
-                        <View
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginRight="8dp"
-                            android:background="@color/back_rv"
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"/>
-                        <TextView
-                            android:layout_marginTop="6dp"
-                            android:layout_marginBottom="6dp"
-                            android:layout_marginRight="16dp"
-                            android:layout_marginLeft="16dp"
-                            android:text="Ideal para quem quer economizar, ou quando está sem pressa"
-                            android:textColor="@color/colorPrimary"
-                            android:textSize="14sp"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
 
                         <View
                             android:layout_marginLeft="8dp"
@@ -250,7 +231,65 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"/>
                             <TextView
-                                android:text="1 a 3 horas"
+                                android:text="2 a 4 horas"
+                                android:textSize="18sp"
+                                android:textColor="@color/colorPrimary"
+                                android:gravity="center|start"
+                                android:layout_gravity="center|start"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:background="@drawable/background_categoria"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <CheckBox
+                            android:buttonTint="@color/colorPrimary"
+                            android:drawableTint="@color/colorPrimary"
+                            android:textColor="@color/colorPrimary"
+                            android:id="@+id/cb_entrega_facil_conf_compra"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_gravity="center"
+                            android:text="Entrega Fácil"
+                            android:checked="false"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="39dp" />
+
+                        <View
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@color/back_rv"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"/>
+
+                        <LinearLayout
+                            android:layout_margin="10dp"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <View
+                                android:backgroundTint="@color/colorPrimary"
+                                android:layout_marginRight="8dp"
+                                android:layout_gravity="center_vertical"
+                                android:background="@drawable/ic_access_time_black_24dp"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"/>
+                            <TextView
+                                android:text="1 a 2 horas"
                                 android:textSize="18sp"
                                 android:textColor="@color/colorPrimary"
                                 android:gravity="center|start"
@@ -291,25 +330,6 @@
                             android:background="@color/back_rv"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"/>
-                        <TextView
-                            android:layout_marginTop="6dp"
-                            android:layout_marginBottom="6dp"
-                            android:layout_marginRight="16dp"
-                            android:layout_marginLeft="16dp"
-                            android:text="Ideal para quem tem um pouco de pressa em receber seu pedido"
-                            android:textColor="@color/colorPrimary"
-                            android:textSize="14sp"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                        <View
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginRight="8dp"
-                            android:background="@color/back_rv"
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"/>
 
                         <LinearLayout
                             android:layout_margin="10dp"
@@ -336,6 +356,7 @@
                         </LinearLayout>
 
                     </LinearLayout>
+
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="80dp"/>

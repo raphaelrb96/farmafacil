@@ -6,21 +6,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AnalyticsAdmActivity">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+            <View
+                android:backgroundTint="@color/colorPrimary"
+                android:background="@drawable/ic_arrow_back_black_24dp"
+                android:layout_marginRight="8dp"
+                android:layout_gravity="center|start"
+                android:clickable="true"
+                android:id="@+id/bt_voltar_analytics"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+            <ProgressBar
+                android:theme="@style/PbBranco"
+                android:id="@+id/pb_analytics"
+                android:layout_gravity="end"
+                android:layout_marginEnd="20dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="10dp" />
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
     <androidx.core.widget.NestedScrollView
+        android:layout_marginTop="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <ProgressBar
-                android:id="@+id/pb_analytics"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="20dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:visibility="gone"
@@ -29,6 +48,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="16dp"
                     android:textStyle="bold"
                     android:textColor="@color/colorSecondaryLight"
                     android:textSize="18sp"
@@ -50,6 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:layout_marginLeft="16dp"
                     android:textStyle="bold"
                     android:textColor="@color/colorSecondaryLight"
                     android:textSize="18sp"
@@ -72,6 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:layout_marginLeft="16dp"
                     android:textStyle="bold"
                     android:textColor="@color/colorSecondaryLight"
                     android:textSize="18sp"

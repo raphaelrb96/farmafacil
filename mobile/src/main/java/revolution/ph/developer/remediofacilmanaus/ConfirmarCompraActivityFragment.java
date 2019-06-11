@@ -55,7 +55,7 @@ public class ConfirmarCompraActivityFragment extends Fragment {
     private BottomSheetBehavior<FrameLayout> sheetBehavior;
 
     private TickerView tvsoma, tvtaxa, tvtotal;
-    private int soma, total, taxafacil, taxarapida, taxa;
+    private int soma, total, taxafacil, taxarapida, taxaGratis, taxa;
     private String rua;
     private TextView tv_nome_rua_conf_compra, mudarEndereco;
 
@@ -66,7 +66,7 @@ public class ConfirmarCompraActivityFragment extends Fragment {
 
     private TextInputEditText etTroco, etCelular;
 
-    private CheckBox cbFacil, cbRapida;
+    private CheckBox cbFacil, cbRapida, cbGratis;
 
     private LinearLayout toolbar;
 
@@ -129,6 +129,7 @@ public class ConfirmarCompraActivityFragment extends Fragment {
 
         cbFacil = (CheckBox) view.findViewById(R.id.cb_entrega_facil_conf_compra);
         cbRapida = (CheckBox) view.findViewById(R.id.cb_entrega_rapida_conf_compra);
+        cbGratis = (CheckBox) view.findViewById(R.id.cb_entrega_gratis_conf_compra);
 
         cbDinheiro = (CheckBox) view.findViewById(R.id.cb_dinheiro);
         cbDebito = (CheckBox) view.findViewById(R.id.cb_debito);
@@ -169,7 +170,8 @@ public class ConfirmarCompraActivityFragment extends Fragment {
         soma = cfp.getSomaProdutos();
         taxafacil = cfp.getTaxaEntrega();
         rua = cfp.getRua();
-        taxa = taxafacil;
+        taxaGratis = 0;
+        taxa = taxaGratis;
         taxarapida = taxafacil * 2;
 
         tvtotal.setCharacterList(TickerUtils.getDefaultNumberList());
@@ -197,9 +199,16 @@ public class ConfirmarCompraActivityFragment extends Fragment {
                     if (cbRapida.isChecked()) {
                         cbRapida.setChecked(false);
                     }
+
+                    if (cbGratis.isChecked()) {
+                        cbGratis.setChecked(false);
+                    }
+
                     alterarFrete(1);
                 } else {
-                    cbRapida.setChecked(true);
+                    if (!cbRapida.isChecked()) {
+                        cbGratis.setChecked(true);
+                    }
                 }
             }
         });
@@ -211,9 +220,36 @@ public class ConfirmarCompraActivityFragment extends Fragment {
                     if (cbFacil.isChecked()) {
                         cbFacil.setChecked(false);
                     }
+
+                    if (cbGratis.isChecked()) {
+                        cbGratis.setChecked(false);
+                    }
+
                     alterarFrete(2);
                 } else {
-                    cbFacil.setChecked(true);
+                    if (!cbFacil.isChecked()) {
+                        cbGratis.setChecked(true);
+                    }
+                }
+            }
+        });
+
+        cbGratis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if (cbFacil.isChecked()) {
+                        cbFacil.setChecked(false);
+                    }
+
+                    if (cbRapida.isChecked()) {
+                        cbRapida.setChecked(false);
+                    }
+                    alterarFrete(3);
+                } else {
+                    if (!cbRapida.isChecked()) {
+                        cbFacil.setChecked(true);
+                    }
                 }
             }
         });
@@ -328,6 +364,7 @@ public class ConfirmarCompraActivityFragment extends Fragment {
                 if (isChecked) {
                     detalhePagamento = "está trocado";
                     etTroco.clearFocus();
+                    cbDinheiro.setChecked(true);
                     esconderTeclado(etTroco);
                 } else {
                     detalhePagamento = "";
@@ -402,8 +439,10 @@ public class ConfirmarCompraActivityFragment extends Fragment {
             //facil
             taxa = taxafacil;
 
-        } else {
+        } else if (x == 2){
             taxa = taxarapida;
+        } else {
+            taxa = taxaGratis;
         }
 
 

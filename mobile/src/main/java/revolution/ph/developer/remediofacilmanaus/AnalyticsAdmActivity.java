@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class AnalyticsAdmActivity extends AppCompatActivity implements AdapterUs
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        firebaseFirestore.collection("UsuarioStreamView").get().addOnSuccessListener(this, new OnSuccessListener<QuerySnapshot>() {
+        firebaseFirestore.collection("UsuarioStreamView").orderBy("time", Query.Direction.DESCENDING).get().addOnSuccessListener(this, new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if (queryDocumentSnapshots != null) {
@@ -81,7 +82,7 @@ public class AnalyticsAdmActivity extends AppCompatActivity implements AdapterUs
                     }
                 }
 
-                firebaseFirestore.collection("ProdutosAnalytics").get().addOnSuccessListener(AnalyticsAdmActivity.this, new OnSuccessListener<QuerySnapshot>() {
+                firebaseFirestore.collection("ProdutosAnalytics").orderBy("numeroAddCart", Query.Direction.DESCENDING).get().addOnSuccessListener(AnalyticsAdmActivity.this, new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(final QuerySnapshot queryDocumentSnapshots2) {
 
@@ -93,23 +94,23 @@ public class AnalyticsAdmActivity extends AppCompatActivity implements AdapterUs
 
                                     produtoList = new ArrayList<>();
 
-                                    for (int i = 0; i < prodResult.getDocuments().size(); i++) {
-                                        ProdObj prodObj = prodResult.getDocuments().get(i).toObject(ProdObj.class);
+                                    for (int j = 0; j < queryDocumentSnapshots2.getDocuments().size(); j++) {
 
-                                        for (int j = 0; j < queryDocumentSnapshots2.getDocuments().size(); j++) {
+                                        String id = queryDocumentSnapshots2.getDocuments().get(j).getId();
+                                        ProdutoAnalitycs produtoAnalitycs = queryDocumentSnapshots2.getDocuments().get(j).toObject(ProdutoAnalitycs.class);
 
-                                            String id = queryDocumentSnapshots2.getDocuments().get(j).getId();
-                                            ProdutoAnalitycs produtoAnalitycs = queryDocumentSnapshots2.getDocuments().get(j).toObject(ProdutoAnalitycs.class);
+                                        for (int i = 0; i < prodResult.getDocuments().size(); i++) {
+                                            ProdObj prodObj = prodResult.getDocuments().get(i).toObject(ProdObj.class);
 
                                             if (id.equals(prodObj.getIdProduto())) {
                                                 ProdutoMaisProdutoAnalyticsFusao fusao = new ProdutoMaisProdutoAnalyticsFusao(prodObj, produtoAnalitycs);
                                                 produtoList.add(fusao);
-                                                j = queryDocumentSnapshots2.getDocuments().size();
+                                                i = prodResult.getDocuments().size();
                                             }
-
                                         }
 
                                     }
+
 
                                     if (produtoList.size() > 0) {
 
@@ -123,7 +124,7 @@ public class AnalyticsAdmActivity extends AppCompatActivity implements AdapterUs
                                 }
 
 
-                                firebaseFirestore.collection("termosDePesquisa").get().addOnSuccessListener(AnalyticsAdmActivity.this, new OnSuccessListener<QuerySnapshot>() {
+                                firebaseFirestore.collection("termosDePesquisa").orderBy("ultimaPesquisa", Query.Direction.DESCENDING).get().addOnSuccessListener(AnalyticsAdmActivity.this, new OnSuccessListener<QuerySnapshot>() {
                                     @Override
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots3) {
                                         pb.setVisibility(View.GONE);

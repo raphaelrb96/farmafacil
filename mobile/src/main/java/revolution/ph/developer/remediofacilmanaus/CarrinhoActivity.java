@@ -203,7 +203,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
     @Override
     protected void onStart() {
         super.onStart();
-        cart.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        cart.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException e) {
                 if (querySnapshot == null) return;
@@ -228,7 +228,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                 if (querySnapshot.getDocuments().size() == 0) {
 //                    PayFinalActivity.this.emptyCar.setVisibility(0);
 //                    PayFinalActivity.this.mPayList.setVisibility(8);
-                    onBackPressed();
+                    finish();
                 } else {
 //                    PayFinalActivity.this.emptyCar.setVisibility(8);
 //                    PayFinalActivity.this.mPayList.setVisibility(0);
@@ -415,7 +415,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 //                    return;
 //                }
                 Intent intent = new Intent(CarrinhoActivity.this, ConfirmarCompraActivity.class);
-                if (precoEntrega != 0 && somo != 0 && ruaMain != null) {
+                if (somo != 0 && ruaMain != null) {
 
                     int itens = 0;
 
@@ -831,7 +831,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
                 String valorDaEntrega = String.valueOf(precoEntrega) + ",00";
                 String valorDasCompras = String.valueOf(somo) + ",00";
                 int tt = precoEntrega + somo;
-                String total = String.valueOf(tt) + ",00";
+                String total = String.valueOf(somo) + ",00";
                 totalTV.setText(total);
                 ttcomprasTV.setText(valorDasCompras);
                 taxaEntregaTV.setText(valorDaEntrega);
