@@ -43,6 +43,7 @@ import revolution.ph.developer.remediofacilmanaus.objects.CompraFinalizada;
 import revolution.ph.developer.remediofacilmanaus.objects.UserStreamView;
 
 import static revolution.ph.developer.remediofacilmanaus.CarrinhoActivity.produtoss;
+import static revolution.ph.developer.remediofacilmanaus.FragmentMain.ADMINISTRADOR;
 import static revolution.ph.developer.remediofacilmanaus.FragmentMain.pathFotoUser;
 import static revolution.ph.developer.remediofacilmanaus.FragmentMain.user;
 import static revolution.ph.developer.remediofacilmanaus.MainActivity.ids;
@@ -425,10 +426,12 @@ public class ConfirmarCompraActivityFragment extends Fragment {
                 tipoEntrega = "Entrega Rapida";
             }
             int itens = cfp.getItens();
-            analitycsFacebook.logUserVisitaCheckoutEvent(user.getDisplayName(), user.getUid(), pathFotoUser, soma, tipoEntrega, taxa, total, etCelular.getText().toString(), rua, itens);
-            analitycsGoogle.logUserVisitaCheckoutEvent(user.getDisplayName(), user.getUid(), pathFotoUser, soma, tipoEntrega, taxa, total, etCelular.getText().toString(), rua);
-            UserStreamView userStreamView = new UserStreamView(user.getDisplayName(), user.getUid(), pathFotoUser, System.currentTimeMillis());
-            firestore.collection("Eventos").document("stream").collection("checkout").document(user.getUid()).set(userStreamView);
+            if (!ADMINISTRADOR) {
+                analitycsFacebook.logUserVisitaCheckoutEvent(user.getDisplayName(), user.getUid(), pathFotoUser, soma, tipoEntrega, taxa, total, etCelular.getText().toString(), rua, itens);
+                analitycsGoogle.logUserVisitaCheckoutEvent(user.getDisplayName(), user.getUid(), pathFotoUser, soma, tipoEntrega, taxa, total, etCelular.getText().toString(), rua);
+                UserStreamView userStreamView = new UserStreamView(user.getDisplayName(), user.getUid(), pathFotoUser, System.currentTimeMillis());
+                firestore.collection("Eventos").document("stream").collection("checkout").document(user.getUid()).set(userStreamView);
+            }
         }
     }
 

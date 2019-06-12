@@ -29,10 +29,11 @@
         android:roundIcon="@mipmap/ic_launcher_dark2"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".EncomendasAdmActivity"></activity>
         <activity
+            android:name=".AnalyticsAdmActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/MeuTemaDark"
-            android:name=".AnalyticsAdmActivity"/>
+            android:theme="@style/MeuTemaDark" />
         <activity
             android:name=".ProdutoDetalheActivity"
             android:screenOrientation="portrait"

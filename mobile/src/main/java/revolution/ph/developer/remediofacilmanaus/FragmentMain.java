@@ -216,9 +216,11 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                     } else {
                         toggleBackContainer(true);
                         carregarFotoPerfil();
-                        analitycsGoogle.logUserStreamViewEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
-                        UserStreamView userStreamView = new UserStreamView(user.getDisplayName(), user.getUid(), pathFotoUser, System.currentTimeMillis());
-                        firestore.collection("Eventos").document("stream").collection("app").document(user.getUid()).set(userStreamView);
+                        if (!ADMINISTRADOR) {
+                            analitycsGoogle.logUserStreamViewEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
+                            UserStreamView userStreamView = new UserStreamView(user.getDisplayName(), user.getUid(), pathFotoUser, System.currentTimeMillis());
+                            firestore.collection("Eventos").document("stream").collection("app").document(user.getUid()).set(userStreamView);
+                        }
                         getListCart();
                         getTokenNoificacoes();
                     }
@@ -696,13 +698,16 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
                 ids.add(str);
             }
             reference.set(carComprasActivy);
-            mAdapter.notifyItemChanged(i);
+            //mAdapter.notifyItemChanged(i);
+            mAdapter.notifyDataSetChanged();
 
-            analitycsFacebook.logAdicionarAoCarrinhoEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), prodObj.prodValor);
-            analitycsGoogle.logAdicionarAoCarrinhoEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), prodObj.prodValor);
+            if (!ADMINISTRADOR) {
+                analitycsFacebook.logAdicionarAoCarrinhoEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), prodObj.prodValor);
+                analitycsGoogle.logAdicionarAoCarrinhoEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), prodObj.prodValor);
 
-            analitycsFacebook.logUsuarioAdicionaProdutoAoCartEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), user.getDisplayName(), user.getUid(), user.getEmail(), pathFotoUser, prodObj.prodValor);
-            analitycsGoogle.logUsuarioAdicionaProdutoAoCartEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), user.getDisplayName(), user.getUid(), user.getEmail(), pathFotoUser, prodObj.prodValor);
+                analitycsFacebook.logUsuarioAdicionaProdutoAoCartEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), user.getDisplayName(), user.getUid(), user.getEmail(), pathFotoUser, prodObj.prodValor);
+                analitycsGoogle.logUsuarioAdicionaProdutoAoCartEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), user.getDisplayName(), user.getUid(), user.getEmail(), pathFotoUser, prodObj.prodValor);
+            }
             return;
         }
 
@@ -713,7 +718,8 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             ids.remove(str);
         }
         reference.delete();
-        mAdapter.notifyItemChanged(i);
+        //mAdapter.notifyItemChanged(i);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -828,8 +834,10 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
 
                 if (isPesquisa && sizeDoc == 0){
                     Toast.makeText(getActivity(), "Nenhum resultado para sua pesquisa", Toast.LENGTH_LONG).show();
-                    analitycsFacebook.logPesquisaProdutoEvent(sPesquisa, user.getDisplayName(), user.getUid(), false, sizeDoc + " resultado(s)");
-                    analitycsGoogle.logPesquisaProdutoEvent(sPesquisa, user.getDisplayName(), user.getUid(), false);
+                    if (!ADMINISTRADOR) {
+                        analitycsFacebook.logPesquisaProdutoEvent(sPesquisa, user.getDisplayName(), user.getUid(), false, sizeDoc + " resultado(s)");
+                        analitycsGoogle.logPesquisaProdutoEvent(sPesquisa, user.getDisplayName(), user.getUid(), false);
+                    }
                     obterListaDeProdutos(4);
                 }
             }

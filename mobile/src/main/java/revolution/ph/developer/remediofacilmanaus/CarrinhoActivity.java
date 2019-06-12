@@ -108,6 +108,7 @@ import com.robinhood.ticker.TickerView;
 
 import javax.annotation.Nullable;
 
+import static revolution.ph.developer.remediofacilmanaus.FragmentMain.ADMINISTRADOR;
 import static revolution.ph.developer.remediofacilmanaus.FragmentMain.pathFotoUser;
 import static revolution.ph.developer.remediofacilmanaus.FragmentMain.user;
 import static revolution.ph.developer.remediofacilmanaus.MainActivity.ids;
@@ -237,10 +238,12 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
             }
         });
 
-        analitycsFacebook.logUserVisitaCarrinhoEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
-        analitycsGoogle.logUserVisitaCarrinhoEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
-        UserStreamView userStreamView = new UserStreamView(user.getDisplayName(), user.getUid(), pathFotoUser, System.currentTimeMillis());
-        firestore.collection("Eventos").document("stream").collection("cart").document(user.getUid()).set(userStreamView);
+        if (!ADMINISTRADOR) {
+            analitycsFacebook.logUserVisitaCarrinhoEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
+            analitycsGoogle.logUserVisitaCarrinhoEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
+            UserStreamView userStreamView = new UserStreamView(user.getDisplayName(), user.getUid(), pathFotoUser, System.currentTimeMillis());
+            firestore.collection("Eventos").document("stream").collection("cart").document(user.getUid()).set(userStreamView);
+        }
     }
 
     @Override
@@ -1104,6 +1107,9 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
+        if (autoCompleteLocation != null) {
+            autoCompleteLocation = null;
+        }
         mDefaultLocation = marker.getPosition();
         marcar();
         exibirEnderecoAtual();

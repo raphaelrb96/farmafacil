@@ -735,8 +735,10 @@ public class MensagemDetalheActivityFragment extends Fragment implements View.On
     @Override
     public void onStart() {
         super.onStart();
-        analitycsGoogle.logUserVisitaChatEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
-        UserStreamView userStreamView = new UserStreamView(user.getDisplayName(), user.getUid(), pathFotoUser, System.currentTimeMillis());
-        firebaseFirestore.collection("Eventos").document("stream").collection("chat").document(user.getUid()).set(userStreamView);
+        if (!ADMINISTRADOR) {
+            analitycsGoogle.logUserVisitaChatEvent(user.getDisplayName(), user.getUid(), pathFotoUser);
+            UserStreamView userStreamView = new UserStreamView(user.getDisplayName(), user.getUid(), pathFotoUser, System.currentTimeMillis());
+            firebaseFirestore.collection("Eventos").document("stream").collection("chat").document(user.getUid()).set(userStreamView);
+        }
     }
 }
