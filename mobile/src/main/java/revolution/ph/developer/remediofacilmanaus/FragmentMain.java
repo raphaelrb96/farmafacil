@@ -699,7 +699,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
             }
             reference.set(carComprasActivy);
             //mAdapter.notifyItemChanged(i);
-            mAdapter.notifyDataSetChanged();
+            //mAdapter.notifyDataSetChanged();
 
             if (!ADMINISTRADOR) {
                 analitycsFacebook.logAdicionarAoCarrinhoEvent(prodObj.getProdName(), prodObj.getIdProduto(), prodObj.getCategoria(), prodObj.isPromocional(), prodObj.getImgCapa(), prodObj.prodValor);
@@ -719,7 +719,7 @@ public class FragmentMain extends Fragment implements AdapterProdutos.ClickProdu
         }
         reference.delete();
         //mAdapter.notifyItemChanged(i);
-        mAdapter.notifyDataSetChanged();
+        //mAdapter.notifyDataSetChanged();
     }
 
     @Override

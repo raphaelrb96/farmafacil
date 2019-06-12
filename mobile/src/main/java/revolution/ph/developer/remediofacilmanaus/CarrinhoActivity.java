@@ -222,7 +222,7 @@ public class CarrinhoActivity extends FragmentActivity implements OnMapReadyCall
 
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(String.valueOf(somo + precoEntrega));
+                stringBuilder.append(String.valueOf(somo));
                 stringBuilder.append(",00");
                 totalTV.setText(stringBuilder.toString());
                 ttcomprasTV.setText(String.valueOf(somo) + ",00");

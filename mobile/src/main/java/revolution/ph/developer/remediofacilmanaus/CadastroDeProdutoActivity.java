@@ -683,7 +683,7 @@ public class CadastroDeProdutoActivity extends AppCompatActivity {
                     salvarDadosEmFirestore(((Uri) task.getResult()).toString(), obj);
                     return;
                 }
-                Toast.makeText(CadastroDeProdutoActivity.this, "Erro ao salvar Foto", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CadastroDeProdutoActivity.this, "Erro ao salvar Foto: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
